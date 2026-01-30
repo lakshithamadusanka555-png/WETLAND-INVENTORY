@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>National Wetland Inventory of Sri Lanka</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Hero Section with Banner */
+        .hero {
+            position: relative;
+            height: 80vh;
+            min-height: 500px;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), 
+                        url('https://images.unsplash.com/photo-1536152471326-643d8d6e3a2b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 2rem;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .hero-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+        }
+        
+        .hero-btn:hover {
+            background: #388E3C;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        /* Quick Stats */
+        .quick-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            background: white;
+            padding: 2rem;
+            margin: -50px auto 3rem auto;
+            max-width: 1000px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 10;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2c5f2d;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-weight: 500;
+        }
+        
+        /* Map Section */
+        .map-section {
+            padding: 4rem 2rem;
+            background: #f8f9fa;
+        }
+        
+        .map-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .map-header h2 {
+            color: #2c5f2d;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .map-header p {
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+        }
+        
+        /* Enhanced Map Container */
+        .map-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        
+        .map-sidebar {
+            background: #f8f9fa;
+            padding: 20px;
+            border-right: 1px solid #eee;
+            height: fit-content;
+            max-height: 700px;
+            overflow-y: auto;
+        }
+        
+        .map-content {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #map {
+            height: 600px;
+            width: 100%;
+            flex-grow: 1;
+        }
+        
+        .map-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            background: white;
+            border-top: 1px solid #eee;
+        }
+        
+        .control-group {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .map-btn {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .map-btn:hover {
+            background: #0b7dda;
+            transform: translateY(-2px);
+        }
+        
+        .map-btn.secondary {
+            background: #4CAF50;
+        }
+        
+        .map-btn.secondary:hover {
+            background: #388E3C;
+        }
+        
+        .filter-dropdown {
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+            min-width: 200px;
+        }
+        
+        /* Layer Control Panel */
+        .layer-control-panel {
+            margin-bottom: 20px;
+        }
+        
+        .panel-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c5f2d;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .layer-group {
+            margin-bottom: 20px;
+        }
+        
+        .layer-group-title {
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        
+        .layer-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            padding: 8px;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .layer-item:hover {
+            background: #f0f0f0;
+        }
+        
+        .layer-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .layer-label {
+            flex-grow: 1;
+            font-size: 0.95rem;
+        }
+        
+        .layer-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+        
+        .layer-opacity {
+            width: 100%;
+            margin-top: 5px;
+        }
+        
+        .legend {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid #eee;
+        }
+        
+        .legend-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c5f2d;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border-radius: 3px;
+        }
+        
+        .legend-label {
+            font-size: 0.9rem;
+        }
+        
+        /* Statistics Panel */
+        .stats-panel {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            margin-top: 20px;
+        }
+        
+        .stat-display {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .loading {
+            color: #2196F3;
+            font-style: italic;
+        }
+        
+        .error {
+            color: #f44336;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .map-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .map-sidebar {
+                border-right: none;
+                border-bottom: 1px solid #eee;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .quick-stats {
+                flex-direction: column;
+                gap: 1.5rem;
+                margin-top: -30px;
+                padding: 1.5rem;
+            }
+            
+            .map-controls {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .control-group {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .map-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo">
+            <h2><i class="fas fa-water"></i> National Wetland Inventory of Sri Lanka</h2>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="about.html">About Wetlands</a></li>
+            <li><a href="news.html">News</a></li>
+            <li><a href="downloads.html">Downloads</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Explore Sri Lanka's Wetlands</h1>
+            <p>Discover, understand, and help protect our nation's vital wetland ecosystems through interactive mapping and comprehensive data.</p>
+            <button class="hero-btn" onclick="scrollToMap()">
+                <i class="fas fa-map-marked-alt"></i> Explore Interactive Map
+            </button>
+        </div>
+    </section>
+
+    <!-- Quick Stats -->
+    <section class="quick-stats">
+        <div class="stat-item">
+            <div class="stat-number">280,000+</div>
+            <div class="stat-label">Hectares of Wetlands</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">6</div>
+            <div class="stat-label">Ramsar Sites</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">120+</div>
+            <div class="stat-label">Major Wetlands</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">25</div>
+            <div class="stat-label">Districts Covered</div>
+        </div>
+    </section>
+
+    <!-- Interactive Map Section -->
+    <section class="map-section" id="map-section">
+        <div class="map-header">
+            <h2>Interactive Wetland Map</h2>
+            <p>Explore Colombo wetland locations. Toggle different wetland types and layers to view comprehensive GeoJSON data.</p>
+        </div>
+        
+        <div class="map-container">
+            <!-- Sidebar with layer controls -->
+            <div class="map-sidebar">
+                <div class="layer-control-panel">
+                    <div class="panel-title">
+                        <i class="fas fa-layer-group"></i> Colombo Wetland Layers
+                    </div>
+                    
+                    <!-- Colombo GeoJSON Layers -->
+                    <div class="layer-group">
+                        <div class="layer-group-title">Colombo Wetlands (GeoJSON)</div>
+                        
+                        <div class="layer-item">
+                            <input type="checkbox" class="layer-checkbox" id="waterBodiesLayer" onchange="toggleLayer('waterBodies')">
+                            <span class="layer-label">Colombo Water Bodies</span>
+                            <div class="layer-color" style="background-color: rgba(33, 150, 243, 0.7);"></div>
+                        </div>
+                        <input type="range" class="layer-opacity" id="waterBodiesOpacity" min="0" max="100" value="70"
+                               oninput="updateLayerOpacity('waterBodies', this.value)">
+                        
+                        <div class="layer-item">
+                            <input type="checkbox" class="layer-checkbox" id="riceFieldsLayer" onchange="toggleLayer('riceFields')">
+                            <span class="layer-label">Colombo Rice Fields</span>
+                            <div class="layer-color" style="background-color: rgba(255, 152, 0, 0.7);"></div>
+                        </div>
+                        <input type="range" class="layer-opacity" id="riceFieldsOpacity" min="0" max="100" value="70"
+                               oninput="updateLayerOpacity('riceFields', this.value)">
+                        
+                        <div class="layer-item">
+                            <input type="checkbox" class="layer-checkbox" id="marshesLayer" onchange="toggleLayer('marshes')">
+                            <span class="layer-label">Colombo Marshes</span>
+                            <div class="layer-color" style="background-color: rgba(156, 39, 176, 0.7);"></div>
+                        </div>
+                        <input type="range" class="layer-opacity" id="marshesOpacity" min="0" max="100" value="70"
+                               oninput="updateLayerOpacity('marshes', this.value)">
+                    </div>
+                </div>
+                
+                <!-- Legend -->
+                <div class="legend">
+                    <div class="legend-title">Layer Colors</div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: rgba(33, 150, 243, 0.7);"></div>
+                        <span class="legend-label">Colombo Water Bodies</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: rgba(255, 152, 0, 0.7);"></div>
+                        <span class="legend-label">Colombo Rice Fields</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: rgba(156, 39, 176, 0.7);"></div>
+                        <span class="legend-label">Colombo Marshes</span>
+                    </div>
+                </div>
+                
+                <!-- Statistics Panel -->
+                <div class="stats-panel">
+                    <div class="panel-title">
+                        <i class="fas fa-chart-bar"></i> Area Statistics
+                    </div>
+                    <div class="stat-display" id="areaStats">
+                        Loading GeoJSON data...
+                    </div>
+                    <button class="map-btn secondary" onclick="calculateTotalArea()" style="width: 100%; margin-top: 10px;">
+                        <i class="fas fa-calculator"></i> Calculate Selected Area
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Map Content -->
+            <div class="map-content">
+                <div id="map"></div>
+                <div class="map-controls">
+                    <div class="control-group">
+                        <button class="map-btn" onclick="showAllLayers()">
+                            <i class="fas fa-layer-group"></i> Show All Layers
+                        </button>
+                        
+                        <button class="map-btn secondary" onclick="hideAllLayers()">
+                            <i class="fas fa-eye-slash"></i> Hide All Layers
+                        </button>
+                        
+                        <button class="map-btn" onclick="fitColomboBounds()">
+                            <i class="fas fa-search-plus"></i> Focus Colombo
+                        </button>
+                    </div>
+                    
+                    <div class="control-group">
+                        <button class="map-btn" onclick="exportMapData()">
+                            <i class="fas fa-download"></i> Export Data
+                        </button>
+                        
+                        <button class="map-btn" onclick="printMap()">
+                            <i class="fas fa-print"></i> Print Map
+                        </button>
+                        
+                        <button class="map-btn secondary" onclick="resetMap()">
+                            <i class="fas fa-redo"></i> Reset Map
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Initialize map
+        let map;
+        let overlayLayers = {};
+        let activeLayers = {};
+        let layerStats = {};
+        let geoJsonLayers = {};
+        
+        // Define Colombo wetland colors with transparency
+        const wetlandColors = {
+            waterBodies: 'rgba(33, 150, 243, 0.7)',
+            riceFields: 'rgba(255, 152, 0, 0.7)',
+            marshes: 'rgba(156, 39, 176, 0.7)'
+        };
+        
+        // Define layer names
+        const layerNames = {
+            waterBodies: "Colombo Water Bodies",
+            riceFields: "Colombo Rice Fields",
+            marshes: "Colombo Marshes"
+        };
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Colombo Wetland Inventory Map Loaded");
+            
+            // Initialize map centered on Colombo
+            map = L.map('map').setView([6.9271, 79.8612], 11);
+            
+            // Add OpenStreetMap base layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(map);
+            
+            // Add scale control
+            L.control.scale({imperial: false}).addTo(map);
+            
+            // Load GeoJSON files
+            loadGeoJSONLayers();
+            
+            // Add click event to map for statistics
+            map.on('click', function(e) {
+                showClickStatistics(e.latlng);
+            });
+        });
+        
+        // Load actual GeoJSON files
+        async function loadGeoJSONLayers() {
+            const layersToLoad = ['waterBodies', 'riceFields', 'marshes'];
+            let loadedCount = 0;
+            
+            document.getElementById('areaStats').innerHTML = '<span class="loading">Loading Colombo GeoJSON data...</span>';
+            
+            for (const layerName of layersToLoad) {
+                try {
+                    const response = await fetch(`data/${layerName}.geojson`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    const geojsonData = await response.json();
+                    
+                    // Create Leaflet GeoJSON layer
+                    geoJsonLayers[layerName] = L.geoJSON(geojsonData, {
+                        style: function(feature) {
+                            return {
+                                fillColor: wetlandColors[layerName],
+                                weight: 2,
+                                opacity: 1,
+                                color: wetlandColors[layerName].replace('0.7', '1'),
+                                fillOpacity: 0.7
+                            };
+                        },
+                        onEachFeature: function(feature, layer) {
+                            // Calculate area if properties exist
+                            let areaInfo = '';
+                            if (feature.properties && feature.properties.name) {
+                                areaInfo = `<strong>${feature.properties.name}</strong>`;
+                            }
+                            layer.bindPopup(`
+                                <div style="padding: 10px; min-width: 200px;">
+                                    <h4 style="margin: 0 0 10px 0; color: #2c5f2d;">${layerNames[layerName]}</h4>
+                                    ${areaInfo ? `<p><strong>Name:</strong> ${areaInfo}</p>` : ''}
+                                    <p><strong>Layer:</strong> ${layerNames[layerName]}</p>
+                                    <p>Click layers in sidebar to toggle visibility</p>
+                                </div>
+                            `);
+                        }
+                    });
+                    
+                    // Store layer and initialize as inactive
+                    overlayLayers[layerName] = L.layerGroup();
+                    activeLayers[layerName] = false;
+                    layerStats[layerName] = {
+                        features: geojsonData.features.length,
+                        loaded: true
+                    };
+                    
+                    loadedCount++;
+                    updateStatsDisplay();
+                    
+                } catch (error) {
+                    console.error(`Error loading ${layerName}.geojson:`, error);
+                    layerStats[layerName] = {
+                        features: 0,
+                        loaded: false,
+                        error: error.message
+                    };
+                    document.getElementById(layerName + 'Layer').disabled = true;
+                    document.getElementById(layerName + 'Layer').parentElement.style.opacity = '0.5';
+                }
+            }
+            
+            if (loadedCount === layersToLoad.length) {
+                showNotification('All Colombo GeoJSON layers loaded successfully!');
+            }
+        }
+        
+        // Toggle layer visibility
+        function toggleLayer(layerName) {
+            const checkbox = document.getElementById(layerName + 'Layer');
+            activeLayers[layerName] = checkbox.checked;
+            
+            if (checkbox.checked && geoJsonLayers[layerName]) {
+                map.addLayer(geoJsonLayers[layerName]);
+                showNotification(`${layerNames[layerName]} layer turned ON (${layerStats[layerName].features} features)`);
+            } else if (geoJsonLayers[layerName]) {
+                map.removeLayer(geoJsonLayers[layerName]);
+                showNotification(`${layerNames[layerName]} layer turned OFF`);
+            }
+            updateStatsDisplay();
+        }
+        
+        // Update layer opacity
+        function updateLayerOpacity(layerName, opacityValue) {
+            const opacity = opacityValue / 100;
+            
+            if (geoJsonLayers[layerName]) {
+                geoJsonLayers[layerName].setStyle({
+                    fillOpacity: opacity
+                });
+            }
+        }
+        
+        // Show all layers
+        function showAllLayers() {
+            Object.keys(overlayLayers).forEach(layerName => {
+                const checkbox = document.getElementById(layerName + 'Layer');
+                if (checkbox && !checkbox.disabled) {
+                    checkbox.checked = true;
+                    toggleLayer(layerName);
+                }
+            });
+            showNotification('All Colombo wetland layers turned ON');
+        }
+        
+        // Hide all layers
+        function hideAllLayers() {
+            Object.keys(overlayLayers).forEach(layerName => {
+                const checkbox = document.getElementById(layerName + 'Layer');
+                if (checkbox && !checkbox.disabled) {
+                    checkbox.checked = false;
+                    toggleLayer(layerName);
+                }
+            });
+            showNotification('All Colombo wetland layers turned OFF');
+        }
+        
+        // Fit map to Colombo bounds
+        function fitColomboBounds() {
+            map.setView([6.9271, 79.8612], 11);
+            showNotification('Map focused on Colombo region');
+        }
+        
+        // Update statistics display
+        function updateStatsDisplay() {
+            let statsHtml = '<strong>Layer Status:</strong><br>';
+            let activeCount = 0;
+            let totalFeatures = 0;
+            
+            Object.keys(layerStats).forEach(layerName => {
+                const stat = layerStats[layerName];
+                const status = activeLayers[layerName] ? 'ON' : 'OFF';
+                statsHtml += `${layerNames[layerName]}: ${status}`;
+                
+                if (stat.loaded) {
+                    statsHtml += ` (${stat.features} features)<br>`;
+                    totalFeatures += stat.features;
+                    if (activeLayers[layerName]) activeCount++;
+                } else {
+                    statsHtml += ` <span class="error">(Load Error)</span><br>`;
+                }
+            });
+            
+            statsHtml += `<br><strong>Active Layers:</strong> ${activeCount}<br>`;
+            statsHtml += `<strong>Total Features:</strong> ${totalFeatures}`;
+            
+            document.getElementById('areaStats').innerHTML = statsHtml;
+        }
+        
+        // Calculate total area (placeholder - would need turf.js for real calculations)
+        function calculateTotalArea() {
+            const activeCount = Object.values(activeLayers).filter(v => v).length;
+            document.getElementById('areaStats').innerHTML = `
+                <strong>Area Calculation:</strong><br>
+                Active Layers: ${activeCount}<br>
+                Total Features: ${Object.values(layerStats).reduce((sum, stat) => sum + (stat.loaded ? stat.features : 0), 0)}<br><br>
+                <em>Note: Add turf.js library for accurate area calculations from GeoJSON</em>
+            `;
+        }
+        
+        // Show click statistics
+        function showClickStatistics(latlng) {
+            const activeCount = Object.values(activeLayers).filter(v => v).length;
+            document.getElementById('areaStats').innerHTML = `
+                <strong>Clicked Location:</strong><br>
+                Lat: ${latlng.lat.toFixed(4)}°<br>
+                Lng: ${latlng.lng.toFixed(4)}°<br><br>
+                <strong>Active Layers:</strong> ${activeCount}
+            `;
+        }
+        
+        // Export map data
+        function exportMapData() {
+            const activeLayersList = Object.keys(activeLayers).filter(layer => activeLayers[layer]);
+            showNotification(`Export ${activeLayersList.length} active GeoJSON layers...\n\nDownload: colombo_${activeLayersList.join(', ')}.geojson`);
+        }
+        
+        // Print map
+        function printMap() {
+            window.print();
+        }
+        
+        // Reset map to default state
+        function resetMap() {
+            map.setView([6.9271, 79.8612], 11);
+            hideAllLayers();
+            document.getElementById('areaStats').innerHTML = 'Click on a wetland area to see statistics';
+            showNotification('Map reset to Colombo default view');
+        }
+        
+        // Scroll to map section
+        function scrollToMap() {
+            document.getElementById('map-section').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+        
+        // Show notification
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #4CAF50;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                z-index: 10000;
+                max-width: 350px;
+                animation: slideIn 0.3s ease-out;
+                font-size: 0.95rem;
+                line-height: 1.4;
+            `;
+            
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-info-circle" style="font-size: 18px;"></i>
+                    <div>${message}</div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
+            
+            if (!document.getElementById('notification-styles')) {
+                const style = document.createElement('style');
+                style.id = 'notification-styles';
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+    </script>
+</body>
+</html>

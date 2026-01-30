@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wetland News - Sri Lanka</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Additional styles for news page */
+        .news-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+        }
+        
+        .main-content {
+            grid-column: 1;
+        }
+        
+        .sidebar {
+            grid-column: 2;
+        }
+        
+        .page-title {
+            color: #2c5f2d;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+            grid-column: 1 / -1;
+        }
+        
+        .page-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+            grid-column: 1 / -1;
+        }
+        
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .news-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .news-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .news-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .news-content {
+            padding: 1.5rem;
+        }
+        
+        .news-date {
+            color: #4CAF50;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .news-date i {
+            margin-right: 5px;
+        }
+        
+        .news-title {
+            color: #2c5f2d;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .news-excerpt {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .read-more {
+            color: #2196F3;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .read-more i {
+            margin-left: 5px;
+            transition: transform 0.3s;
+        }
+        
+        .read-more:hover i {
+            transform: translateX(5px);
+        }
+        
+        .news-category {
+            display: inline-block;
+            background: #e8f5e9;
+            color: #2c5f2d;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .featured-news {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .featured-image {
+            overflow: hidden;
+        }
+        
+        .featured-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .featured-news:hover .featured-image img {
+            transform: scale(1.05);
+        }
+        
+        .featured-content {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .featured-badge {
+            background: #FF9800;
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar-section {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-title {
+            color: #2c5f2d;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .sidebar-title i {
+            margin-right: 10px;
+        }
+        
+        /* Events in Sidebar */
+        .event-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .event-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .event-date {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+        
+        .event-day {
+            background: #4CAF50;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 5px;
+            text-align: center;
+            min-width: 50px;
+            margin-right: 1rem;
+        }
+        
+        .event-month {
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .event-day-number {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+        
+        .event-title {
+            color: #2c5f2d;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .event-location {
+            color: #666;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .event-location i {
+            margin-right: 5px;
+            color: #4CAF50;
+        }
+        
+        /* Newsletter in Sidebar */
+        .newsletter {
+            background: linear-gradient(135deg, #2c5f2d, #4CAF50);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .newsletter-input {
+            display: flex;
+            margin: 1rem 0;
+        }
+        
+        .newsletter-input input {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 4px 0 0 4px;
+        }
+        
+        .newsletter-input button {
+            background: #FF9800;
+            color: white;
+            border: none;
+            padding: 0.8rem 1rem;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        /* Quick Links in Sidebar */
+        .quick-links {
+            list-style: none;
+        }
+        
+        .quick-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .quick-links a {
+            color: #2c5f2d;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .quick-links a:hover {
+            background: #e8f5e9;
+            padding-left: 1rem;
+        }
+        
+        .quick-links i {
+            margin-right: 10px;
+            color: #4CAF50;
+        }
+        
+        /* Categories in Sidebar */
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .category-tag {
+            background: #e8f5e9;
+            color: #2c5f2d;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .category-tag:hover {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .news-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                grid-column: 1;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 2rem;
+            }
+            
+            .sidebar-section {
+                margin-bottom: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .featured-news {
+                grid-template-columns: 1fr;
+            }
+            
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo">
+            <h2><i class="fas fa-water"></i> Sri Lanka Wetlands</h2>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Wetlands</a></li>
+            <li><a href="news.html" style="background-color:#4CAF50;border-radius:4px;">News</a></li>
+            <li><a href="downloads.html">Downloads</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="news-container">
+        <h1 class="page-title">Wetland News & Updates</h1>
+        <p class="page-subtitle">Latest conservation news, research, and events about Sri Lanka's wetlands</p>
+        
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Featured News -->
+            <div class="featured-news">
+                <div class="featured-image">
+                    <img src="C:\Users\L.Rathnayaka\OneDrive - CGIAR\Desktop\wetland-sri-lanka\images\mangrove_restoration.jpg" alt="Mangrove Conservation">
+                </div>
+                <div class="featured-content">
+                    <span class="featured-badge">FEATURED STORY</span>
+                    <h2 class="news-title">Mangrove Restoration Project Launched in Puttalam District</h2>
+                    <div class="news-date">
+                        <i class="far fa-calendar"></i> January 15, 2024 | 
+                        <span class="news-category">Conservation</span>
+                        <span class="news-category">Community</span>
+                    </div>
+                    <p class="news-excerpt">
+                        A new community-led mangrove restoration initiative has been launched in the Puttalam lagoon area, aiming to replant 50,000 mangrove saplings over the next two years. The project involves local fishing communities and aims to restore critical coastal protection while creating sustainable livelihoods.
+                    </p>
+                    <a href="#" class="read-more">Read Full Story <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            
+            <!-- News Grid -->
+            <div class="news-grid">
+                <!-- News Card 1 -->
+                <div class="news-card">
+                    <img src="C:\Users\L.Rathnayaka\OneDrive - CGIAR\Desktop\wetland-sri-lanka\images\birds_bundala.jpg" alt="Bird Migration" class="news-image">
+                    <div class="news-content">
+                        <div class="news-date">
+                            <i class="far fa-calendar"></i> December 3, 2023
+                            <span class="news-category">Research</span>
+                        </div>
+                        <h3 class="news-title">Record Number of Migratory Birds Spotted in Bundala</h3>
+                        <p class="news-excerpt">
+                            Bird watchers and researchers recorded over 15,000 migratory birds in Bundala National Park this season, the highest count in the past decade. The increase is attributed to improved wetland management and reduced human disturbance.
+                        </p>
+                        <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                
+                <!-- News Card 2 -->
+                <div class="news-card">
+                    <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Water Quality" class="news-image">
+                    <div class="news-content">
+                        <div class="news-date">
+                            <i class="far fa-calendar"></i> November 18, 2023
+                            <span class="news-category">Research</span>
+                            <span class="news-category">Environment</span>
+                        </div>
+                        <h3 class="news-title">New Study: Colombo Wetlands Filter 40% of City's Wastewater</h3>
+                        <p class="news-excerpt">
+                            Research from the University of Colombo reveals that the Muthurajawela and Bellanwila-Attidiya wetlands naturally filter and purify approximately 40% of Colombo's wastewater, saving millions in treatment costs.
+                        </p>
+                        <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                
+                <!-- News Card 3 -->
+                <div class="news-card">
+                    <img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Education" class="news-image">
+                    <div class="news-content">
+                        <div class="news-date">
+                            <i class="far fa-calendar"></i> October 29, 2023
+                            <span class="news-category">Education</span>
+                            <span class="news-category">Community</span>
+                        </div>
+                        <h3 class="news-title">Wetland Education Program Reaches 5,000 Students</h3>
+                        <p class="news-excerpt">
+                            The "Wetland Guardians" school program has now educated over 5,000 students across 50 schools about wetland conservation. The program includes field visits, workshops, and citizen science projects.
+                        </p>
+                        <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                
+                <!-- News Card 4 -->
+                <div class="news-card">
+                    <img src="C:\Users\L.Rathnayaka\OneDrive - CGIAR\Desktop\wetland-sri-lanka\images\wetland_plan.jpg" alt="Climate Change" class="news-image">
+                    <div class="news-content">
+                        <div class="news-date">
+                            <i class="far fa-calendar"></i> September 12, 2023
+                            <span class="news-category">Climate</span>
+                            <span class="news-category">Policy</span>
+                        </div>
+                        <h3 class="news-title">Sri Lanka's Wetlands to Play Key Role in Climate Adaptation Plan</h3>
+                        <p class="news-excerpt">
+                            The Ministry of Environment has included wetland restoration as a key component of Sri Lanka's National Climate Change Adaptation Strategy, recognizing their role in flood mitigation and carbon sequestration.
+                        </p>
+                        <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                
+                <!-- News Card 5 -->
+                <div class="news-card">
+                    <img src="C:\Users\L.Rathnayaka\OneDrive - CGIAR\Desktop\wetland-sri-lanka\images\tourism.jpg" alt="Eco Tourism" class="news-image">
+                    <div class="news-content">
+                        <div class="news-date">
+                            <i class="far fa-calendar"></i> August 25, 2023
+                            <span class="news-category">Tourism</span>
+                            <span class="news-category">Economy</span>
+                        </div>
+                        <h3 class="news-title">Community-Based Wetland Tourism Generates $2M Annually</h3>
+                        <p class="news-excerpt">
+                            A new report shows that community-managed wetland tourism initiatives around Maduganga and Negombo lagoons are generating significant income while promoting conservation.
+                        </p>
+                        <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                
+                <!-- News Card 6 -->
+                <div class="news-card">
+                    <img src="C:\Users\L.Rathnayaka\OneDrive - CGIAR\Desktop\wetland-sri-lanka\images\fish.jpg" alt="New Species" class="news-image">
+                    <div class="news-content">
+                        <div class="news-date">
+                            <i class="far fa-calendar"></i> July 30, 2023
+                            <span class="news-category">Biodiversity</span>
+                            <span class="news-category">Discovery</span>
+                        </div>
+                        <h3 class="news-title">New Endemic Fish Species Discovered in Knuckles Wetlands</h3>
+                        <p class="news-excerpt">
+                            Scientists have identified a new species of freshwater fish unique to the mountain wetlands of the Knuckles Range. The discovery highlights the importance of protecting Sri Lanka's diverse wetland habitats.
+                        </p>
+                        <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar Area -->
+        <div class="sidebar">
+            <!-- Upcoming Events -->
+            <div class="sidebar-section">
+                <h3 class="sidebar-title"><i class="fas fa-calendar-alt"></i> Upcoming Events</h3>
+                
+                <div class="event-item">
+                    <div class="event-date">
+                        <div class="event-day">
+                            <div class="event-month">FEB</div>
+                            <div class="event-day-number">2</div>
+                        </div>
+                        <div>
+                            <div class="event-title">World Wetlands Day 2024</div>
+                            <div class="event-location"><i class="fas fa-map-marker-alt"></i> Nationwide</div>
+                        </div>
+                    </div>
+                    <p>Celebrations, workshops, and guided wetland tours across Sri Lanka to mark international wetlands day.</p>
+                </div>
+                
+                <div class="event-item">
+                    <div class="event-date">
+                        <div class="event-day">
+                            <div class="event-month">MAR</div>
+                            <div class="event-day-number">15</div>
+                        </div>
+                        <div>
+                            <div class="event-title">Wetland Photography Competition</div>
+                            <div class="event-location"><i class="fas fa-map-marker-alt"></i> Online</div>
+                        </div>
+                    </div>
+                    <p>Submit your best wetland photos. Categories: Wildlife, Landscapes, Conservation Stories. Deadline: March 15.</p>
+                </div>
+                
+                <div class="event-item">
+                    <div class="event-date">
+                        <div class="event-day">
+                            <div class="event-month">APR</div>
+                            <div class="event-day-number">22</div>
+                        </div>
+                        <div>
+                            <div class="event-title">Earth Day Wetland Cleanup</div>
+                            <div class="event-location"><i class="fas fa-map-marker-alt"></i> Multiple Locations</div>
+                        </div>
+                    </div>
+                    <p>Volunteer to clean and restore urban wetlands. Locations in Colombo, Galle, and Kandy.</p>
+                </div>
+                
+                <div class="event-item">
+                    <div class="event-date">
+                        <div class="event-day">
+                            <div class="event-month">MAY</div>
+                            <div class="event-day-number">5</div>
+                        </div>
+                        <div>
+                            <div class="event-title">Bird Watching Workshop</div>
+                            <div class="event-location"><i class="fas fa-map-marker-alt"></i> Bundala National Park</div>
+                        </div>
+                    </div>
+                    <p>Beginner-friendly bird watching workshop in one of Sri Lanka's premier wetland habitats.</p>
+                </div>
+                
+                <div class="event-item">
+                    <div class="event-date">
+                        <div class="event-day">
+                            <div class="event-month">JUN</div>
+                            <div class="event-day-number">8</div>
+                        </div>
+                        <div>
+                            <div class="event-title">World Oceans Day Symposium</div>
+                            <div class="event-location"><i class="fas fa-map-marker-alt"></i> University of Colombo</div>
+                        </div>
+                    </div>
+                    <p>Focus on coastal wetlands and their role in ocean health. Free registration required.</p>
+                </div>
+            </div>
+            
+            <!-- Newsletter -->
+            <div class="newsletter">
+                <h3>Stay Updated</h3>
+                <p>Subscribe to our monthly newsletter for the latest wetland news and events</p>
+                <div class="newsletter-input">
+                    <input type="email" placeholder="Your email">
+                    <button type="button"><i class="fas fa-paper-plane"></i></button>
+                </div>
+                <p style="font-size:0.8rem; opacity:0.8;">We respect your privacy. Unsubscribe anytime.</p>
+            </div>
+            
+            <!-- Quick Links -->
+            <div class="sidebar-section">
+                <h3 class="sidebar-title"><i class="fas fa-link"></i> Quick Links</h3>
+                <ul class="quick-links">
+                    <li><a href="downloads.html"><i class="fas fa-download"></i> Download Resources</a></li>
+                    <li><a href="about.html"><i class="fas fa-info-circle"></i> About Wetland Types</a></li>
+                    <li><a href="index.html#map-section"><i class="fas fa-map"></i> Interactive Map</a></li>
+                    <li><a href="#"><i class="fas fa-images"></i> Photo Gallery</a></li>
+                    <li><a href="#"><i class="fas fa-book"></i> Research Papers</a></li>
+                    <li><a href="#"><i class="fas fa-users"></i> Get Involved</a></li>
+                </ul>
+            </div>
+            
+            <!-- News Categories -->
+            <div class="sidebar-section">
+                <h3 class="sidebar-title"><i class="fas fa-tags"></i> Categories</h3>
+                <div class="categories">
+                    <a href="#" class="category-tag">Conservation</a>
+                    <a href="#" class="category-tag">Research</a>
+                    <a href="#" class="category-tag">Community</a>
+                    <a href="#" class="category-tag">Policy</a>
+                    <a href="#" class="category-tag">Biodiversity</a>
+                    <a href="#" class="category-tag">Climate</a>
+                    <a href="#" class="category-tag">Education</a>
+                    <a href="#" class="category-tag">Tourism</a>
+                    <a href="#" class="category-tag">Events</a>
+                </div>
+            </div>
+            
+            <!-- Recent News -->
+            <div class="sidebar-section">
+                <h3 class="sidebar-title"><i class="fas fa-history"></i> Recent News</h3>
+                <div style="font-size:0.9rem;">
+                    <p style="margin-bottom:0.5rem; color:#4CAF50; font-weight:bold;">
+                        <i class="far fa-newspaper"></i> Jan 10, 2024
+                    </p>
+                    <p>New wetland monitoring app launched by Central Environmental Authority</p>
+                    
+                    <p style="margin:1rem 0 0.5rem 0; color:#4CAF50; font-weight:bold;">
+                        <i class="far fa-newspaper"></i> Dec 20, 2023
+                    </p>
+                    <p>Annual wetland health report shows improvement in Colombo wetlands</p>
+                    
+                    <p style="margin:1rem 0 0.5rem 0; color:#4CAF50; font-weight:bold;">
+                        <i class="far fa-newspaper"></i> Nov 30, 2023
+                    </p>
+                    <p>International funding secured for Anawilundawa conservation project</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div style="max-width:1400px; margin:0 auto; padding:0 2rem;">
+            <p>&copy; Sri Lanka Wetland Inventory Project 2026 | 
+                <a href="#" style="color:#c1e1c1; text-decoration:none;">Contact</a> | 
+                <a href="#" style="color:#c1e1c1; text-decoration:none;">Privacy Policy</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Simple newsletter subscription
+        document.querySelector('.newsletter-input button').addEventListener('click', function() {
+            const email = document.querySelector('.newsletter-input input').value;
+            if (email && email.includes('@')) {
+                alert('Thank you for subscribing to our wetland newsletter! You will receive updates at ' + email);
+                document.querySelector('.newsletter-input input').value = '';
+            } else {
+                alert('Please enter a valid email address.');
+            }
+        });
+        
+        // Make all "Read More" links show a message
+        document.querySelectorAll('.read-more').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const title = this.closest('.news-card, .featured-content').querySelector('.news-title').textContent;
+                alert('This would open the full article: "' + title + '"\n\nIn a complete website, this link would go to a detailed article page.');
+            });
+        });
+        
+        // Add interactivity to event items
+        document.querySelectorAll('.event-item').forEach(event => {
+            event.addEventListener('click', function() {
+                const title = this.querySelector('.event-title').textContent;
+                const date = this.querySelector('.event-month').textContent + ' ' + 
+                            this.querySelector('.event-day-number').textContent;
+                const location = this.querySelector('.event-location').textContent;
+                
+                alert(`Event: ${title}\n\nDate: ${date}\nLocation: ${location}\n\nClick 'OK' to close.`);
+            });
+            
+            // Add hover effect
+            event.addEventListener('mouseenter', function() {
+                this.style.backgroundColor = '#f9f9f9';
+                this.style.transition = 'background-color 0.3s';
+            });
+            
+            event.addEventListener('mouseleave', function() {
+                this.style.backgroundColor = 'transparent';
+            });
+        });
+        
+        // Add interactivity to category tags
+        document.querySelectorAll('.category-tag').forEach(tag => {
+            tag.addEventListener('click', function(e) {
+                e.preventDefault();
+                const category = this.textContent;
+                alert(`Filtering news by category: "${category}"\n\nIn a complete website, this would show all news articles in this category.`);
+            });
+        });
+        
+        // Add interactivity to quick links
+        document.querySelectorAll('.quick-links a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const linkText = this.textContent;
+                alert(`Navigating to: ${linkText}\n\nIn a complete website, this link would take you to the appropriate page.`);
+            });
+        });
+    </script>
+</body>
+</html>

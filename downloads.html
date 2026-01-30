@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Downloads - Sri Lanka Wetlands</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Downloads Page Styles */
+        .downloads-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .page-title {
+            color: #2c5f2d;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+        }
+        
+        .page-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .section-title {
+            color: #2c5f2d;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 0.5rem;
+            margin: 2.5rem 0 1.5rem 0;
+        }
+        
+        /* District Selection */
+        .district-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .district-instructions {
+            color: #666;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .district-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .district-btn {
+            background: white;
+            border: 2px solid #ddd;
+            padding: 1.5rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            font-weight: 500;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100px;
+        }
+        
+        .district-btn:hover {
+            border-color: #4CAF50;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .district-btn.active {
+            background: #e8f5e9;
+            border-color: #4CAF50;
+            color: #2c5f2d;
+            font-weight: bold;
+        }
+        
+        .district-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
+            color: #4CAF50;
+        }
+        
+        .selected-district-info {
+            background: #e8f5e9;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 2rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .district-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #666;
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+        
+        /* Data Types */
+        .data-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .data-type-card {
+            background: white;
+            border: 2px solid #ddd;
+            padding: 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .data-type-card:hover {
+            border-color: #2196F3;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .data-type-card.active {
+            background: #e3f2fd;
+            border-color: #2196F3;
+        }
+        
+        .data-type-icon {
+            font-size: 2.5rem;
+            color: #2196F3;
+            margin-bottom: 1rem;
+        }
+        
+        /* Downloads Grid */
+        .downloads-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .download-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .download-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .download-header {
+            background: #2c5f2d;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .file-type {
+            background: rgba(255,255,255,0.2);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+        
+        .download-content {
+            padding: 1.5rem;
+        }
+        
+        .file-info {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .file-description {
+            color: #555;
+            line-height: 1.5;
+            margin: 1rem 0;
+            font-size: 0.95rem;
+        }
+        
+        .download-btn {
+            display: block;
+            width: 100%;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            transition: background 0.3s;
+            margin-top: 1rem;
+        }
+        
+        .download-btn:hover {
+            background: #388E3C;
+        }
+        
+        .download-btn i {
+            margin-right: 8px;
+        }
+        
+        /* No Selection State */
+        .no-selection {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            grid-column: 1 / -1;
+        }
+        
+        .no-selection-icon {
+            font-size: 4rem;
+            color: #ddd;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Quick Downloads */
+        .quick-downloads {
+            background: #fff3e0;
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+        
+        .quick-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .quick-btn {
+            background: #FF9800;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            transition: background 0.3s;
+            font-size: 1rem;
+        }
+        
+        .quick-btn:hover {
+            background: #F57C00;
+        }
+        
+        /* Data Info */
+        .data-info {
+            background: #e3f2fd;
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .info-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .district-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .downloads-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .data-types {
+                grid-template-columns: 1fr;
+            }
+            
+            .district-stats {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo">
+            <h2><i class="fas fa-water"></i> Sri Lanka Wetlands</h2>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Wetlands</a></li>
+            <li><a href="news.html">News</a></li>
+            <li><a href="downloads.html" style="background-color:#4CAF50;border-radius:4px;">Downloads</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="downloads-container">
+        <h1 class="page-title">Wetland Data Downloads</h1>
+        <p class="page-subtitle">
+            Select a district to download wetland shapefiles, maps, and research data. 
+            All files are provided in standard GIS formats.
+        </p>
+        
+        <!-- District Selection -->
+        <div class="district-section">
+            <h2 class="section-title">Step 1: Select District</h2>
+            <div class="district-instructions">
+                <i class="fas fa-info-circle"></i> Click on a district below to view available wetland data for that area.
+            </div>
+            
+            <!-- District Grid -->
+            <div class="district-grid" id="districtGrid">
+                <!-- Districts will be populated by JavaScript -->
+            </div>
+            
+            <!-- Selected District Info -->
+            <div id="selectedDistrictInfo" class="selected-district-info" style="display: none;">
+                <div>
+                    <h3 style="margin: 0; color: #2c5f2d;">
+                        <i class="fas fa-map-marker-alt"></i> Selected District: <span id="currentDistrict">None</span>
+                    </h3>
+                    <div class="district-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-layer-group"></i>
+                            <span id="districtFiles">0 files available</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-database"></i>
+                            <span id="districtSize">0 MB total size</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-water"></i>
+                            <span id="districtWetlands">0 wetlands mapped</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Data Types -->
+        <div id="dataTypesSection" style="display: none;">
+            <h2 class="section-title">Step 2: Available Data for <span id="selectedDistrictName"></span></h2>
+            <div class="data-types" id="dataTypes">
+                <!-- Data types will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <!-- Downloads Grid -->
+        <div id="downloadsSection" style="display: none;">
+            <h2 class="section-title" id="downloadsTitle">Downloads</h2>
+            <div class="downloads-grid" id="downloadsGrid">
+                <!-- Download cards will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <!-- Quick Downloads -->
+        <div class="quick-downloads">
+            <h2 style="color: #e65100; margin-bottom: 1rem;">National Datasets</h2>
+            <p>Download complete national wetland datasets:</p>
+            
+            <div class="quick-buttons">
+                <button class="quick-btn" onclick="downloadNationalDataset('atlas')">
+                    <i class="fas fa-globe-asia"></i> National Wetland Atlas (2.1 GB)
+                </button>
+                <button class="quick-btn" onclick="downloadNationalDataset('ramsar')">
+                    <i class="fas fa-award"></i> All Ramsar Sites Data (850 MB)
+                </button>
+                <button class="quick-btn" onclick="downloadNationalDataset('mangrove')">
+                    <i class="fas fa-tree"></i> National Mangrove Database (1.2 GB)
+                </button>
+            </div>
+        </div>
+        
+        <!-- Data Information -->
+        <div class="data-info">
+            <h2 style="color: #1565c0; margin-bottom: 1rem;">Data Information</h2>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4 style="margin: 0 0 1rem 0; color: #2196F3;">
+                        <i class="fas fa-file-alt"></i> File Formats
+                    </h4>
+                    <ul style="margin: 0; padding-left: 1.2rem;">
+                        <li>Shapefiles (.shp, .dbf, .shx)</li>
+                        <li>GeoJSON (.geojson)</li>
+                        <li>KML/KMZ (.kml, .kmz)</li>
+                        <li>PDF Maps (.pdf)</li>
+                        <li>GeoTIFF (.tif)</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4 style="margin: 0 0 1rem 0; color: #2196F3;">
+                        <i class="fas fa-balance-scale"></i> Usage License
+                    </h4>
+                    <p style="margin: 0; font-size: 0.95rem;">
+                        Data provided under Creative Commons Attribution 4.0. 
+                        Free for research, education, and conservation purposes.
+                    </p>
+                </div>
+                
+                <div class="info-card">
+                    <h4 style="margin: 0 0 1rem 0; color: #2196F3;">
+                        <i class="fas fa-tools"></i> Required Software
+                    </h4>
+                    <p style="margin: 0; font-size: 0.95rem;">
+                        QGIS (free), ArcGIS, or any GIS software. 
+                        For shapefiles, all component files must be kept together.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div style="max-width: 1400px; margin: 0 auto; padding: 0 2rem;">
+            <p>&copy; Sri Lanka Wetland Inventory Project 2026 </p>
+            <p style="font-size: 0.9rem; color: #c1e1c1; margin-top: 0.5rem;">
+                <i class="fas fa-info-circle"></i> Data provided under Creative Commons Attribution 4.0 International License
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // District data
+        const districts = [
+            { name: 'Colombo', files: 42, size: '2.1 GB', wetlands: 45},
+            { name: 'Gampaha', files: 38, size: '1.8 GB', wetlands: 38},
+            { name: 'Kalutara', files: 32, size: '1.5 GB', wetlands: 32},
+            { name: 'Kandy', files: 28, size: '1.3 GB', wetlands: 28},
+            { name: 'Matale', files: 25, size: '1.1 GB', wetlands: 25},
+            { name: 'Nuwara Eliya', files: 22, size: '980 MB', wetlands: 22},
+            { name: 'Galle', files: 31, size: '1.4 GB', wetlands: 31},
+            { name: 'Matara', files: 29, size: '1.3 GB', wetlands: 29},
+            { name: 'Hambantota', files: 27, size: '1.2 GB', wetlands: 27},
+            { name: 'Batticaloa', files: 35, size: '1.6 GB', wetlands: 35},
+            { name: 'Ampara', files: 33, size: '1.5 GB', wetlands: 33},
+            { name: 'Trincomalee', files: 36, size: '1.7 GB', wetlands: 36},
+            { name: 'Jaffna', files: 30, size: '1.4 GB', wetlands: 30},
+            { name: 'Kilinochchi', files: 24, size: '1.1 GB', wetlands: 24},
+            { name: 'Mannar', files: 26, size: '1.2 GB', wetlands: 26},
+            { name: 'Mullaitivu', files: 23, size: '1.0 GB', wetlands: 23},
+            { name: 'Vavuniya', files: 21, size: '950 MB', wetlands: 21},
+            { name: 'Kurunegala', files: 34, size: '1.6 GB', wetlands: 34},
+            { name: 'Puttalam', files: 40, size: '1.9 GB', wetlands: 40},
+            { name: 'Anuradhapura', files: 37, size: '1.7 GB', wetlands: 37},
+            { name: 'Polonnaruwa', files: 29, size: '1.3 GB', wetlands: 29},
+            { name: 'Badulla', files: 25, size: '1.1 GB', wetlands: 25},
+            { name: 'Monaragala', files: 22, size: '1.0 GB', wetlands: 22},
+            { name: 'Ratnapura', files: 28, size: '1.3 GB', wetlands: 28},
+            { name: 'Kegalle', files: 24, size: '1.1 GB', wetlands: 24}
+        ];
+
+        // Data types
+        const dataTypes = [
+            { id: 'shapefiles', name: 'Shapefiles', icon: 'fas fa-layer-group', color: '#4CAF50', 
+              desc: 'GIS shapefiles for wetland boundaries, mangroves, water bodies' },
+            { id: 'maps', name: 'Maps', icon: 'fas fa-map', color: '#2196F3', 
+              desc: 'Printable maps in PDF and image formats' },
+            { id: 'data', name: 'Data Tables', icon: 'fas fa-table', color: '#FF9800', 
+              desc: 'Excel and CSV files with wetland data' },
+            { id: 'reports', name: 'Reports', icon: 'fas fa-file-pdf', color: '#f44336', 
+              desc: 'PDF reports and research papers' },
+            { id: 'imagery', name: 'Satellite Imagery', icon: 'fas fa-satellite', color: '#9C27B0', 
+              desc: 'GeoTIFF satellite images' }
+        ];
+
+        // Sample files for each data type
+        const sampleFiles = {
+            shapefiles: [
+                { name: 'Wetland Boundaries', type: 'SHP', size: '45 MB', 
+                  desc: 'Complete wetland boundary shapefiles with Ramsar classification data' },
+                { name: 'Mangrove Forest Areas', type: 'GeoJSON', size: '28 MB', 
+                  desc: 'Mangrove forest distribution and density data for coastal areas' },
+                { name: 'Water Body Network', type: 'KML', size: '32 MB', 
+                  desc: 'Rivers, lakes, reservoirs, and tanks in Google Earth format' },
+                { name: 'Wetland Classification', type: 'SHP', size: '38 MB', 
+                  desc: 'Detailed wetland classification by Ramsar types with attributes' }
+            ],
+            maps: [
+                { name: 'Wetland Distribution Map', type: 'PDF', size: '15 MB', 
+                  desc: 'High-resolution wetland distribution map with classification legend' },
+                { name: 'Conservation Priority Map', type: 'PNG', size: '8 MB', 
+                  desc: 'Map showing wetland conservation priority areas based on biodiversity' }
+            ],
+            data: [
+                { name: 'Wetland Species Database', type: 'CSV', size: '18 MB', 
+                  desc: 'Complete database of plant and animal species found in wetlands' },
+                { name: 'Water Quality Measurements', type: 'Excel', size: '22 MB', 
+                  desc: 'Historical water quality data from monitoring stations' }
+            ],
+            reports: [
+                { name: 'Annual Wetland Status Report', type: 'PDF', size: '8 MB', 
+                  desc: 'Comprehensive annual report on wetland status and changes' },
+                { name: 'Conservation Assessment', type: 'PDF', size: '12 MB', 
+                  desc: 'Detailed conservation needs assessment and recommendations' }
+            ],
+            imagery: [
+                { name: '2023 Satellite Imagery', type: 'GeoTIFF', size: '850 MB', 
+                  desc: 'High-resolution satellite imagery for wetland monitoring' }
+            ]
+        };
+
+        // Current state
+        let selectedDistrict = null;
+        let selectedDataType = 'shapefiles';
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            populateDistricts();
+        });
+
+        // Populate districts grid
+        function populateDistricts() {
+            const districtGrid = document.getElementById('districtGrid');
+            districtGrid.innerHTML = '';
+            
+            districts.forEach(district => {
+                const button = document.createElement('button');
+                button.className = 'district-btn';
+                button.innerHTML = `
+                    <i class="${district.icon} district-icon" style="color: ${district.color}"></i>
+                    <span>${district.name}</span>
+                `;
+                button.onclick = () => selectDistrict(district);
+                districtGrid.appendChild(button);
+            });
+        }
+
+        // Select district
+        function selectDistrict(district) {
+            // Clear previous selection
+            document.querySelectorAll('.district-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Set active district
+            selectedDistrict = district;
+            event.target.closest('.district-btn').classList.add('active');
+            
+            // Update selected district info
+            document.getElementById('currentDistrict').textContent = district.name;
+            document.getElementById('districtFiles').textContent = `${district.files} files available`;
+            document.getElementById('districtSize').textContent = district.size + ' total size';
+            document.getElementById('districtWetlands').textContent = `${district.wetlands} wetlands mapped`;
+            document.getElementById('selectedDistrictInfo').style.display = 'block';
+            
+            // Show data types section
+            document.getElementById('selectedDistrictName').textContent = district.name;
+            document.getElementById('dataTypesSection').style.display = 'block';
+            
+            // Populate data types
+            populateDataTypes();
+            
+            // Scroll to data types section
+            document.getElementById('dataTypesSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Populate data types
+        function populateDataTypes() {
+            const dataTypesContainer = document.getElementById('dataTypes');
+            dataTypesContainer.innerHTML = '';
+            
+            dataTypes.forEach(type => {
+                const card = document.createElement('div');
+                card.className = `data-type-card ${type.id === selectedDataType ? 'active' : ''}`;
+                card.innerHTML = `
+                    <i class="${type.icon} data-type-icon" style="color: ${type.color}"></i>
+                    <h3 style="margin: 0 0 0.5rem 0; color: ${type.color}">${type.name}</h3>
+                    <p style="margin: 0; color: #666; font-size: 0.9rem;">${type.desc}</p>
+                `;
+                card.onclick = () => selectDataType(type.id);
+                dataTypesContainer.appendChild(card);
+            });
+        }
+
+        // Select data type
+        function selectDataType(dataTypeId) {
+            selectedDataType = dataTypeId;
+            
+            // Update active card
+            document.querySelectorAll('.data-type-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            event.target.closest('.data-type-card').classList.add('active');
+            
+            // Show downloads section
+            document.getElementById('downloadsTitle').textContent = `Downloads for ${selectedDistrict.name}`;
+            document.getElementById('downloadsSection').style.display = 'block';
+            
+            // Populate downloads
+            populateDownloads();
+            
+            // Scroll to downloads
+            document.getElementById('downloadsSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Populate downloads grid
+        function populateDownloads() {
+            const downloadsGrid = document.getElementById('downloadsGrid');
+            
+            if (!selectedDistrict) {
+                downloadsGrid.innerHTML = `
+                    <div class="no-selection">
+                        <i class="fas fa-map-marker-alt no-selection-icon"></i>
+                        <h3 style="color: #666; margin-bottom: 0.5rem;">No District Selected</h3>
+                        <p style="color: #999;">Please select a district first to view available downloads.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const files = sampleFiles[selectedDataType] || [];
+            
+            if (files.length === 0) {
+                downloadsGrid.innerHTML = `
+                    <div class="no-selection">
+                        <i class="fas fa-folder-open no-selection-icon"></i>
+                        <h3 style="color: #666; margin-bottom: 0.5rem;">No Files Available</h3>
+                        <p style="color: #999;">No ${selectedDataType} available for ${selectedDistrict.name} district.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            downloadsGrid.innerHTML = '';
+            
+            files.forEach(file => {
+                const districtPrefix = selectedDistrict ? selectedDistrict.name + ' ' : '';
+                const card = document.createElement('div');
+                card.className = 'download-card';
+                card.innerHTML = `
+                    <div class="download-header">
+                        <h3 style="margin: 0;">${districtPrefix}${file.name}</h3>
+                        <span class="file-type">${file.type}</span>
+                    </div>
+                    <div class="download-content">
+                        <div class="file-info">
+                            <span><i class="far fa-hdd"></i> ${file.size}</span>
+                            <span><i class="far fa-calendar"></i> Updated: 2023</span>
+                        </div>
+                        <p class="file-description">${file.desc}</p>
+                        <button class="download-btn" onclick="downloadFile('${file.type}', '${file.name}', ${selectedDistrict.wetlands})">
+                            <i class="fas fa-download"></i> Download Now
+                        </button>
+                    </div>
+                `;
+                downloadsGrid.appendChild(card);
+            });
+        }
+
+        // Download file
+        function downloadFile(fileType, fileName, wetlandCount) {
+            if (!selectedDistrict) {
+                alert('Please select a district first!');
+                return false;
+            }
+            
+            const fullFileName = `${selectedDistrict.name}_${fileName.replace(/\s+/g, '_')}.${fileType.toLowerCase()}`;
+            
+            // Show download confirmation
+            alert(`Starting Download\n\nFile: ${fileName}\nDistrict: ${selectedDistrict.name}\nType: ${fileType}\nSize: Varies by file\n\nThis download contains data for ${wetlandCount} wetlands.\n\nClick OK to proceed.`);
+            
+            // In a real application, this would trigger the actual download
+            console.log(`Downloading: ${fullFileName}`);
+            
+            return false;
+        }
+
+        // Download national dataset
+        function downloadNationalDataset(type) {
+            const datasets = {
+                atlas: 'National Wetland Atlas 2023 (2.1 GB)',
+                ramsar: 'All Ramsar Sites Complete Dataset (850 MB)',
+                mangrove: 'National Mangrove Forest Database (1.2 GB)'
+            };
+            
+            const datasetName = datasets[type];
+            
+            alert(`Starting Download\n\nDataset: ${datasetName}\n\nThis is a large national dataset. Download may take several minutes depending on your internet connection.\n\nClick OK to proceed.`);
+            
+            return false;
+        }
+    </script>
+</body>
+</html>

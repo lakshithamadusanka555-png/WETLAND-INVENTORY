@@ -122,7 +122,7 @@
             max-width: 1400px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 300px 1fr;
+            grid-template-columns: 350px 1fr;
             gap: 20px;
             background: white;
             border-radius: 15px;
@@ -157,12 +157,15 @@
             padding: 1.5rem;
             background: white;
             border-top: 1px solid #eee;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         
         .control-group {
             display: flex;
             gap: 1rem;
             align-items: center;
+            flex-wrap: wrap;
         }
         
         .map-btn {
@@ -192,14 +195,12 @@
             background: #388E3C;
         }
         
-        .filter-dropdown {
-            padding: 0.8rem;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            background: white;
-            cursor: pointer;
-            min-width: 200px;
+        .map-btn.danger {
+            background: #f44336;
+        }
+        
+        .map-btn.danger:hover {
+            background: #d32f2f;
         }
         
         /* Layer Control Panel */
@@ -219,29 +220,36 @@
         
         .layer-group {
             margin-bottom: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #eee;
         }
         
         .layer-group-title {
             font-weight: bold;
             color: #555;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .layer-item {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             padding: 8px;
-            background: white;
+            background: #f9f9f9;
             border-radius: 5px;
             cursor: pointer;
             transition: background 0.3s;
         }
         
         .layer-item:hover {
-            background: #f0f0f0;
+            background: #e8f5e9;
         }
         
         .layer-checkbox {
@@ -259,13 +267,25 @@
             width: 20px;
             height: 20px;
             border-radius: 3px;
+            border: 1px solid #666;
+        }
+        
+        .layer-stats {
+            font-size: 0.8rem;
+            color: #666;
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 10px;
         }
         
         .layer-opacity {
             width: 100%;
-            margin-top: 5px;
+            margin-top: 8px;
+            height: 6px;
+            border-radius: 3px;
         }
         
+        /* Legend */
         .legend {
             background: white;
             padding: 15px;
@@ -291,6 +311,7 @@
             height: 20px;
             margin-right: 10px;
             border-radius: 3px;
+            border: 1px solid #666;
         }
         
         .legend-label {
@@ -306,11 +327,22 @@
             margin-top: 20px;
         }
         
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
         .stat-display {
             margin-top: 10px;
             font-size: 0.9rem;
             color: #666;
             line-height: 1.4;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            min-height: 60px;
         }
         
         .loading {
@@ -318,8 +350,30 @@
             font-style: italic;
         }
         
+        .success {
+            color: #4CAF50;
+        }
+        
         .error {
             color: #f44336;
+        }
+        
+        .feature-count {
+            background: #4CAF50;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        /* Measurement Tools */
+        .measurement-panel {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            margin-top: 20px;
         }
         
         /* Animations */
@@ -343,6 +397,7 @@
             .map-sidebar {
                 border-right: none;
                 border-bottom: 1px solid #eee;
+                max-height: 400px;
             }
         }
         
@@ -360,13 +415,11 @@
             
             .map-controls {
                 flex-direction: column;
-                gap: 1rem;
             }
             
             .control-group {
                 width: 100%;
                 justify-content: center;
-                flex-wrap: wrap;
             }
             
             .map-btn {
@@ -394,9 +447,9 @@
     <section class="hero">
         <div class="hero-content">
             <h1>Explore Sri Lanka's Wetlands</h1>
-            <p>Discover, understand, and help protect our nation's vital wetland ecosystems through interactive mapping and comprehensive data.</p>
+            <p>Discover, understand, and help protect our nation's vital wetland ecosystems through interactive mapping with real shapefile data.</p>
             <button class="hero-btn" onclick="scrollToMap()">
-                <i class="fas fa-map-marked-alt"></i> Explore Interactive Map
+                <i class="fas fa-map-marked-alt"></i> View Real Wetland Data
             </button>
         </div>
     </section>
@@ -404,19 +457,19 @@
     <!-- Quick Stats -->
     <section class="quick-stats">
         <div class="stat-item">
-            <div class="stat-number">280,000+</div>
-            <div class="stat-label">Hectares of Wetlands</div>
+            <div class="stat-number" id="totalArea">Loading...</div>
+            <div class="stat-label">Total Wetland Area</div>
         </div>
         <div class="stat-item">
-            <div class="stat-number">6</div>
-            <div class="stat-label">Ramsar Sites</div>
+            <div class="stat-number" id="featureCount">0</div>
+            <div class="stat-label">Wetland Features</div>
         </div>
         <div class="stat-item">
-            <div class="stat-number">120+</div>
-            <div class="stat-label">Major Wetlands</div>
+            <div class="stat-number">3</div>
+            <div class="stat-label">Data Layers</div>
         </div>
         <div class="stat-item">
-            <div class="stat-number">25</div>
+            <div class="stat-number">25+</div>
             <div class="stat-label">Districts Covered</div>
         </div>
     </section>
@@ -424,8 +477,8 @@
     <!-- Interactive Map Section -->
     <section class="map-section" id="map-section">
         <div class="map-header">
-            <h2>Interactive Wetland Map</h2>
-            <p>Explore Colombo wetland locations. Toggle different wetland types and layers to view comprehensive GeoJSON data.</p>
+            <h2>Real Wetland Shapefile Data</h2>
+            <p>Explore actual wetland shapefile data overlayed on Sri Lanka map. Toggle layers to view paddy fields, water bodies, and marsh areas.</p>
         </div>
         
         <div class="map-container">
@@ -433,36 +486,53 @@
             <div class="map-sidebar">
                 <div class="layer-control-panel">
                     <div class="panel-title">
-                        <i class="fas fa-layer-group"></i> Colombo Wetland Layers
+                        <i class="fas fa-layer-group"></i> Wetland Shapefile Layers
                     </div>
                     
-                    <!-- Colombo GeoJSON Layers -->
+                    <!-- Real Shapefile Layers -->
                     <div class="layer-group">
-                        <div class="layer-group-title">Colombo Wetlands (GeoJSON)</div>
+                        <div class="layer-group-title">
+                            <i class="fas fa-water"></i> Water Bodies
+                        </div>
                         
-                        <div class="layer-item">
-                            <input type="checkbox" class="layer-checkbox" id="waterBodiesLayer" onchange="toggleLayer('waterBodies')">
-                            <span class="layer-label">Colombo Water Bodies</span>
+                        <div class="layer-item" onclick="toggleLayer('water')">
+                            <input type="checkbox" class="layer-checkbox" id="waterLayer" checked>
+                            <span class="layer-label">Water Bodies Shapefile</span>
                             <div class="layer-color" style="background-color: rgba(33, 150, 243, 0.7);"></div>
+                            <span class="layer-stats" id="waterStats">0 features</span>
                         </div>
-                        <input type="range" class="layer-opacity" id="waterBodiesOpacity" min="0" max="100" value="70"
-                               oninput="updateLayerOpacity('waterBodies', this.value)">
-                        
-                        <div class="layer-item">
-                            <input type="checkbox" class="layer-checkbox" id="riceFieldsLayer" onchange="toggleLayer('riceFields')">
-                            <span class="layer-label">Colombo Rice Fields</span>
-                            <div class="layer-color" style="background-color: rgba(255, 152, 0, 0.7);"></div>
+                        <input type="range" class="layer-opacity" id="waterOpacity" min="0" max="100" value="70"
+                               oninput="updateLayerOpacity('water', this.value)">
+                    </div>
+                    
+                    <div class="layer-group">
+                        <div class="layer-group-title">
+                            <i class="fas fa-seedling"></i> Paddy Fields
                         </div>
-                        <input type="range" class="layer-opacity" id="riceFieldsOpacity" min="0" max="100" value="70"
-                               oninput="updateLayerOpacity('riceFields', this.value)">
                         
-                        <div class="layer-item">
-                            <input type="checkbox" class="layer-checkbox" id="marshesLayer" onchange="toggleLayer('marshes')">
-                            <span class="layer-label">Colombo Marshes</span>
+                        <div class="layer-item" onclick="toggleLayer('paddy')">
+                            <input type="checkbox" class="layer-checkbox" id="paddyLayer" checked>
+                            <span class="layer-label">Paddy Fields Shapefile</span>
+                            <div class="layer-color" style="background-color: rgba(76, 175, 80, 0.7);"></div>
+                            <span class="layer-stats" id="paddyStats">0 features</span>
+                        </div>
+                        <input type="range" class="layer-opacity" id="paddyOpacity" min="0" max="100" value="70"
+                               oninput="updateLayerOpacity('paddy', this.value)">
+                    </div>
+                    
+                    <div class="layer-group">
+                        <div class="layer-group-title">
+                            <i class="fas fa-swamp"></i> Marsh Areas
+                        </div>
+                        
+                        <div class="layer-item" onclick="toggleLayer('marsh')">
+                            <input type="checkbox" class="layer-checkbox" id="marshLayer" checked>
+                            <span class="layer-label">Marsh Areas Shapefile</span>
                             <div class="layer-color" style="background-color: rgba(156, 39, 176, 0.7);"></div>
+                            <span class="layer-stats" id="marshStats">0 features</span>
                         </div>
-                        <input type="range" class="layer-opacity" id="marshesOpacity" min="0" max="100" value="70"
-                               oninput="updateLayerOpacity('marshes', this.value)">
+                        <input type="range" class="layer-opacity" id="marshOpacity" min="0" max="100" value="70"
+                               oninput="updateLayerOpacity('marsh', this.value)">
                     </div>
                 </div>
                 
@@ -471,29 +541,49 @@
                     <div class="legend-title">Layer Colors</div>
                     <div class="legend-item">
                         <div class="legend-color" style="background-color: rgba(33, 150, 243, 0.7);"></div>
-                        <span class="legend-label">Colombo Water Bodies</span>
+                        <span class="legend-label">Water Bodies</span>
                     </div>
                     <div class="legend-item">
-                        <div class="legend-color" style="background-color: rgba(255, 152, 0, 0.7);"></div>
-                        <span class="legend-label">Colombo Rice Fields</span>
+                        <div class="legend-color" style="background-color: rgba(76, 175, 80, 0.7);"></div>
+                        <span class="legend-label">Paddy Fields</span>
                     </div>
                     <div class="legend-item">
                         <div class="legend-color" style="background-color: rgba(156, 39, 176, 0.7);"></div>
-                        <span class="legend-label">Colombo Marshes</span>
+                        <span class="legend-label">Marsh Areas</span>
                     </div>
                 </div>
                 
                 <!-- Statistics Panel -->
                 <div class="stats-panel">
-                    <div class="panel-title">
-                        <i class="fas fa-chart-bar"></i> Area Statistics
+                    <div class="stats-header">
+                        <div class="panel-title">
+                            <i class="fas fa-chart-bar"></i> Statistics
+                        </div>
+                        <button class="map-btn secondary" onclick="recalculateStats()" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
                     </div>
                     <div class="stat-display" id="areaStats">
-                        Loading GeoJSON data...
+                        <span class="loading">Loading shapefile data...</span>
                     </div>
-                    <button class="map-btn secondary" onclick="calculateTotalArea()" style="width: 100%; margin-top: 10px;">
-                        <i class="fas fa-calculator"></i> Calculate Selected Area
-                    </button>
+                </div>
+                
+                <!-- Measurement Tools -->
+                <div class="measurement-panel">
+                    <div class="panel-title">
+                        <i class="fas fa-ruler"></i> Measurement Tools
+                    </div>
+                    <div class="control-group" style="margin-top: 10px;">
+                        <button class="map-btn" onclick="startMeasurement('area')" style="flex: 1;">
+                            <i class="fas fa-square-full"></i> Measure Area
+                        </button>
+                        <button class="map-btn secondary" onclick="startMeasurement('distance')" style="flex: 1;">
+                            <i class="fas fa-ruler-combined"></i> Measure Distance
+                        </button>
+                        <button class="map-btn danger" onclick="clearMeasurements()" style="flex: 1;">
+                            <i class="fas fa-trash"></i> Clear
+                        </button>
+                    </div>
                 </div>
             </div>
             
@@ -503,29 +593,32 @@
                 <div class="map-controls">
                     <div class="control-group">
                         <button class="map-btn" onclick="showAllLayers()">
-                            <i class="fas fa-layer-group"></i> Show All Layers
+                            <i class="fas fa-eye"></i> Show All Layers
                         </button>
                         
                         <button class="map-btn secondary" onclick="hideAllLayers()">
                             <i class="fas fa-eye-slash"></i> Hide All Layers
                         </button>
                         
-                        <button class="map-btn" onclick="fitColomboBounds()">
-                            <i class="fas fa-search-plus"></i> Focus Colombo
+                        <button class="map-btn" onclick="fitToAllData()">
+                            <i class="fas fa-search"></i> Fit to Data
                         </button>
                     </div>
                     
                     <div class="control-group">
-                        <button class="map-btn" onclick="exportMapData()">
+                        <select class="filter-dropdown" id="baseMap" onchange="changeBaseMap(this.value)">
+                            <option value="osm">OpenStreetMap</option>
+                            <option value="satellite">Satellite View</option>
+                            <option value="terrain">Terrain View</option>
+                            <option value="topo">Topographic</option>
+                        </select>
+                        
+                        <button class="map-btn" onclick="exportData()">
                             <i class="fas fa-download"></i> Export Data
                         </button>
                         
-                        <button class="map-btn" onclick="printMap()">
+                        <button class="map-btn secondary" onclick="printMap()">
                             <i class="fas fa-print"></i> Print Map
-                        </button>
-                        
-                        <button class="map-btn secondary" onclick="resetMap()">
-                            <i class="fas fa-redo"></i> Reset Map
                         </button>
                     </div>
                 </div>
@@ -536,143 +629,220 @@
     <!-- JavaScript -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Initialize map
+        // Initialize map and layers
         let map;
-        let overlayLayers = {};
-        let activeLayers = {};
-        let layerStats = {};
-        let geoJsonLayers = {};
+        let shapefileLayers = {
+            water: null,
+            paddy: null,
+            marsh: null
+        };
+        let baseLayers = {};
+        let measurementLayer = null;
+        let drawnItems = new L.FeatureGroup();
+        let currentMeasurement = null;
         
-        // Define Colombo wetland colors with transparency
-        const wetlandColors = {
-            waterBodies: 'rgba(33, 150, 243, 0.7)',
-            riceFields: 'rgba(255, 152, 0, 0.7)',
-            marshes: 'rgba(156, 39, 176, 0.7)'
+        // Color scheme for layers
+        const layerColors = {
+            water: 'rgba(33, 150, 243, 0.7)',
+            paddy: 'rgba(76, 175, 80, 0.7)',
+            marsh: 'rgba(156, 39, 176, 0.7)'
         };
         
-        // Define layer names
-        const layerNames = {
-            waterBodies: "Colombo Water Bodies",
-            riceFields: "Colombo Rice Fields",
-            marshes: "Colombo Marshes"
+        // Statistics
+        let layerStats = {
+            water: { features: 0, area: 0 },
+            paddy: { features: 0, area: 0 },
+            marsh: { features: 0, area: 0 }
         };
         
+        // Initialize map when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            console.log("Colombo Wetland Inventory Map Loaded");
+            console.log("Initializing Wetland Map with Real Shapefiles");
+            initializeMap();
+            loadShapefiles();
+            updateQuickStats();
+        });
+        
+        // Initialize the map
+        function initializeMap() {
+            // Create map centered on Sri Lanka
+            map = L.map('map').setView([7.8731, 80.7718], 8);
             
-            // Initialize map centered on Colombo
-            map = L.map('map').setView([6.9271, 79.8612], 11);
-            
-            // Add OpenStreetMap base layer
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            // Add base layers
+            baseLayers.osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap contributors',
                 maxZoom: 19
             }).addTo(map);
             
+            baseLayers.satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: '© Esri, Maxar, Earthstar Geographics',
+                maxZoom: 19
+            });
+            
+            baseLayers.terrain = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenTopoMap contributors',
+                maxZoom: 17
+            });
+            
+            baseLayers.topo = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+                attribution: '© Humanitarian OpenStreetMap Team',
+                maxZoom: 19
+            });
+            
             // Add scale control
             L.control.scale({imperial: false}).addTo(map);
             
-            // Load GeoJSON files
-            loadGeoJSONLayers();
+            // Add drawn items layer
+            map.addLayer(drawnItems);
             
-            // Add click event to map for statistics
-            map.on('click', function(e) {
-                showClickStatistics(e.latlng);
-            });
-        });
+            console.log("Map initialized successfully");
+        }
         
-        // Load actual GeoJSON files
-        async function loadGeoJSONLayers() {
-            const layersToLoad = ['waterBodies', 'riceFields', 'marshes'];
+        // Load shapefiles from GeoJSON files
+        async function loadShapefiles() {
+            const layers = ['water', 'paddy', 'marsh'];
             let loadedCount = 0;
+            let totalFeatures = 0;
+            let totalArea = 0;
             
-            document.getElementById('areaStats').innerHTML = '<span class="loading">Loading Colombo GeoJSON data...</span>';
-            
-            for (const layerName of layersToLoad) {
+            for (const layer of layers) {
                 try {
-                    const response = await fetch(`data/${layerName}.geojson`);
+                    console.log(`Loading ${layer} shapefile...`);
+                    
+                    // Load GeoJSON file
+                    const response = await fetch(`data/${layer}_areas.geojson`);
+                    
                     if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}`);
+                        throw new Error(`Failed to load ${layer}_areas.geojson: ${response.status}`);
                     }
+                    
                     const geojsonData = await response.json();
                     
                     // Create Leaflet GeoJSON layer
-                    geoJsonLayers[layerName] = L.geoJSON(geojsonData, {
-                        style: function(feature) {
-                            return {
-                                fillColor: wetlandColors[layerName],
-                                weight: 2,
-                                opacity: 1,
-                                color: wetlandColors[layerName].replace('0.7', '1'),
-                                fillOpacity: 0.7
-                            };
+                    shapefileLayers[layer] = L.geoJSON(geojsonData, {
+                        style: {
+                            fillColor: layerColors[layer],
+                            weight: 2,
+                            opacity: 1,
+                            color: layerColors[layer].replace('0.7', '1'),
+                            fillOpacity: 0.7
                         },
                         onEachFeature: function(feature, layer) {
-                            // Calculate area if properties exist
-                            let areaInfo = '';
-                            if (feature.properties && feature.properties.name) {
-                                areaInfo = `<strong>${feature.properties.name}</strong>`;
+                            // Add click event for feature info
+                            layer.on('click', function(e) {
+                                showFeatureInfo(feature, e.latlng);
+                            });
+                            
+                            // Calculate area if geometry type is polygon
+                            if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
+                                try {
+                                    const area = calculateArea(feature.geometry);
+                                    layerStats[layer].area += area;
+                                    totalArea += area;
+                                } catch (error) {
+                                    console.log(`Could not calculate area for ${layer} feature`);
+                                }
                             }
-                            layer.bindPopup(`
-                                <div style="padding: 10px; min-width: 200px;">
-                                    <h4 style="margin: 0 0 10px 0; color: #2c5f2d;">${layerNames[layerName]}</h4>
-                                    ${areaInfo ? `<p><strong>Name:</strong> ${areaInfo}</p>` : ''}
-                                    <p><strong>Layer:</strong> ${layerNames[layerName]}</p>
-                                    <p>Click layers in sidebar to toggle visibility</p>
-                                </div>
-                            `);
                         }
                     });
                     
-                    // Store layer and initialize as inactive
-                    overlayLayers[layerName] = L.layerGroup();
-                    activeLayers[layerName] = false;
-                    layerStats[layerName] = {
-                        features: geojsonData.features.length,
-                        loaded: true
-                    };
-                    
+                    // Count features
+                    layerStats[layer].features = geojsonData.features.length;
+                    totalFeatures += geojsonData.features.length;
                     loadedCount++;
-                    updateStatsDisplay();
+                    
+                    // Add to map by default
+                    map.addLayer(shapefileLayers[layer]);
+                    
+                    // Update UI
+                    document.getElementById(`${layer}Stats`).textContent = `${layerStats[layer].features} features`;
+                    document.getElementById(`${layer}Stats`).className = 'layer-stats success';
+                    
+                    console.log(`✓ ${layer} shapefile loaded: ${layerStats[layer].features} features`);
                     
                 } catch (error) {
-                    console.error(`Error loading ${layerName}.geojson:`, error);
-                    layerStats[layerName] = {
-                        features: 0,
-                        loaded: false,
-                        error: error.message
-                    };
-                    document.getElementById(layerName + 'Layer').disabled = true;
-                    document.getElementById(layerName + 'Layer').parentElement.style.opacity = '0.5';
+                    console.error(`Error loading ${layer} shapefile:`, error);
+                    document.getElementById(`${layer}Stats`).textContent = 'Load failed';
+                    document.getElementById(`${layer}Stats`).className = 'layer-stats error';
+                    document.getElementById(`${layer}Layer`).disabled = true;
+                    document.getElementById(`${layer}Layer`).parentElement.style.opacity = '0.5';
+                    
+                    showNotification(`Failed to load ${layer} shapefile: ${error.message}`, 'error');
                 }
             }
             
-            if (loadedCount === layersToLoad.length) {
-                showNotification('All Colombo GeoJSON layers loaded successfully!');
+            // Update statistics display
+            updateStatisticsDisplay();
+            
+            // Update quick stats
+            document.getElementById('featureCount').textContent = totalFeatures;
+            document.getElementById('totalArea').textContent = formatArea(totalArea);
+            
+            if (loadedCount > 0) {
+                showNotification(`Loaded ${loadedCount} shapefiles with ${totalFeatures} total features`);
+                
+                // Fit map to show all data
+                setTimeout(() => {
+                    fitToAllData();
+                }, 500);
+            }
+        }
+        
+        // Calculate area from GeoJSON geometry (simplified calculation)
+        function calculateArea(geometry) {
+            // This is a simplified area calculation
+            // For accurate calculations, you should use a library like turf.js
+            if (geometry.type === 'Polygon') {
+                const coords = geometry.coordinates[0];
+                let area = 0;
+                
+                // Simple shoelace formula approximation
+                for (let i = 0; i < coords.length - 1; i++) {
+                    area += coords[i][0] * coords[i + 1][1] - coords[i + 1][0] * coords[i][1];
+                }
+                
+                area = Math.abs(area) / 2;
+                
+                // Convert to square kilometers (approximate)
+                return area * 111 * 111; // Rough conversion
+            }
+            return 0;
+        }
+        
+        // Format area for display
+        function formatArea(areaKm2) {
+            if (areaKm2 > 1000) {
+                return (areaKm2 / 1000).toFixed(1) + ' thousand km²';
+            } else {
+                return areaKm2.toFixed(1) + ' km²';
             }
         }
         
         // Toggle layer visibility
         function toggleLayer(layerName) {
             const checkbox = document.getElementById(layerName + 'Layer');
-            activeLayers[layerName] = checkbox.checked;
+            const isVisible = checkbox.checked;
             
-            if (checkbox.checked && geoJsonLayers[layerName]) {
-                map.addLayer(geoJsonLayers[layerName]);
-                showNotification(`${layerNames[layerName]} layer turned ON (${layerStats[layerName].features} features)`);
-            } else if (geoJsonLayers[layerName]) {
-                map.removeLayer(geoJsonLayers[layerName]);
-                showNotification(`${layerNames[layerName]} layer turned OFF`);
+            if (shapefileLayers[layerName]) {
+                if (isVisible) {
+                    map.removeLayer(shapefileLayers[layerName]);
+                    checkbox.checked = false;
+                    showNotification(`${layerName} layer turned OFF`);
+                } else {
+                    map.addLayer(shapefileLayers[layerName]);
+                    checkbox.checked = true;
+                    showNotification(`${layerName} layer turned ON`);
+                }
+                updateStatisticsDisplay();
             }
-            updateStatsDisplay();
         }
         
         // Update layer opacity
         function updateLayerOpacity(layerName, opacityValue) {
             const opacity = opacityValue / 100;
             
-            if (geoJsonLayers[layerName]) {
-                geoJsonLayers[layerName].setStyle({
+            if (shapefileLayers[layerName]) {
+                shapefileLayers[layerName].setStyle({
                     fillOpacity: opacity
                 });
             }
@@ -680,99 +850,254 @@
         
         // Show all layers
         function showAllLayers() {
-            Object.keys(overlayLayers).forEach(layerName => {
-                const checkbox = document.getElementById(layerName + 'Layer');
-                if (checkbox && !checkbox.disabled) {
-                    checkbox.checked = true;
-                    toggleLayer(layerName);
+            Object.keys(shapefileLayers).forEach(layer => {
+                if (shapefileLayers[layer] && !map.hasLayer(shapefileLayers[layer])) {
+                    map.addLayer(shapefileLayers[layer]);
+                    document.getElementById(layer + 'Layer').checked = true;
                 }
             });
-            showNotification('All Colombo wetland layers turned ON');
+            showNotification('All layers turned ON');
+            updateStatisticsDisplay();
         }
         
         // Hide all layers
         function hideAllLayers() {
-            Object.keys(overlayLayers).forEach(layerName => {
-                const checkbox = document.getElementById(layerName + 'Layer');
-                if (checkbox && !checkbox.disabled) {
-                    checkbox.checked = false;
-                    toggleLayer(layerName);
+            Object.keys(shapefileLayers).forEach(layer => {
+                if (shapefileLayers[layer] && map.hasLayer(shapefileLayers[layer])) {
+                    map.removeLayer(shapefileLayers[layer]);
+                    document.getElementById(layer + 'Layer').checked = false;
                 }
             });
-            showNotification('All Colombo wetland layers turned OFF');
+            showNotification('All layers turned OFF');
+            updateStatisticsDisplay();
         }
         
-        // Fit map to Colombo bounds
-        function fitColomboBounds() {
-            map.setView([6.9271, 79.8612], 11);
-            showNotification('Map focused on Colombo region');
+        // Fit map to show all data
+        function fitToAllData() {
+            const bounds = new L.LatLngBounds();
+            
+            Object.keys(shapefileLayers).forEach(layer => {
+                if (shapefileLayers[layer] && shapefileLayers[layer].getBounds) {
+                    const layerBounds = shapefileLayers[layer].getBounds();
+                    if (layerBounds.isValid()) {
+                        bounds.extend(layerBounds);
+                    }
+                }
+            });
+            
+            if (bounds.isValid()) {
+                map.fitBounds(bounds, { padding: [50, 50] });
+                showNotification('Map zoomed to show all wetland data');
+            } else {
+                map.setView([7.8731, 80.7718], 8);
+                showNotification('No data bounds available, centered on Sri Lanka');
+            }
+        }
+        
+        // Show feature information
+        function showFeatureInfo(feature, latlng) {
+            let infoHtml = `<div style="padding: 10px; max-width: 300px;">
+                <h4 style="margin: 0 0 10px 0; color: #2c5f2d;">Wetland Feature</h4>`;
+            
+            // Show properties if available
+            if (feature.properties) {
+                Object.keys(feature.properties).forEach(key => {
+                    infoHtml += `<p style="margin: 5px 0;"><strong>${key}:</strong> ${feature.properties[key]}</p>`;
+                });
+            }
+            
+            infoHtml += `<p style="margin: 5px 0;"><strong>Coordinates:</strong> ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}</p>`;
+            infoHtml += `</div>`;
+            
+            // Create popup
+            L.popup()
+                .setLatLng(latlng)
+                .setContent(infoHtml)
+                .openOn(map);
         }
         
         // Update statistics display
-        function updateStatsDisplay() {
-            let statsHtml = '<strong>Layer Status:</strong><br>';
-            let activeCount = 0;
-            let totalFeatures = 0;
+        function updateStatisticsDisplay() {
+            let activeLayers = 0;
+            let activeFeatures = 0;
+            let activeArea = 0;
             
-            Object.keys(layerStats).forEach(layerName => {
-                const stat = layerStats[layerName];
-                const status = activeLayers[layerName] ? 'ON' : 'OFF';
-                statsHtml += `${layerNames[layerName]}: ${status}`;
-                
-                if (stat.loaded) {
-                    statsHtml += ` (${stat.features} features)<br>`;
-                    totalFeatures += stat.features;
-                    if (activeLayers[layerName]) activeCount++;
-                } else {
-                    statsHtml += ` <span class="error">(Load Error)</span><br>`;
+            Object.keys(shapefileLayers).forEach(layer => {
+                if (shapefileLayers[layer] && map.hasLayer(shapefileLayers[layer])) {
+                    activeLayers++;
+                    activeFeatures += layerStats[layer].features;
+                    activeArea += layerStats[layer].area;
                 }
             });
             
-            statsHtml += `<br><strong>Active Layers:</strong> ${activeCount}<br>`;
-            statsHtml += `<strong>Total Features:</strong> ${totalFeatures}`;
+            let statsHtml = `<strong>Active Layers:</strong> ${activeLayers}<br>`;
+            statsHtml += `<strong>Active Features:</strong> ${activeFeatures}<br>`;
+            statsHtml += `<strong>Total Area:</strong> ${formatArea(activeArea)}<br><br>`;
+            
+            Object.keys(shapefileLayers).forEach(layer => {
+                if (shapefileLayers[layer]) {
+                    const isVisible = map.hasLayer(shapefileLayers[layer]);
+                    statsHtml += `<span style="color: ${isVisible ? '#4CAF50' : '#666'}">`;
+                    statsHtml += `${layer}: ${layerStats[layer].features} features`;
+                    statsHtml += `</span><br>`;
+                }
+            });
             
             document.getElementById('areaStats').innerHTML = statsHtml;
+            document.getElementById('areaStats').className = 'stat-display success';
         }
         
-        // Calculate total area (placeholder - would need turf.js for real calculations)
-        function calculateTotalArea() {
-            const activeCount = Object.values(activeLayers).filter(v => v).length;
-            document.getElementById('areaStats').innerHTML = `
-                <strong>Area Calculation:</strong><br>
-                Active Layers: ${activeCount}<br>
-                Total Features: ${Object.values(layerStats).reduce((sum, stat) => sum + (stat.loaded ? stat.features : 0), 0)}<br><br>
-                <em>Note: Add turf.js library for accurate area calculations from GeoJSON</em>
-            `;
+        // Recalculate statistics
+        function recalculateStats() {
+            showNotification('Recalculating statistics...');
+            updateStatisticsDisplay();
         }
         
-        // Show click statistics
-        function showClickStatistics(latlng) {
-            const activeCount = Object.values(activeLayers).filter(v => v).length;
-            document.getElementById('areaStats').innerHTML = `
-                <strong>Clicked Location:</strong><br>
-                Lat: ${latlng.lat.toFixed(4)}°<br>
-                Lng: ${latlng.lng.toFixed(4)}°<br><br>
-                <strong>Active Layers:</strong> ${activeCount}
-            `;
+        // Update quick stats
+        function updateQuickStats() {
+            // This would update the quick stats at the top
+            // For now, we'll just show placeholders
+            setTimeout(() => {
+                document.getElementById('featureCount').textContent = 'Loading...';
+                document.getElementById('totalArea').textContent = 'Loading...';
+            }, 1000);
         }
         
-        // Export map data
-        function exportMapData() {
-            const activeLayersList = Object.keys(activeLayers).filter(layer => activeLayers[layer]);
-            showNotification(`Export ${activeLayersList.length} active GeoJSON layers...\n\nDownload: colombo_${activeLayersList.join(', ')}.geojson`);
+        // Measurement tools
+        function startMeasurement(type) {
+            showNotification(`Click on map to ${type === 'area' ? 'draw area polygon' : 'measure distance'}`);
+            
+            // Clear previous measurements
+            clearMeasurements();
+            
+            // Store current measurement type
+            currentMeasurement = type;
+            
+            // For area measurement
+            if (type === 'area') {
+                measurementLayer = L.polygon([], {
+                    color: '#f44336',
+                    weight: 2,
+                    fillOpacity: 0.3
+                }).addTo(map);
+                
+                map.on('click', addAreaPoint);
+            }
+            // For distance measurement
+            else if (type === 'distance') {
+                measurementLayer = L.polyline([], {
+                    color: '#2196F3',
+                    weight: 3,
+                    dashArray: '5, 10'
+                }).addTo(map);
+                
+                map.on('click', addDistancePoint);
+            }
+        }
+        
+        function addAreaPoint(e) {
+            if (!measurementLayer) return;
+            
+            const latlngs = measurementLayer.getLatLngs()[0] || [];
+            latlngs.push(e.latlng);
+            measurementLayer.setLatLngs([latlngs]);
+            
+            // Calculate and show area when 3+ points
+            if (latlngs.length >= 3) {
+                const area = calculatePolygonArea(latlngs);
+                showNotification(`Area: ${area.toFixed(2)} km² (Click to add more points)`);
+            }
+        }
+        
+        function addDistancePoint(e) {
+            if (!measurementLayer) return;
+            
+            const latlngs = measurementLayer.getLatLngs();
+            latlngs.push(e.latlng);
+            measurementLayer.setLatLngs(latlngs);
+            
+            // Calculate and show distance
+            if (latlngs.length >= 2) {
+                const distance = calculateDistance(latlngs);
+                showNotification(`Distance: ${distance.toFixed(2)} km (Click to add more points)`);
+            }
+        }
+        
+        function calculatePolygonArea(latlngs) {
+            // Simplified area calculation
+            let area = 0;
+            for (let i = 0; i < latlngs.length; i++) {
+                const j = (i + 1) % latlngs.length;
+                area += latlngs[i].lng * latlngs[j].lat;
+                area -= latlngs[j].lng * latlngs[i].lat;
+            }
+            return Math.abs(area) * 111 * 111 / 2; // Rough conversion to km²
+        }
+        
+        function calculateDistance(latlngs) {
+            let totalDistance = 0;
+            for (let i = 1; i < latlngs.length; i++) {
+                const lat1 = latlngs[i-1].lat * Math.PI / 180;
+                const lon1 = latlngs[i-1].lng * Math.PI / 180;
+                const lat2 = latlngs[i].lat * Math.PI / 180;
+                const lon2 = latlngs[i].lng * Math.PI / 180;
+                
+                const dLat = lat2 - lat1;
+                const dLon = lon2 - lon1;
+                
+                const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                         Math.cos(lat1) * Math.cos(lat2) *
+                         Math.sin(dLon/2) * Math.sin(dLon/2);
+                
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                totalDistance += 6371 * c; // Earth radius in km
+            }
+            return totalDistance;
+        }
+        
+        function clearMeasurements() {
+            if (measurementLayer) {
+                map.removeLayer(measurementLayer);
+                measurementLayer = null;
+            }
+            
+            // Remove click events
+            map.off('click', addAreaPoint);
+            map.off('click', addDistancePoint);
+            
+            currentMeasurement = null;
+            showNotification('Measurements cleared');
+        }
+        
+        // Change base map
+        function changeBaseMap(mapType) {
+            Object.keys(baseLayers).forEach(layer => {
+                if (map.hasLayer(baseLayers[layer])) {
+                    map.removeLayer(baseLayers[layer]);
+                }
+            });
+            
+            if (baseLayers[mapType]) {
+                map.addLayer(baseLayers[mapType]);
+                showNotification(`Changed to ${mapType} base map`);
+            }
+        }
+        
+        // Export data
+        function exportData() {
+            const activeLayers = [];
+            Object.keys(shapefileLayers).forEach(layer => {
+                if (shapefileLayers[layer] && map.hasLayer(shapefileLayers[layer])) {
+                    activeLayers.push(layer);
+                }
+            });
+            
+            showNotification(`Exporting ${activeLayers.length} active layers as GeoJSON\n\nNote: In production, this would generate downloadable files.`);
         }
         
         // Print map
         function printMap() {
             window.print();
-        }
-        
-        // Reset map to default state
-        function resetMap() {
-            map.setView([6.9271, 79.8612], 11);
-            hideAllLayers();
-            document.getElementById('areaStats').innerHTML = 'Click on a wetland area to see statistics';
-            showNotification('Map reset to Colombo default view');
         }
         
         // Scroll to map section
@@ -783,27 +1108,34 @@
         }
         
         // Show notification
-        function showNotification(message) {
+        function showNotification(message, type = 'info') {
+            const colors = {
+                info: '#4CAF50',
+                error: '#f44336',
+                warning: '#FF9800'
+            };
+            
             const notification = document.createElement('div');
             notification.style.cssText = `
                 position: fixed;
                 top: 20px;
                 right: 20px;
-                background: #4CAF50;
+                background: ${colors[type] || '#4CAF50'};
                 color: white;
                 padding: 15px 20px;
                 border-radius: 8px;
                 box-shadow: 0 5px 15px rgba(0,0,0,0.2);
                 z-index: 10000;
-                max-width: 350px;
+                max-width: 400px;
                 animation: slideIn 0.3s ease-out;
                 font-size: 0.95rem;
                 line-height: 1.4;
             `;
             
             notification.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-info-circle" style="font-size: 18px;"></i>
+                <div style="display: flex; align-items: flex-start; gap: 10px;">
+                    <i class="fas fa-${type === 'error' ? 'exclamation-triangle' : 'info-circle'}" 
+                       style="font-size: 18px; flex-shrink: 0;"></i>
                     <div>${message}</div>
                 </div>
             `;
@@ -815,6 +1147,7 @@
                 setTimeout(() => notification.remove(), 300);
             }, 4000);
             
+            // Add CSS for animations
             if (!document.getElementById('notification-styles')) {
                 const style = document.createElement('style');
                 style.id = 'notification-styles';

@@ -7,7 +7,95 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Additional styles for news page */
+        /* IWMI Brand Colors */
+        :root {
+            --iwmi-dark-blue: #28537D;
+            --iwmi-light-blue: #5088C6;
+            --iwmi-sky-blue: #46BBD4;
+            --iwmi-teal: #0297A6;
+            --iwmi-green: #22AD7A;
+            --iwmi-orange: #E86933;
+            --iwmi-yellow: #DD9103;
+            --iwmi-light-grey: #E8E7E7;
+            --iwmi-white: #FFFFFF;
+            --iwmi-text-dark: #333333;
+            --iwmi-text-light: #666666;
+            --iwmi-background: #F8F9FA;
+            --iwmi-border: #E0E7EE;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--iwmi-text-dark);
+            background: var(--iwmi-background);
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Navigation Bar - IWMI Dark Blue */
+        nav {
+            background: var(--iwmi-dark-blue);
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .logo h2 {
+            color: var(--iwmi-white);
+            font-size: 1.4rem;
+            margin: 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo h2 i {
+            color: var(--iwmi-green);
+            font-size: 1.6rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-links a {
+            color: var(--iwmi-white);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--iwmi-green);
+            opacity: 1;
+        }
+        
+        .nav-links a.active {
+            background: var(--iwmi-sky-blue);
+            color: var(--iwmi-white);
+            opacity: 1;
+        }
+        
+        /* Main Content */
         .news-container {
             max-width: 1400px;
             margin: 0 auto;
@@ -15,6 +103,7 @@
             display: grid;
             grid-template-columns: 1fr 350px;
             gap: 2rem;
+            flex: 1;
         }
         
         .main-content {
@@ -26,21 +115,41 @@
         }
         
         .page-title {
-            color: #2c5f2d;
+            color: var(--iwmi-dark-blue);
             text-align: center;
             margin-bottom: 0.5rem;
             font-size: 2.5rem;
             grid-column: 1 / -1;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--iwmi-green);
+            border-radius: 2px;
         }
         
         .page-subtitle {
             text-align: center;
-            color: #666;
+            color: var(--iwmi-text-light);
             margin-bottom: 3rem;
             font-size: 1.1rem;
             grid-column: 1 / -1;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
         }
         
+        /* News Grid */
         .news-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -49,21 +158,25 @@
         }
         
         .news-card {
-            background: white;
+            background: var(--iwmi-white);
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+            box-shadow: 0 5px 15px rgba(40, 83, 125, 0.08);
+            transition: all 0.3s;
+            border: 1px solid var(--iwmi-border);
         }
         
         .news-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(40, 83, 125, 0.15);
+            border-color: var(--iwmi-light-blue);
         }
         
         .news-image {
             width: 100%;
             height: 200px;
             object-fit: cover;
+            border-bottom: 3px solid var(--iwmi-sky-blue);
         }
         
         .news-content {
@@ -71,11 +184,12 @@
         }
         
         .news-date {
-            color: #4CAF50;
+            color: var(--iwmi-teal);
             font-size: 0.9rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.8rem;
             display: flex;
             align-items: center;
+            font-weight: 500;
         }
         
         .news-date i {
@@ -83,27 +197,36 @@
         }
         
         .news-title {
-            color: #2c5f2d;
+            color: var(--iwmi-dark-blue);
             margin-bottom: 1rem;
             font-size: 1.3rem;
+            font-weight: 600;
+            line-height: 1.4;
         }
         
         .news-excerpt {
-            color: #555;
+            color: var(--iwmi-text-light);
             line-height: 1.6;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
         }
         
         .read-more {
-            color: #2196F3;
+            color: var(--iwmi-light-blue);
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 600;
             display: inline-flex;
             align-items: center;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+        
+        .read-more:hover {
+            color: var(--iwmi-dark-blue);
         }
         
         .read-more i {
-            margin-left: 5px;
+            margin-left: 8px;
             transition: transform 0.3s;
         }
         
@@ -113,24 +236,27 @@
         
         .news-category {
             display: inline-block;
-            background: #e8f5e9;
-            color: #2c5f2d;
+            background: rgba(70, 187, 212, 0.1);
+            color: var(--iwmi-teal);
             padding: 0.3rem 0.8rem;
             border-radius: 20px;
             font-size: 0.8rem;
             margin-right: 0.5rem;
             margin-bottom: 0.5rem;
+            font-weight: 500;
         }
         
+        /* Featured News */
         .featured-news {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 2rem;
+            gap: 0;
             margin-bottom: 3rem;
-            background: white;
+            background: var(--iwmi-white);
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 20px rgba(40, 83, 125, 0.12);
+            border: 1px solid var(--iwmi-border);
         }
         
         .featured-image {
@@ -153,45 +279,61 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            background: linear-gradient(to right, rgba(255,255,255,0.9), var(--iwmi-white));
         }
         
         .featured-badge {
-            background: #FF9800;
-            color: white;
+            background: var(--iwmi-orange);
+            color: var(--iwmi-white);
             padding: 0.3rem 1rem;
             border-radius: 4px;
             font-size: 0.9rem;
             display: inline-block;
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
         
         /* Sidebar Styles */
         .sidebar-section {
-            background: white;
+            background: var(--iwmi-white);
             border-radius: 10px;
             padding: 1.5rem;
             margin-bottom: 2rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid var(--iwmi-border);
         }
         
         .sidebar-title {
-            color: #2c5f2d;
-            border-bottom: 2px solid #4CAF50;
-            padding-bottom: 0.5rem;
+            color: var(--iwmi-dark-blue);
+            border-bottom: 2px solid var(--iwmi-green);
+            padding-bottom: 0.8rem;
             margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
+            font-weight: 600;
+            font-size: 1.2rem;
         }
         
         .sidebar-title i {
             margin-right: 10px;
+            color: var(--iwmi-sky-blue);
         }
         
         /* Events in Sidebar */
         .event-item {
             margin-bottom: 1.5rem;
             padding-bottom: 1.5rem;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid var(--iwmi-border);
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 5px;
+            padding: 1rem;
+        }
+        
+        .event-item:hover {
+            background: rgba(70, 187, 212, 0.05);
+            transform: translateX(3px);
         }
         
         .event-item:last-child {
@@ -207,33 +349,38 @@
         }
         
         .event-day {
-            background: #4CAF50;
-            color: white;
+            background: var(--iwmi-teal);
+            color: var(--iwmi-white);
             padding: 0.5rem;
             border-radius: 5px;
             text-align: center;
             min-width: 50px;
             margin-right: 1rem;
+            font-weight: 600;
         }
         
         .event-month {
             font-size: 0.9rem;
-            font-weight: bold;
+            font-weight: 600;
+            color: var(--iwmi-teal);
+            text-transform: uppercase;
         }
         
         .event-day-number {
             font-size: 1.3rem;
             font-weight: bold;
+            margin-top: 2px;
         }
         
         .event-title {
-            color: #2c5f2d;
+            color: var(--iwmi-dark-blue);
             margin-bottom: 0.5rem;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 1rem;
         }
         
         .event-location {
-            color: #666;
+            color: var(--iwmi-text-light);
             font-size: 0.9rem;
             display: flex;
             align-items: center;
@@ -241,21 +388,34 @@
         
         .event-location i {
             margin-right: 5px;
-            color: #4CAF50;
+            color: var(--iwmi-green);
         }
         
         /* Newsletter in Sidebar */
         .newsletter {
-            background: linear-gradient(135deg, #2c5f2d, #4CAF50);
-            color: white;
+            background: linear-gradient(135deg, var(--iwmi-dark-blue) 0%, var(--iwmi-light-blue) 100%);
+            color: var(--iwmi-white);
             padding: 1.5rem;
             border-radius: 10px;
             text-align: center;
+            box-shadow: 0 5px 15px rgba(40, 83, 125, 0.2);
+        }
+        
+        .newsletter h3 {
+            margin-top: 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .newsletter p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+            line-height: 1.5;
         }
         
         .newsletter-input {
             display: flex;
-            margin: 1rem 0;
+            margin: 1.2rem 0;
         }
         
         .newsletter-input input {
@@ -263,21 +423,30 @@
             padding: 0.8rem;
             border: none;
             border-radius: 4px 0 0 4px;
+            font-family: inherit;
+            font-size: 0.95rem;
         }
         
         .newsletter-input button {
-            background: #FF9800;
-            color: white;
+            background: var(--iwmi-green);
+            color: var(--iwmi-white);
             border: none;
-            padding: 0.8rem 1rem;
+            padding: 0.8rem 1.2rem;
             border-radius: 0 4px 4px 0;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        .newsletter-input button:hover {
+            background: var(--iwmi-teal);
         }
         
         /* Quick Links in Sidebar */
         .quick-links {
             list-style: none;
+            padding: 0;
+            margin: 0;
         }
         
         .quick-links li {
@@ -285,23 +454,27 @@
         }
         
         .quick-links a {
-            color: #2c5f2d;
+            color: var(--iwmi-dark-blue);
             text-decoration: none;
             display: flex;
             align-items: center;
-            padding: 0.5rem;
-            border-radius: 5px;
+            padding: 0.8rem;
+            border-radius: 6px;
             transition: all 0.3s;
+            font-weight: 500;
         }
         
         .quick-links a:hover {
-            background: #e8f5e9;
-            padding-left: 1rem;
+            background: rgba(70, 187, 212, 0.1);
+            padding-left: 1.2rem;
+            color: var(--iwmi-teal);
         }
         
         .quick-links i {
             margin-right: 10px;
-            color: #4CAF50;
+            color: var(--iwmi-sky-blue);
+            width: 20px;
+            text-align: center;
         }
         
         /* Categories in Sidebar */
@@ -312,18 +485,89 @@
         }
         
         .category-tag {
-            background: #e8f5e9;
-            color: #2c5f2d;
+            background: rgba(70, 187, 212, 0.1);
+            color: var(--iwmi-teal);
             padding: 0.5rem 1rem;
             border-radius: 20px;
             font-size: 0.9rem;
             text-decoration: none;
             transition: all 0.3s;
+            font-weight: 500;
         }
         
         .category-tag:hover {
-            background: #4CAF50;
-            color: white;
+            background: var(--iwmi-teal);
+            color: var(--iwmi-white);
+            transform: translateY(-2px);
+        }
+        
+        /* Recent News in Sidebar */
+        .recent-news-item {
+            margin-bottom: 1.2rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid var(--iwmi-border);
+        }
+        
+        .recent-news-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .recent-date {
+            color: var(--iwmi-teal);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .recent-date i {
+            margin-right: 5px;
+        }
+        
+        .recent-title {
+            color: var(--iwmi-text-dark);
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        
+        /* Footer - Matching About Page */
+        footer {
+            background: var(--iwmi-dark-blue);
+            color: var(--iwmi-white);
+            padding: 2rem 0;
+            margin-top: auto;
+            text-align: center;
+            border-top: 4px solid var(--iwmi-green);
+            width: 100%;
+        }
+        
+        footer div {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        footer p {
+            margin: 0;
+        }
+        
+        footer p:first-child {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        footer a {
+            color: var(--iwmi-green);
+            text-decoration: none;
+            margin: 0 0.5rem;
+            transition: opacity 0.3s;
+        }
+        
+        footer a:hover {
+            opacity: 0.8;
         }
         
         /* Responsive Design */
@@ -356,6 +600,60 @@
             .sidebar {
                 grid-template-columns: 1fr;
             }
+            
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.8rem;
+            }
+            
+            .nav-links a {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+            
+            .logo h2 {
+                font-size: 1.2rem;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            footer {
+                padding: 1.5rem 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .news-container {
+                padding: 1.5rem;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .featured-content {
+                padding: 1.5rem;
+            }
+            
+            .newsletter-input {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .newsletter-input input,
+            .newsletter-input button {
+                width: 100%;
+                border-radius: 4px;
+            }
         }
     </style>
 </head>
@@ -363,12 +661,12 @@
     <!-- Navigation Bar -->
     <nav>
         <div class="logo">
-            <h2><i class="fas fa-water"></i> Sri Lanka Wetlands</h2>
+            <h2><i class="fas fa-water"></i> National Wetland Inventory of Sri Lanka</h2>
         </div>
         <ul class="nav-links">
             <li><a href="index.html">Home</a></li>
             <li><a href="about.html">About Wetlands</a></li>
-            <li><a href="news.html" style="background-color:#4CAF50;border-radius:4px;">News</a></li>
+            <li><a href="news.html" style="background-color:var(--iwmi-sky-blue);border-radius:4px;">News</a></li>
             <li><a href="downloads.html">Downloads</a></li>
         </ul>
     </nav>
@@ -522,7 +820,7 @@
                             <div class="event-location"><i class="fas fa-map-marker-alt"></i> Nationwide</div>
                         </div>
                     </div>
-                    <p>Celebrations, workshops, and guided wetland tours across Sri Lanka to mark international wetlands day.</p>
+                    <p style="font-size:0.9rem; color:var(--iwmi-text-light); margin-top:0.5rem;">Celebrations, workshops, and guided wetland tours across Sri Lanka to mark international wetlands day.</p>
                 </div>
                 
                 <div class="event-item">
@@ -536,7 +834,7 @@
                             <div class="event-location"><i class="fas fa-map-marker-alt"></i> Online</div>
                         </div>
                     </div>
-                    <p>Submit your best wetland photos. Categories: Wildlife, Landscapes, Conservation Stories. Deadline: March 15.</p>
+                    <p style="font-size:0.9rem; color:var(--iwmi-text-light); margin-top:0.5rem;">Submit your best wetland photos. Categories: Wildlife, Landscapes, Conservation Stories. Deadline: March 15.</p>
                 </div>
                 
                 <div class="event-item">
@@ -550,7 +848,7 @@
                             <div class="event-location"><i class="fas fa-map-marker-alt"></i> Multiple Locations</div>
                         </div>
                     </div>
-                    <p>Volunteer to clean and restore urban wetlands. Locations in Colombo, Galle, and Kandy.</p>
+                    <p style="font-size:0.9rem; color:var(--iwmi-text-light); margin-top:0.5rem;">Volunteer to clean and restore urban wetlands. Locations in Colombo, Galle, and Kandy.</p>
                 </div>
                 
                 <div class="event-item">
@@ -564,7 +862,7 @@
                             <div class="event-location"><i class="fas fa-map-marker-alt"></i> Bundala National Park</div>
                         </div>
                     </div>
-                    <p>Beginner-friendly bird watching workshop in one of Sri Lanka's premier wetland habitats.</p>
+                    <p style="font-size:0.9rem; color:var(--iwmi-text-light); margin-top:0.5rem;">Beginner-friendly bird watching workshop in one of Sri Lanka's premier wetland habitats.</p>
                 </div>
                 
                 <div class="event-item">
@@ -578,7 +876,7 @@
                             <div class="event-location"><i class="fas fa-map-marker-alt"></i> University of Colombo</div>
                         </div>
                     </div>
-                    <p>Focus on coastal wetlands and their role in ocean health. Free registration required.</p>
+                    <p style="font-size:0.9rem; color:var(--iwmi-text-light); margin-top:0.5rem;">Focus on coastal wetlands and their role in ocean health. Free registration required.</p>
                 </div>
             </div>
             
@@ -625,21 +923,25 @@
             <!-- Recent News -->
             <div class="sidebar-section">
                 <h3 class="sidebar-title"><i class="fas fa-history"></i> Recent News</h3>
-                <div style="font-size:0.9rem;">
-                    <p style="margin-bottom:0.5rem; color:#4CAF50; font-weight:bold;">
+                <div class="recent-news-item">
+                    <div class="recent-date">
                         <i class="far fa-newspaper"></i> Jan 10, 2024
-                    </p>
-                    <p>New wetland monitoring app launched by Central Environmental Authority</p>
-                    
-                    <p style="margin:1rem 0 0.5rem 0; color:#4CAF50; font-weight:bold;">
+                    </div>
+                    <div class="recent-title">New wetland monitoring app launched by Central Environmental Authority</div>
+                </div>
+                
+                <div class="recent-news-item">
+                    <div class="recent-date">
                         <i class="far fa-newspaper"></i> Dec 20, 2023
-                    </p>
-                    <p>Annual wetland health report shows improvement in Colombo wetlands</p>
-                    
-                    <p style="margin:1rem 0 0.5rem 0; color:#4CAF50; font-weight:bold;">
+                    </div>
+                    <div class="recent-title">Annual wetland health report shows improvement in Colombo wetlands</div>
+                </div>
+                
+                <div class="recent-news-item">
+                    <div class="recent-date">
                         <i class="far fa-newspaper"></i> Nov 30, 2023
-                    </p>
-                    <p>International funding secured for Anawilundawa conservation project</p>
+                    </div>
+                    <div class="recent-title">International funding secured for Anawilundawa conservation project</div>
                 </div>
             </div>
         </div>
@@ -647,23 +949,28 @@
 
     <!-- Footer -->
     <footer>
-        <div style="max-width:1400px; margin:0 auto; padding:0 2rem;">
-            <p>&copy; Sri Lanka Wetland Inventory Project 2026 | 
-                <a href="#" style="color:#c1e1c1; text-decoration:none;">Contact</a> | 
-                <a href="#" style="color:#c1e1c1; text-decoration:none;">Privacy Policy</a>
-            </p>
+        <div>
+            <p>&copy; National Wetland Inventory of Sri Lanka 2026</p>
+            <p style="font-size:0.9rem; opacity:0.8; margin-top:0.5rem;">Project of International Water Management Institute Sri Lanka</p>
         </div>
     </footer>
 
     <script>
         // Simple newsletter subscription
         document.querySelector('.newsletter-input button').addEventListener('click', function() {
-            const email = document.querySelector('.newsletter-input input').value;
+            const emailInput = document.querySelector('.newsletter-input input');
+            const email = emailInput.value;
             if (email && email.includes('@')) {
                 alert('Thank you for subscribing to our wetland newsletter! You will receive updates at ' + email);
-                document.querySelector('.newsletter-input input').value = '';
+                emailInput.value = '';
+                emailInput.style.border = '2px solid var(--iwmi-green)';
+                setTimeout(() => {
+                    emailInput.style.border = 'none';
+                }, 2000);
             } else {
                 alert('Please enter a valid email address.');
+                emailInput.style.border = '2px solid var(--iwmi-orange)';
+                emailInput.focus();
             }
         });
         
@@ -686,16 +993,6 @@
                 
                 alert(`Event: ${title}\n\nDate: ${date}\nLocation: ${location}\n\nClick 'OK' to close.`);
             });
-            
-            // Add hover effect
-            event.addEventListener('mouseenter', function() {
-                this.style.backgroundColor = '#f9f9f9';
-                this.style.transition = 'background-color 0.3s';
-            });
-            
-            event.addEventListener('mouseleave', function() {
-                this.style.backgroundColor = 'transparent';
-            });
         });
         
         // Add interactivity to category tags
@@ -704,22 +1001,41 @@
                 e.preventDefault();
                 const category = this.textContent;
                 alert(`Filtering news by category: "${category}"\n\nIn a complete website, this would show all news articles in this category.`);
+                
+                // Highlight all matching categories temporarily
+                document.querySelectorAll('.category-tag').forEach(t => {
+                    if (t.textContent === category) {
+                        t.style.background = 'var(--iwmi-orange)';
+                        t.style.color = 'var(--iwmi-white)';
+                        setTimeout(() => {
+                            t.style.background = '';
+                            t.style.color = '';
+                        }, 1000);
+                    }
+                });
             });
         });
         
         // Add interactivity to quick links
         document.querySelectorAll('.quick-links a').forEach(link => {
             link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const linkText = this.textContent;
-                alert(`Navigating to: ${linkText}\n\nIn a complete website, this link would take you to the appropriate page.`);
+                const href = this.getAttribute('href');
+                if (href === '#' || href.startsWith('#')) {
+                    e.preventDefault();
+                    const linkText = this.textContent;
+                    alert(`This would navigate to: ${linkText}\n\nIn a complete website, this link would take you to the appropriate page.`);
+                }
+            });
+        });
+        
+        // Add interactivity to recent news items
+        document.querySelectorAll('.recent-news-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const title = this.querySelector('.recent-title').textContent;
+                const date = this.querySelector('.recent-date').textContent;
+                alert(`Recent News: ${title}\n\nPublished: ${date}\n\nIn a complete website, this would open the full article.`);
             });
         });
     </script>
 </body>
-
 </html>
-
-
-
-

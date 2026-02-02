@@ -68,7 +68,7 @@ function checkBannerImage() {
         console.error('❌ Banner image failed to load');
         console.log('Attempted URL:', img.src);
     };
-    img.src = 'https://github.com/lakshithamadusanka555-png/WETLAND-INVENTORY/raw/main/images/banner.jpg';
+    img.src = 'https://unsplash.com/photos/the-sun-is-setting-over-a-marshy-area-MYITroNurpg';
 }
 
 // Call when page loads
@@ -76,3 +76,4 @@ document.addEventListener('DOMContentLoaded', checkBannerImage);
 });
 
 });
+

@@ -1,4 +1,19 @@
-// Wait for page to load
+// Color scheme for layers - Updated to IWMI colors
+const layerColors = {
+    water: 'rgba(0, 163, 218, 0.7)',
+    paddy: 'rgba(110, 174, 74, 0.7)',
+    marsh: 'rgba(44, 95, 45, 0.7)'  // Dark Green
+};
+
+// Update notification colors too
+function showNotification(message, type = 'info') {
+    const colors = {
+        info: '#00A3DA',    // IWMI Blue
+        error: '#D9534F',   // Red for errors
+        warning: '#FF9800'  // Orange for warnings
+    };
+    
+    // Wait for page to load
 document.addEventListener('DOMContentLoaded', function() {
     console.log("Wetland website loaded!");
     
@@ -76,5 +91,6 @@ document.addEventListener('DOMContentLoaded', checkBannerImage);
 });
 
 });
+
 
 

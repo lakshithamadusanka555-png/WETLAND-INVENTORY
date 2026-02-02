@@ -53,7 +53,7 @@ nav {
     height: 85vh;
     min-height: 600px;
     background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), 
-                url('https://unsplash.com/photos/the-sun-is-setting-over-a-marshy-area-MYITroNurpg');
+                url('https://github.com/lakshithamadusanka555-png/WETLAND-INVENTORY/blob/main/images/banner.jpg');
     background-size: cover;
     background-position: center 30%;
     background-attachment: fixed; /* Parallax effect */
@@ -252,5 +252,6 @@ footer {
     color: #666;
 
 }
+
 
 

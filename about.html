@@ -7,7 +7,102 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Additional styles for about page */
+        /* IWMI Brand Colors */
+        :root {
+            --iwmi-dark-blue: #28537D;
+            --iwmi-light-blue: #5088C6;
+            --iwmi-sky-blue: #46BBD4;
+            --iwmi-teal: #0297A6;
+            --iwmi-green: #22AD7A;
+            --iwmi-orange: #E86933;
+            --iwmi-yellow: #DD9103;
+            --iwmi-light-grey: #E8E7E7;
+            --iwmi-white: #FFFFFF;
+            --iwmi-text-dark: #333333;
+            --iwmi-text-light: #666666;
+            --iwmi-background: #F8F9FA;
+            --iwmi-border: #E0E7EE;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--iwmi-text-dark);
+            background: var(--iwmi-background);
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Navigation Bar - IWMI Dark Blue */
+        nav {
+            background: var(--iwmi-dark-blue);
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .logo h2 {
+            color: var(--iwmi-white);
+            font-size: 1.4rem;
+            margin: 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo h2 i {
+            color: var(--iwmi-green);
+            font-size: 1.6rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-links a {
+            color: var(--iwmi-white);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--iwmi-green);
+            opacity: 1;
+        }
+        
+        .nav-links a.active {
+            background: var(--iwmi-sky-blue);
+            color: var(--iwmi-white);
+            opacity: 1;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--iwmi-dark-blue);
+            color: var(--iwmi-white);
+            padding: 2rem 0;
+            margin-top: 4rem;
+            text-align: center;
+            border-top: 4px solid var(--iwmi-green);
+        }
+        
+        /* Main Content Styles */
         .about-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -15,70 +110,134 @@
         }
         
         .page-title {
-            color: #2c5f2d;
+            color: var(--iwmi-dark-blue);
             text-align: center;
             margin-bottom: 0.5rem;
             font-size: 2.5rem;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--iwmi-green);
+            border-radius: 2px;
         }
         
         .page-subtitle {
             text-align: center;
-            color: #666;
+            color: var(--iwmi-text-light);
             margin-bottom: 3rem;
             font-size: 1.1rem;
             max-width: 800px;
             margin-left: auto;
             margin-right: auto;
+            line-height: 1.6;
         }
         
         .section-title {
-            color: #2c5f2d;
-            border-bottom: 3px solid #4CAF50;
-            padding-bottom: 0.5rem;
-            margin: 2.5rem 0 1.5rem 0;
+            color: var(--iwmi-dark-blue);
+            border-bottom: 3px solid var(--iwmi-green);
+            padding-bottom: 0.8rem;
+            margin: 3rem 0 2rem 0;
+            font-weight: 700;
+            font-size: 1.8rem;
         }
         
-        /* Ramsar Definition */
+        /* Ramsar Definition Box */
         .ramsar-definition {
-            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(70, 187, 212, 0.1) 0%, rgba(34, 173, 122, 0.1) 100%);
+            padding: 2rem;
             border-radius: 10px;
             margin: 2rem 0;
-            border-left: 5px solid #2c5f2d;
+            border-left: 5px solid var(--iwmi-teal);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
         
         .definition-icon {
             font-size: 2rem;
-            color: #2c5f2d;
+            color: var(--iwmi-teal);
             margin-right: 15px;
             float: left;
         }
         
+        /* Understanding Wetlands Cards */
+        .feature-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0 3rem 0;
+        }
+        
+        .feature-card {
+            background: var(--iwmi-white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(40, 83, 125, 0.08);
+            border-top: 4px solid var(--iwmi-light-blue);
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(40, 83, 125, 0.12);
+        }
+        
+        .feature-card h3 {
+            color: var(--iwmi-dark-blue);
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+        
+        .feature-card ul {
+            margin: 1rem 0 0 0;
+            padding-left: 1.2rem;
+        }
+        
+        .feature-card li {
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+        
         /* Classification System */
         .classification-system {
-            background: #f9f9f9;
+            background: var(--iwmi-white);
             border-radius: 10px;
-            padding: 1.5rem;
+            padding: 2rem;
             margin: 2rem 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--iwmi-border);
         }
         
         .category-header {
             display: flex;
             align-items: center;
-            margin: 2rem 0 1rem 0;
-            padding: 1rem;
-            border-radius: 5px;
+            margin: 1.5rem 0 0.5rem 0;
+            padding: 1.2rem;
+            border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s;
+            background: rgba(232, 231, 231, 0.3);
+            border-left: 5px solid;
         }
         
         .category-header:hover {
-            background: #e8f5e9;
+            background: rgba(70, 187, 212, 0.1);
         }
         
-        .marine { border-left: 5px solid #2196F3; }
-        .inland { border-left: 5px solid #4CAF50; }
-        .human-made { border-left: 5px solid #FF9800; }
+        .marine { border-left-color: var(--iwmi-sky-blue); }
+        .inland { border-left-color: var(--iwmi-green); }
+        .human-made { border-left-color: var(--iwmi-orange); }
         
         .category-icon {
             font-size: 1.5rem;
@@ -87,37 +246,41 @@
             text-align: center;
         }
         
-        .marine .category-icon { color: #2196F3; }
-        .inland .category-icon { color: #4CAF50; }
-        .human-made .category-icon { color: #FF9800; }
+        .marine .category-icon { color: var(--iwmi-sky-blue); }
+        .inland .category-icon { color: var(--iwmi-green); }
+        .human-made .category-icon { color: var(--iwmi-orange); }
         
         .category-title {
             flex: 1;
             font-size: 1.3rem;
-            font-weight: bold;
+            font-weight: 600;
+            color: var(--iwmi-dark-blue);
         }
         
         .type-count {
-            background: #ddd;
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
+            background: var(--iwmi-dark-blue);
+            color: var(--iwmi-white);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
             font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
         
         .category-content {
             display: none;
             margin-left: 55px;
-            padding: 1rem 0;
+            padding: 1.5rem 0;
+            animation: fadeIn 0.5s;
         }
         
         .category-content.active {
             display: block;
-            animation: fadeIn 0.5s;
         }
         
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         /* Classification Grid */
@@ -128,41 +291,55 @@
         }
         
         .classification-item {
-            background: white;
-            padding: 1rem;
+            background: var(--iwmi-white);
+            padding: 1.2rem;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            border: 1px solid #e0e0e0;
-            transition: transform 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid var(--iwmi-border);
+            transition: all 0.3s;
+            cursor: pointer;
         }
         
         .classification-item:hover {
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border-color: var(--iwmi-light-blue);
         }
         
         .class-code {
             display: inline-block;
-            background: #2c5f2d;
-            color: white;
-            width: 30px;
-            height: 30px;
+            color: var(--iwmi-white);
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             text-align: center;
-            line-height: 30px;
-            font-weight: bold;
-            margin-right: 10px;
+            line-height: 32px;
+            font-weight: 700;
+            margin-right: 12px;
+            font-size: 0.9rem;
         }
         
-        .marine .class-code { background: #2196F3; }
-        .inland .class-code { background: #4CAF50; }
-        .human-made .class-code { background: #FF9800; }
+        .marine .class-code { background: var(--iwmi-sky-blue); }
+        .inland .class-code { background: var(--iwmi-green); }
+        .human-made .class-code { background: var(--iwmi-orange); }
+        
+        .class-title {
+            display: inline-block;
+            vertical-align: middle;
+            width: calc(100% - 50px);
+            font-weight: 600;
+            color: var(--iwmi-text-dark);
+            font-size: 0.95rem;
+        }
         
         .classification-details {
-            margin-top: 0.5rem;
+            margin-top: 1rem;
             font-size: 0.9rem;
-            color: #555;
+            color: var(--iwmi-text-light);
             display: none;
+            line-height: 1.6;
+            padding-top: 0.8rem;
+            border-top: 1px solid var(--iwmi-border);
         }
         
         .classification-item.expanded .classification-details {
@@ -170,81 +347,137 @@
         }
         
         .example {
-            background: #f5f5f5;
-            padding: 0.5rem;
-            border-radius: 4px;
-            margin-top: 0.5rem;
+            background: rgba(70, 187, 212, 0.05);
+            padding: 0.8rem;
+            border-radius: 6px;
+            margin-top: 0.8rem;
             font-size: 0.85rem;
-            border-left: 3px solid #2c5f2d;
+            border-left: 3px solid var(--iwmi-sky-blue);
         }
         
-        /* Search and Filter */
+        .example strong {
+            color: var(--iwmi-teal);
+        }
+        
+        /* Search Box */
         .search-box {
-            margin: 1rem 0 2rem 0;
+            margin: 1.5rem 0 2.5rem 0;
             position: relative;
         }
         
         .search-box input {
             width: 100%;
-            padding: 0.8rem 1rem;
-            padding-left: 3rem;
-            border: 2px solid #ddd;
-            border-radius: 5px;
+            padding: 1rem 1.2rem;
+            padding-left: 3.5rem;
+            border: 2px solid var(--iwmi-border);
+            border-radius: 8px;
             font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s;
+            background: var(--iwmi-white);
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--iwmi-light-blue);
+            box-shadow: 0 0 0 3px rgba(80, 136, 198, 0.1);
         }
         
         .search-box i {
             position: absolute;
-            left: 1rem;
+            left: 1.2rem;
             top: 50%;
             transform: translateY(-50%);
-            color: #666;
+            color: var(--iwmi-light-blue);
+            font-size: 1.2rem;
         }
         
         /* Sri Lanka Ramsar Sites */
-        .ramsar-sites {
-            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-            padding: 2rem;
-            border-radius: 10px;
-            margin: 3rem 0;
-        }
-        
-        .site-grid {
+        .sl-wetlands-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 1.5rem;
-            margin-top: 1.5rem;
+            margin: 2rem 0 3rem 0;
         }
         
-        .site-card {
-            background: white;
-            border-radius: 8px;
+        .wetland-item {
+            background: var(--iwmi-white);
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            border: 1px solid var(--iwmi-border);
         }
         
-        .site-header {
-            background: #2c5f2d;
-            color: white;
-            padding: 1rem;
+        .wetland-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
         }
         
-        .site-types {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.3rem;
-            margin-top: 0.5rem;
+        .wetland-header {
+            background: linear-gradient(135deg, var(--iwmi-dark-blue) 0%, var(--iwmi-light-blue) 100%);
+            color: var(--iwmi-white);
+            padding: 1.2rem;
+            position: relative;
         }
         
-        .site-type {
-            background: rgba(255,255,255,0.2);
-            padding: 0.2rem 0.5rem;
-            border-radius: 3px;
+        .wetland-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .ramsar-badge {
+            position: absolute;
+            top: 1.2rem;
+            right: 1.2rem;
+            background: var(--iwmi-green);
+            color: var(--iwmi-white);
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
             font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
         
-        .site-content {
-            padding: 1rem;
+        .wetland-content {
+            padding: 1.5rem;
+        }
+        
+        .wetland-content p {
+            margin: 0.5rem 0;
+            line-height: 1.6;
+            color: var(--iwmi-text-dark);
+        }
+        
+        .wetland-content strong {
+            color: var(--iwmi-dark-blue);
+        }
+        
+        .wetland-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--iwmi-border);
+        }
+        
+        .stat {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--iwmi-teal);
+            margin-bottom: 0.3rem;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--iwmi-text-light);
+            font-weight: 500;
         }
         
         /* Wetland Functions */
@@ -252,16 +485,28 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
-            margin: 2rem 0;
+            margin: 2.5rem 0;
         }
         
         .function-card {
             text-align: center;
-            padding: 1.5rem;
-            background: white;
+            padding: 2rem 1.5rem;
+            background: var(--iwmi-white);
             border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            border-top: 4px solid transparent;
         }
+        
+        .function-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        
+        .function-card:nth-child(1) { border-top-color: var(--iwmi-sky-blue); }
+        .function-card:nth-child(2) { border-top-color: var(--iwmi-green); }
+        .function-card:nth-child(3) { border-top-color: var(--iwmi-orange); }
+        .function-card:nth-child(4) { border-top-color: var(--iwmi-teal); }
         
         .function-icon {
             width: 70px;
@@ -270,27 +515,142 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 1rem;
+            margin: 0 auto 1.5rem;
             font-size: 1.8rem;
+            background: rgba(70, 187, 212, 0.1);
+            color: var(--iwmi-sky-blue);
         }
         
-        /* Responsive */
+        .function-card:nth-child(2) .function-icon {
+            background: rgba(34, 173, 122, 0.1);
+            color: var(--iwmi-green);
+        }
+        
+        .function-card:nth-child(3) .function-icon {
+            background: rgba(232, 105, 51, 0.1);
+            color: var(--iwmi-orange);
+        }
+        
+        .function-card:nth-child(4) .function-icon {
+            background: rgba(2, 151, 166, 0.1);
+            color: var(--iwmi-teal);
+        }
+        
+        .function-card h3 {
+            color: var(--iwmi-dark-blue);
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .function-card p {
+            color: var(--iwmi-text-light);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+        
+        /* Conservation Message */
+        .conservation-message {
+            text-align: center;
+            padding: 2.5rem;
+            background: linear-gradient(135deg, var(--iwmi-dark-blue) 0%, var(--iwmi-teal) 100%);
+            color: var(--iwmi-white);
+            border-radius: 10px;
+            margin: 3rem 0;
+            box-shadow: 0 8px 25px rgba(40, 83, 125, 0.2);
+        }
+        
+        .conservation-message h3 {
+            margin-bottom: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .conservation-message p {
+            max-width: 800px;
+            margin: 0.8rem auto;
+            line-height: 1.6;
+            font-size: 1.05rem;
+        }
+        
+        .conservation-message strong {
+            color: var(--iwmi-green);
+            font-weight: 600;
+        }
+        
+        /* Responsive Design */
         @media (max-width: 768px) {
+            .about-container {
+                padding: 1.5rem;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
             .classification-grid {
                 grid-template-columns: 1fr;
             }
             
-            .site-grid {
+            .sl-wetlands-list {
                 grid-template-columns: 1fr;
             }
             
             .category-header {
                 flex-direction: column;
                 align-items: flex-start;
+                gap: 0.8rem;
             }
             
             .category-content {
                 margin-left: 0;
+            }
+            
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.8rem;
+            }
+            
+            .nav-links a {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+            
+            .logo h2 {
+                font-size: 1.2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 1.6rem;
+            }
+            
+            .section-title {
+                font-size: 1.4rem;
+            }
+            
+            .feature-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .functions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .wetland-stats {
+                flex-direction: column;
+                gap: 1rem;
             }
         }
     </style>
@@ -299,11 +659,11 @@
     <!-- Navigation Bar -->
     <nav>
         <div class="logo">
-            <h2><i class="fas fa-water"></i> Sri Lanka Wetlands</h2>
+            <h2><i class="fas fa-water"></i> National Wetland Inventory of Sri Lanka</h2>
         </div>
         <ul class="nav-links">
             <li><a href="index.html">Home</a></li>
-            <li><a href="about.html" style="background-color:#4CAF50;border-radius:4px;">About Wetlands</a></li>
+            <li><a href="about.html" style="background-color:var(--iwmi-sky-blue);border-radius:4px;">About Wetlands</a></li>
             <li><a href="news.html">News</a></li>
             <li><a href="downloads.html">Downloads</a></li>
         </ul>
@@ -319,10 +679,10 @@
         <!-- Ramsar Definition -->
         <div class="ramsar-definition">
             <i class="fas fa-globe-asia definition-icon"></i>
-            <h3 style="color:#2c5f2d; margin-top:0;">The Ramsar Convention Definition</h3>
-            <p><strong>According to the Ramsar Convention (1971), wetlands are defined as:</strong></p>
-            <div style="background:white; padding:1rem; border-radius:5px; margin:0.5rem 0;">
-                <p style="font-style:italic; margin:0;">
+            <h3 style="color:var(--iwmi-teal); margin-top:0; font-weight:600;">The Ramsar Convention Definition</h3>
+            <p><strong style="color:var(--iwmi-dark-blue);">According to the Ramsar Convention (1971), wetlands are defined as:</strong></p>
+            <div style="background:var(--iwmi-white); padding:1.2rem; border-radius:6px; margin:0.8rem 0; border-left:4px solid var(--iwmi-green);">
+                <p style="font-style:italic; margin:0; color:var(--iwmi-text-dark); line-height:1.6;">
                     "Areas of marshes, fen, peatland or water, whether natural or artificial, permanent or temporary, 
                     with water that is flowing or static, fresh, brackish or salty, including areas of marine water 
                     the depth of which at low tide does not exceed six metres. It may also include riparian and 
@@ -330,17 +690,17 @@
                     meters at low tide lying within the wetlands."
                 </p>
             </div>
-            <p style="margin-top:1rem; color:#555;">
-                <i class="fas fa-info-circle"></i> This broad definition covers 42 specific wetland types across 
+            <p style="margin-top:1.2rem; color:var(--iwmi-text-light);">
+                <i class="fas fa-info-circle" style="color:var(--iwmi-light-blue);"></i> This broad definition covers 42 specific wetland types across 
                 3 main categories for comprehensive global protection.
             </p>
         </div>
         
         <!-- What are Wetlands -->
         <h2 class="section-title">Understanding Wetlands</h2>
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:1.5rem;">
-            <div style="background:#e8f5e9; padding:1.5rem; border-radius:8px;">
-                <h3><i class="fas fa-tint" style="color:#2196F3;"></i> Ecological Importance</h3>
+        <div class="feature-cards">
+            <div class="feature-card">
+                <h3><i class="fas fa-tint" style="color:var(--iwmi-sky-blue);"></i> Ecological Importance</h3>
                 <ul>
                     <li>Home to 40% of all plant and animal species</li>
                     <li>Natural water filtration systems</li>
@@ -350,8 +710,8 @@
                 </ul>
             </div>
             
-            <div style="background:#e3f2fd; padding:1.5rem; border-radius:8px;">
-                <h3><i class="fas fa-map-marked-alt" style="color:#4CAF50;"></i> Sri Lanka's Wetlands</h3>
+            <div class="feature-card">
+                <h3><i class="fas fa-map-marked-alt" style="color:var(--iwmi-green);"></i> Sri Lanka's Wetlands</h3>
                 <ul>
                     <li>280,000+ hectares of diverse wetlands</li>
                     <li>6 Ramsar Sites of International Importance</li>
@@ -363,7 +723,7 @@
         </div>
         
         <!-- Complete Ramsar Classification System -->
-        <h2 class="section-title">Ramsar Wetland Classification System</h2>
+        <h2 class="section-title"><i class="fas fa-layer-group" style="color:var(--iwmi-sky-blue);"></i> Ramsar Wetland Classification System</h2>
         
         <!-- Search Box -->
         <div class="search-box">
@@ -382,7 +742,7 @@
             </div>
             
             <div id="marine" class="category-content">
-                <p>Wetlands influenced by marine waters, including coastal areas and shallow seas.</p>
+                <p style="color:var(--iwmi-text-light); margin-bottom:1.5rem;">Wetlands influenced by marine waters, including coastal areas and shallow seas.</p>
                 
                 <div class="classification-grid" id="marine-grid">
                     <!-- Type A -->
@@ -529,7 +889,7 @@
             </div>
             
             <div id="inland" class="category-content">
-                <p>Freshwater wetlands away from coastal influence, including rivers, lakes, and marshes.</p>
+                <p style="color:var(--iwmi-text-light); margin-bottom:1.5rem;">Freshwater wetlands away from coastal influence, including rivers, lakes, and marshes.</p>
                 
                 <div class="classification-grid" id="inland-grid">
                     <!-- Type L -->
@@ -784,7 +1144,7 @@
             </div>
             
             <div id="human-made" class="category-content">
-                <p>Wetlands created or significantly modified by human activity.</p>
+                <p style="color:var(--iwmi-text-light); margin-bottom:1.5rem;">Wetlands created or significantly modified by human activity.</p>
                 
                 <div class="classification-grid" id="human-made-grid">
                     <!-- Type 1 -->
@@ -899,209 +1259,209 @@
         </div>
         
         <!-- Sri Lanka's Ramsar Sites -->
-<h2 class="section-title"><i class="fas fa-award"></i> Sri Lanka's Ramsar Wetlands of International Importance</h2>
-<p>Sri Lanka has designated 6 wetlands as Ramsar Sites of International Importance:</p>
+        <h2 class="section-title"><i class="fas fa-award" style="color:var(--iwmi-yellow);"></i> Sri Lanka's Ramsar Wetlands of International Importance</h2>
+        <p style="color:var(--iwmi-text-light); margin-bottom:1.5rem;">Sri Lanka has designated 6 wetlands as Ramsar Sites of International Importance:</p>
 
-<div class="sl-wetlands-list">
-    <!-- Bundala -->
-    <div class="wetland-item">
-        <div class="wetland-header">
-            <h3 style="margin:0;">Bundala National Park</h3>
-            <span class="ramsar-badge">Ramsar Site</span>
-        </div>
-        <div class="wetland-content">
-            <p><strong>Designated:</strong> 1990</p>
-            <p><strong>Area:</strong> 6,216 hectares</p>
-            <p><strong>Ramsar Types:</strong> J (Coastal lagoons), Sp (Saline marshes)</p>
-            <p>An important habitat for waterbirds, supporting 197 species including Greater Flamingo.</p>
-            <div class="wetland-stats">
-                <div class="stat">
-                    <div class="stat-value">197</div>
-                    <div class="stat-label">Bird Species</div>
+        <div class="sl-wetlands-list">
+            <!-- Bundala -->
+            <div class="wetland-item">
+                <div class="wetland-header">
+                    <h3>Bundala National Park</h3>
+                    <span class="ramsar-badge">Ramsar Site</span>
                 </div>
-                <div class="stat">
-                    <div class="stat-value">32</div>
-                    <div class="stat-label">Fish Species</div>
+                <div class="wetland-content">
+                    <p><strong>Designated:</strong> 1990</p>
+                    <p><strong>Area:</strong> 6,216 hectares</p>
+                    <p><strong>Ramsar Types:</strong> J (Coastal lagoons), Sp (Saline marshes)</p>
+                    <p>An important habitat for waterbirds, supporting 197 species including Greater Flamingo.</p>
+                    <div class="wetland-stats">
+                        <div class="stat">
+                            <div class="stat-value">197</div>
+                            <div class="stat-label">Bird Species</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">32</div>
+                            <div class="stat-label">Fish Species</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">1990</div>
+                            <div class="stat-label">Year Listed</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="stat">
-                    <div class="stat-value">1990</div>
-                    <div class="stat-label">Year Listed</div>
+            </div>
+            
+            <!-- Anawilundawa -->
+            <div class="wetland-item">
+                <div class="wetland-header">
+                    <h3>Anawilundawa Sanctuary</h3>
+                    <span class="ramsar-badge">Ramsar Site</span>
+                </div>
+                <div class="wetland-content">
+                    <p><strong>Designated:</strong> 2001</p>
+                    <p><strong>Area:</strong> 1,397 hectares</p>
+                    <p><strong>Ramsar Types:</strong> 6 (Water storage), Tp (Freshwater marshes)</p>
+                    <p>Cascade of six ancient irrigation tanks providing habitat for numerous threatened species including the Sloth Bear.</p>
+                    <div class="wetland-stats">
+                        <div class="stat">
+                            <div class="stat-value">150+</div>
+                            <div class="stat-label">Bird Species</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">6</div>
+                            <div class="stat-label">Ancient Tanks</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">2001</div>
+                            <div class="stat-label">Year Listed</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Maduganga -->
+            <div class="wetland-item">
+                <div class="wetland-header">
+                    <h3>Maduganga Estuary</h3>
+                    <span class="ramsar-badge">Ramsar Site</span>
+                </div>
+                <div class="wetland-content">
+                    <p><strong>Designated:</strong> 2003</p>
+                    <p><strong>Area:</strong> 915 hectares</p>
+                    <p><strong>Ramsar Types:</strong> I (Mangrove forests), J (Coastal lagoons)</p>
+                    <p>A shallow water body with 15 islands covered by dense mangrove forests, supporting rich biodiversity.</p>
+                    <div class="wetland-stats">
+                        <div class="stat">
+                            <div class="stat-value">15</div>
+                            <div class="stat-label">Islands</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">303</div>
+                            <div class="stat-label">Plant Species</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">2003</div>
+                            <div class="stat-label">Year Listed</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Vankalai -->
+            <div class="wetland-item">
+                <div class="wetland-header">
+                    <h3>Vankalai Sanctuary</h3>
+                    <span class="ramsar-badge">Ramsar Site</span>
+                </div>
+                <div class="wetland-content">
+                    <p><strong>Designated:</strong> 2010</p>
+                    <p><strong>Area:</strong> 4,839 hectares</p>
+                    <p><strong>Ramsar Types:</strong> J (Coastal lagoons), G (Intertidal mudflats)</p>
+                    <p>Important for migratory waterbirds and supporting local fisheries. Part of the Mannar Barrier Island system.</p>
+                    <div class="wetland-stats">
+                        <div class="stat">
+                            <div class="stat-value">100+</div>
+                            <div class="stat-label">Migratory Birds</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">4,839</div>
+                            <div class="stat-label">Hectares</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">2010</div>
+                            <div class="stat-label">Year Listed</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Kumana -->
+            <div class="wetland-item">
+                <div class="wetland-header">
+                    <h3>Kumana National Park</h3>
+                    <span class="ramsar-badge">Ramsar Site</span>
+                </div>
+                <div class="wetland-content">
+                    <p><strong>Designated:</strong> 2010</p>
+                    <p><strong>Area:</strong> 18,900 hectares</p>
+                    <p><strong>Ramsar Types:</strong> J (Coastal lagoons), Tp (Freshwater marshes)</p>
+                    <p>Famous for its birdlife and mangrove ecosystems in Eastern Sri Lanka. Also known as Yala East.</p>
+                    <div class="wetland-stats">
+                        <div class="stat">
+                            <div class="stat-value">255</div>
+                            <div class="stat-label">Bird Species</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">18,900</div>
+                            <div class="stat-label">Hectares</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">2010</div>
+                            <div class="stat-label">Year Listed</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Wilpattu -->
+            <div class="wetland-item">
+                <div class="wetland-header">
+                    <h3>Wilpattu Ramsar Site</h3>
+                    <span class="ramsar-badge">Ramsar Site</span>
+                </div>
+                <div class="wetland-content">
+                    <p><strong>Designated:</strong> 2013</p>
+                    <p><strong>Area:</strong> 165,800 hectares</p>
+                    <p><strong>Ramsar Types:</strong> O (Freshwater lakes), Ts (Seasonal marshes)</p>
+                    <p>Characterized by numerous "villus" (natural lakes) supporting diverse wildlife including leopards and elephants.</p>
+                    <div class="wetland-stats">
+                        <div class="stat">
+                            <div class="stat-value">50+</div>
+                            <div class="stat-label">Villus</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">165,800</div>
+                            <div class="stat-label">Hectares</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">2013</div>
+                            <div class="stat-label">Year Listed</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <!-- Anawilundawa -->
-    <div class="wetland-item">
-        <div class="wetland-header">
-            <h3 style="margin:0;">Anawilundawa Sanctuary</h3>
-            <span class="ramsar-badge">Ramsar Site</span>
-        </div>
-        <div class="wetland-content">
-            <p><strong>Designated:</strong> 2001</p>
-            <p><strong>Area:</strong> 1,397 hectares</p>
-            <p><strong>Ramsar Types:</strong> 6 (Water storage), Tp (Freshwater marshes)</p>
-            <p>Cascade of six ancient irrigation tanks providing habitat for numerous threatened species including the Sloth Bear.</p>
-            <div class="wetland-stats">
-                <div class="stat">
-                    <div class="stat-value">150+</div>
-                    <div class="stat-label">Bird Species</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value">6</div>
-                    <div class="stat-label">Ancient Tanks</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value">2001</div>
-                    <div class="stat-label">Year Listed</div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Maduganga -->
-    <div class="wetland-item">
-        <div class="wetland-header">
-            <h3 style="margin:0;">Maduganga Estuary</h3>
-            <span class="ramsar-badge">Ramsar Site</span>
-        </div>
-        <div class="wetland-content">
-            <p><strong>Designated:</strong> 2003</p>
-            <p><strong>Area:</strong> 915 hectares</p>
-            <p><strong>Ramsar Types:</strong> I (Mangrove forests), J (Coastal lagoons)</p>
-            <p>A shallow water body with 15 islands covered by dense mangrove forests, supporting rich biodiversity.</p>
-            <div class="wetland-stats">
-                <div class="stat">
-                    <div class="stat-value">15</div>
-                    <div class="stat-label">Islands</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value">303</div>
-                    <div class="stat-label">Plant Species</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value">2003</div>
-                    <div class="stat-label">Year Listed</div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Vankalai -->
-    <div class="wetland-item">
-        <div class="wetland-header">
-            <h3 style="margin:0;">Vankalai Sanctuary</h3>
-            <span class="ramsar-badge">Ramsar Site</span>
-        </div>
-        <div class="wetland-content">
-            <p><strong>Designated:</strong> 2010</p>
-            <p><strong>Area:</strong> 4,839 hectares</p>
-            <p><strong>Ramsar Types:</strong> J (Coastal lagoons), G (Intertidal mudflats)</p>
-            <p>Important for migratory waterbirds and supporting local fisheries. Part of the Mannar Barrier Island system.</p>
-            <div class="wetland-stats">
-                <div class="stat">
-                    <div class="stat-value">100+</div>
-                    <div class="stat-label">Migratory Birds</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value">4,839</div>
-                    <div class="stat-label">Hectares</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value">2010</div>
-                    <div class="stat-label">Year Listed</div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Kumana -->
-    <div class="wetland-item">
-        <div class="wetland-header">
-            <h3 style="margin:0;">Kumana National Park</h3>
-            <span class="ramsar-badge">Ramsar Site</span>
-        </div>
-        <div class="wetland-content">
-            <p><strong>Designated:</strong> 2010</p>
-            <p><strong>Area:</strong> 18,900 hectares</p>
-            <p><strong>Ramsar Types:</strong> J (Coastal lagoons), Tp (Freshwater marshes)</p>
-            <p>Famous for its birdlife and mangrove ecosystems in Eastern Sri Lanka. Also known as Yala East.</p>
-            <div class="wetland-stats">
-                <div class="stat">
-                    <div class="stat-value">255</div>
-                    <div class="stat-label">Bird Species</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value">18,900</div>
-                    <div class="stat-label">Hectares</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value">2010</div>
-                    <div class="stat-label">Year Listed</div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Wilpattu -->
-    <div class="wetland-item">
-        <div class="wetland-header">
-            <h3 style="margin:0;">Wilpattu Ramsar Site</h3>
-            <span class="ramsar-badge">Ramsar Site</span>
-        </div>
-        <div class="wetland-content">
-            <p><strong>Designated:</strong> 2013</p>
-            <p><strong>Area:</strong> 165,800 hectares</p>
-            <p><strong>Ramsar Types:</strong> O (Freshwater lakes), Ts (Seasonal marshes)</p>
-            <p>Characterized by numerous "villus" (natural lakes) supporting diverse wildlife including leopards and elephants.</p>
-            <div class="wetland-stats">
-                <div class="stat">
-                    <div class="stat-value">50+</div>
-                    <div class="stat-label">Villus</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value">165,800</div>
-                    <div class="stat-label">Hectares</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value">2013</div>
-                    <div class="stat-label">Year Listed</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
         
         <!-- Wetland Functions -->
         <h2 class="section-title">Wetland Functions & Services</h2>
         <div class="functions-grid">
             <div class="function-card">
-                <div class="function-icon" style="background:#e3f2fd;">
-                    <i class="fas fa-filter" style="color:#2196F3;"></i>
+                <div class="function-icon">
+                    <i class="fas fa-filter"></i>
                 </div>
                 <h3>Water Purification</h3>
                 <p>Remove pollutants and improve water quality through natural filtration</p>
             </div>
             
             <div class="function-card">
-                <div class="function-icon" style="background:#e8f5e9;">
-                    <i class="fas fa-umbrella" style="color:#4CAF50;"></i>
+                <div class="function-icon">
+                    <i class="fas fa-umbrella"></i>
                 </div>
                 <h3>Flood Control</h3>
                 <p>Absorb excess rainfall and reduce flood impacts on communities</p>
             </div>
             
             <div class="function-card">
-                <div class="function-icon" style="background:#fff3e0;">
-                    <i class="fas fa-leaf" style="color:#FF9800;"></i>
+                <div class="function-icon">
+                    <i class="fas fa-leaf"></i>
                 </div>
                 <h3>Carbon Storage</h3>
                 <p>Sequestrate carbon in plants and soils, mitigating climate change</p>
             </div>
             
             <div class="function-card">
-                <div class="function-icon" style="background:#f3e5f5;">
-                    <i class="fas fa-dna" style="color:#9C27B0;"></i>
+                <div class="function-icon">
+                    <i class="fas fa-dna"></i>
                 </div>
                 <h3>Biodiversity Support</h3>
                 <p>Provide habitat for numerous plant and animal species</p>
@@ -1109,10 +1469,10 @@
         </div>
         
         <!-- Conservation Message -->
-        <div style="text-align:center; padding:2rem; background:#2c5f2d; color:white; border-radius:10px; margin:3rem 0;">
-            <h3 style="margin-bottom:1rem;"><i class="fas fa-hands"></i> Protecting Sri Lanka's Wetlands</h3>
+        <div class="conservation-message">
+            <h3><i class="fas fa-hands"></i> Protecting Sri Lanka's Wetlands</h3>
             <p>Wetlands cover only 3% of Sri Lanka's land area but provide essential services worth billions of rupees annually.</p>
-            <p style="margin-top:1rem;">
+            <p style="margin-top:1.5rem;">
                 <strong>Report wetland destruction:</strong> Department of Wildlife Conservation | 
                 <strong>Learn more:</strong> Central Environmental Authority
             </p>
@@ -1122,8 +1482,8 @@
     <!-- Footer -->
     <footer>
         <div style="max-width:1200px; margin:0 auto; padding:0 1rem;">
-            <p>&copy; Sri Lanka Wetland Inventory Project 2026 </p>
-            </p>
+            <p>&copy; National Wetland Inventory of Sri Lanka 2026</p>
+            <p style="font-size:0.9rem; opacity:0.8; margin-top:0.5rem;">Part of the International Water Management Institute (IWMI) Network</p>
         </div>
     </footer>
 
@@ -1144,13 +1504,6 @@
                 item.addEventListener('click', function() {
                     // Toggle expanded class
                     this.classList.toggle('expanded');
-                    
-                    // Show details
-                    const code = this.querySelector('.class-code').textContent;
-                    const name = this.getAttribute('data-name');
-                    const details = this.querySelector('.classification-details p').textContent;
-                    
-                    console.log(`Clicked: ${code} - ${name}`);
                 });
             });
             
@@ -1159,6 +1512,7 @@
             searchInput.addEventListener('input', function() {
                 const searchTerm = this.value.toLowerCase();
                 const allItems = document.querySelectorAll('.classification-item');
+                let foundItems = 0;
                 
                 allItems.forEach(item => {
                     const code = item.getAttribute('data-code').toLowerCase();
@@ -1169,20 +1523,24 @@
                         name.includes(searchTerm) || 
                         details.includes(searchTerm)) {
                         item.style.display = 'block';
+                        foundItems++;
                         
                         // Auto-expand the parent category if match found
                         const parentCategory = item.closest('.category-content');
                         if (parentCategory && !parentCategory.classList.contains('active')) {
                             parentCategory.classList.add('active');
                         }
+                        
+                        // Auto-expand the item itself
+                        item.classList.add('expanded');
                     } else {
                         item.style.display = 'none';
+                        item.classList.remove('expanded');
                     }
                 });
                 
                 // Show message if no results
-                const visibleItems = document.querySelectorAll('.classification-item[style="display: block"]');
-                if (searchTerm && visibleItems.length === 0) {
+                if (searchTerm && foundItems === 0) {
                     // Create message if not exists
                     let message = document.getElementById('noResults');
                     if (!message) {
@@ -1190,9 +1548,20 @@
                         message.id = 'noResults';
                         message.style.padding = '2rem';
                         message.style.textAlign = 'center';
-                        message.style.color = '#666';
-                        message.innerHTML = `<i class="fas fa-search" style="font-size:2rem; margin-bottom:1rem;"></i><p>No wetland types found for "${searchTerm}"</p>`;
-                        document.querySelector('.classification-system').appendChild(message);
+                        message.style.color = 'var(--iwmi-text-light)';
+                        message.style.backgroundColor = 'var(--iwmi-white)';
+                        message.style.borderRadius = '8px';
+                        message.style.margin = '1rem 0';
+                        message.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)';
+                        message.innerHTML = `
+                            <i class="fas fa-search" style="font-size:2rem; margin-bottom:1rem; color:var(--iwmi-light-blue);"></i>
+                            <h4 style="color:var(--iwmi-dark-blue); margin-bottom:0.5rem;">No Results Found</h4>
+                            <p>No wetland types found for "${searchTerm}"</p>
+                        `;
+                        
+                        // Insert after search box
+                        const classificationSystem = document.querySelector('.classification-system');
+                        classificationSystem.appendChild(message);
                     }
                 } else {
                     const message = document.getElementById('noResults');
@@ -1207,25 +1576,17 @@
                 if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
                     e.preventDefault();
                     searchInput.focus();
+                    searchInput.select();
                 }
             });
             
-            // Auto-expand all items on page load for better visibility
-            setTimeout(() => {
-                document.querySelectorAll('.classification-item').forEach(item => {
-                    item.classList.add('expanded');
-                });
-            }, 1000);
-        });
-        
-        // Print classification system
-        window.onload = function() {
+            // Print classification system info
             console.log("Ramsar Classification System Loaded:");
             console.log("- Marine/Coastal: 11 types (A-K)");
             console.log("- Inland: 22 types (L-Zk)"); 
             console.log("- Human-made: 9 types (1-9)");
             console.log("Total: 42 wetland types");
-        };
+        });
     </script>
 </body>
 </html>

@@ -53,7 +53,7 @@ nav {
     height: 85vh;
     min-height: 600px;
     background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), 
-                url('https://raw.githubusercontent.com/lakshithamadusanka555-png/WETLAND-INVENTORY/main/images/banner.jpg');
+                url('https://github.com/lakshithamadusanka555-png/WETLAND-INVENTORY/raw/main/images/banner.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -234,6 +234,7 @@ footer {
     color: #666;
 
 }
+
 
 
 

@@ -7,53 +7,163 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* IWMI Brand Colors */
+        :root {
+            --iwmi-dark-blue: #28537D;
+            --iwmi-light-blue: #5088C6;
+            --iwmi-sky-blue: #46BBD4;
+            --iwmi-teal: #0297A6;
+            --iwmi-green: #22AD7A;
+            --iwmi-orange: #E86933;
+            --iwmi-yellow: #DD9103;
+            --iwmi-light-grey: #E8E7E7;
+            --iwmi-white: #FFFFFF;
+            --iwmi-text-dark: #333333;
+            --iwmi-text-light: #666666;
+            --iwmi-background: #F8F9FA;
+            --iwmi-border: #E0E7EE;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--iwmi-text-dark);
+            background: var(--iwmi-background);
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Navigation Bar - IWMI Dark Blue */
+        nav {
+            background: var(--iwmi-dark-blue);
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .logo h2 {
+            color: var(--iwmi-white);
+            font-size: 1.4rem;
+            margin: 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo h2 i {
+            color: var(--iwmi-green);
+            font-size: 1.6rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-links a {
+            color: var(--iwmi-white);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--iwmi-green);
+            opacity: 1;
+        }
+        
+        .nav-links a.active {
+            background: var(--iwmi-sky-blue);
+            color: var(--iwmi-white);
+            opacity: 1;
+        }
+        
         /* Downloads Page Styles */
         .downloads-container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 2rem;
+            flex: 1;
         }
         
         .page-title {
-            color: #2c5f2d;
+            color: var(--iwmi-dark-blue);
             text-align: center;
             margin-bottom: 0.5rem;
             font-size: 2.5rem;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--iwmi-green);
+            border-radius: 2px;
         }
         
         .page-subtitle {
             text-align: center;
-            color: #666;
+            color: var(--iwmi-text-light);
             margin-bottom: 3rem;
             font-size: 1.1rem;
             max-width: 800px;
             margin-left: auto;
             margin-right: auto;
+            line-height: 1.6;
         }
         
         .section-title {
-            color: #2c5f2d;
-            border-bottom: 3px solid #4CAF50;
-            padding-bottom: 0.5rem;
+            color: var(--iwmi-dark-blue);
+            border-bottom: 3px solid var(--iwmi-green);
+            padding-bottom: 0.8rem;
             margin: 2.5rem 0 1.5rem 0;
+            font-weight: 600;
+            font-size: 1.5rem;
         }
         
         /* District Selection */
         .district-section {
-            background: white;
+            background: var(--iwmi-white);
             padding: 2rem;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 20px rgba(40, 83, 125, 0.08);
             margin-bottom: 2rem;
+            border: 1px solid var(--iwmi-border);
         }
         
         .district-instructions {
-            color: #666;
+            color: var(--iwmi-text-light);
             margin-bottom: 1.5rem;
-            padding: 1rem;
-            background: #f9f9f9;
+            padding: 1.2rem;
+            background: rgba(70, 187, 212, 0.05);
             border-radius: 8px;
-            border-left: 4px solid #4CAF50;
+            border-left: 4px solid var(--iwmi-green);
+            font-size: 0.95rem;
+            line-height: 1.5;
         }
         
         .district-grid {
@@ -64,10 +174,10 @@
         }
         
         .district-btn {
-            background: white;
-            border: 2px solid #ddd;
+            background: var(--iwmi-white);
+            border: 2px solid var(--iwmi-border);
             padding: 1.5rem 1rem;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
             text-align: center;
             transition: all 0.3s;
@@ -80,35 +190,36 @@
         }
         
         .district-btn:hover {
-            border-color: #4CAF50;
+            border-color: var(--iwmi-sky-blue);
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(70, 187, 212, 0.15);
         }
         
         .district-btn.active {
-            background: #e8f5e9;
-            border-color: #4CAF50;
-            color: #2c5f2d;
-            font-weight: bold;
+            background: rgba(70, 187, 212, 0.1);
+            border-color: var(--iwmi-sky-blue);
+            color: var(--iwmi-dark-blue);
+            font-weight: 600;
         }
         
         .district-icon {
             font-size: 1.5rem;
             margin-bottom: 0.8rem;
-            color: #4CAF50;
+            color: var(--iwmi-sky-blue);
         }
         
         .selected-district-info {
-            background: #e8f5e9;
+            background: rgba(70, 187, 212, 0.1);
             padding: 1.5rem;
-            border-radius: 10px;
+            border-radius: 8px;
             margin-top: 2rem;
             animation: fadeIn 0.5s ease-out;
+            border: 1px solid var(--iwmi-border);
         }
         
         .district-stats {
             display: flex;
-            gap: 2rem;
+            gap: 1.5rem;
             margin-top: 1rem;
             flex-wrap: wrap;
         }
@@ -116,47 +227,67 @@
         .stat-item {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.8rem;
             font-size: 0.9rem;
-            color: #666;
-            background: white;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
+            color: var(--iwmi-text-dark);
+            background: var(--iwmi-white);
+            padding: 0.8rem 1.2rem;
+            border-radius: 6px;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .stat-item i {
+            color: var(--iwmi-sky-blue);
         }
         
         /* Data Types */
         .data-types {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 1.5rem;
             margin: 2rem 0;
         }
         
         .data-type-card {
-            background: white;
-            border: 2px solid #ddd;
-            padding: 1.5rem;
-            border-radius: 10px;
+            background: var(--iwmi-white);
+            border: 2px solid var(--iwmi-border);
+            padding: 1.8rem 1.5rem;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
             text-align: center;
         }
         
         .data-type-card:hover {
-            border-color: #2196F3;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: var(--iwmi-light-blue);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(80, 136, 198, 0.15);
         }
         
         .data-type-card.active {
-            background: #e3f2fd;
-            border-color: #2196F3;
+            background: rgba(80, 136, 198, 0.08);
+            border-color: var(--iwmi-light-blue);
         }
         
         .data-type-icon {
-            font-size: 2.5rem;
-            color: #2196F3;
-            margin-bottom: 1rem;
+            font-size: 2.2rem;
+            color: var(--iwmi-light-blue);
+            margin-bottom: 1.2rem;
+        }
+        
+        .data-type-card h3 {
+            margin: 0 0 0.8rem 0;
+            color: var(--iwmi-dark-blue);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .data-type-card p {
+            margin: 0;
+            color: var(--iwmi-text-light);
+            font-size: 0.9rem;
+            line-height: 1.5;
         }
         
         /* Downloads Grid */
@@ -168,25 +299,33 @@
         }
         
         .download-card {
-            background: white;
+            background: var(--iwmi-white);
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            border: 1px solid var(--iwmi-border);
         }
         
         .download-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+            border-color: var(--iwmi-light-blue);
         }
         
         .download-header {
-            background: #2c5f2d;
-            color: white;
-            padding: 1rem;
+            background: linear-gradient(135deg, var(--iwmi-dark-blue) 0%, var(--iwmi-light-blue) 100%);
+            color: var(--iwmi-white);
+            padding: 1.2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+        
+        .download-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
         }
         
         .file-type {
@@ -194,6 +333,8 @@
             padding: 0.3rem 0.8rem;
             border-radius: 15px;
             font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
         }
         
         .download-content {
@@ -201,16 +342,16 @@
         }
         
         .file-info {
-            color: #666;
+            color: var(--iwmi-text-light);
             font-size: 0.9rem;
             margin: 0.5rem 0;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 1.5rem;
         }
         
         .file-description {
-            color: #555;
+            color: var(--iwmi-text-dark);
             line-height: 1.5;
             margin: 1rem 0;
             font-size: 0.95rem;
@@ -219,21 +360,25 @@
         .download-btn {
             display: block;
             width: 100%;
-            background: #4CAF50;
-            color: white;
+            background: var(--iwmi-green);
+            color: var(--iwmi-white);
             border: none;
-            padding: 0.8rem;
-            border-radius: 5px;
+            padding: 0.9rem;
+            border-radius: 6px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
             text-align: center;
             text-decoration: none;
-            transition: background 0.3s;
-            margin-top: 1rem;
+            transition: all 0.3s;
+            margin-top: 1.2rem;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
         }
         
         .download-btn:hover {
-            background: #388E3C;
+            background: var(--iwmi-teal);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 151, 166, 0.2);
         }
         
         .download-btn i {
@@ -244,78 +389,177 @@
         .no-selection {
             text-align: center;
             padding: 4rem 2rem;
-            background: white;
+            background: var(--iwmi-white);
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
             grid-column: 1 / -1;
+            border: 1px solid var(--iwmi-border);
         }
         
         .no-selection-icon {
-            font-size: 4rem;
-            color: #ddd;
+            font-size: 3.5rem;
+            color: var(--iwmi-light-grey);
             margin-bottom: 1.5rem;
+        }
+        
+        .no-selection h3 {
+            color: var(--iwmi-dark-blue);
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .no-selection p {
+            color: var(--iwmi-text-light);
+            max-width: 400px;
+            margin: 0 auto;
+            line-height: 1.5;
         }
         
         /* Quick Downloads */
         .quick-downloads {
-            background: #fff3e0;
+            background: rgba(232, 105, 51, 0.08);
             padding: 2rem;
             border-radius: 10px;
             margin: 2rem 0;
+            border: 1px solid var(--iwmi-border);
+        }
+        
+        .quick-downloads h2 {
+            color: var(--iwmi-orange);
+            margin-bottom: 1rem;
+            font-weight: 600;
+            font-size: 1.5rem;
         }
         
         .quick-buttons {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1rem;
             margin-top: 1.5rem;
         }
         
         .quick-btn {
-            background: #FF9800;
-            color: white;
+            background: var(--iwmi-orange);
+            color: var(--iwmi-white);
             border: none;
-            padding: 1rem;
-            border-radius: 5px;
+            padding: 1.2rem;
+            border-radius: 6px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.8rem;
-            transition: background 0.3s;
+            transition: all 0.3s;
             font-size: 1rem;
         }
         
         .quick-btn:hover {
-            background: #F57C00;
+            background: #D45A23;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(232, 105, 51, 0.3);
         }
         
         /* Data Info */
         .data-info {
-            background: #e3f2fd;
+            background: rgba(70, 187, 212, 0.08);
             padding: 2rem;
             border-radius: 10px;
             margin: 2rem 0;
+            border: 1px solid var(--iwmi-border);
+        }
+        
+        .data-info h2 {
+            color: var(--iwmi-teal);
+            margin-bottom: 1rem;
+            font-weight: 600;
+            font-size: 1.5rem;
         }
         
         .info-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
             margin-top: 1.5rem;
         }
         
         .info-card {
-            background: white;
-            padding: 1.5rem;
+            background: var(--iwmi-white);
+            padding: 1.8rem;
             border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .info-card h4 {
+            margin: 0 0 1rem 0;
+            color: var(--iwmi-light-blue);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .info-card ul {
+            margin: 0;
+            padding-left: 1.2rem;
+            color: var(--iwmi-text-dark);
+            line-height: 1.6;
+        }
+        
+        .info-card li {
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+        
+        .info-card p {
+            margin: 0;
+            color: var(--iwmi-text-dark);
+            line-height: 1.6;
+            font-size: 0.95rem;
         }
         
         /* Animation */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Footer - Matching Other Pages */
+        footer {
+            background: var(--iwmi-dark-blue);
+            color: var(--iwmi-white);
+            padding: 2rem 0;
+            margin-top: auto;
+            text-align: center;
+            border-top: 4px solid var(--iwmi-green);
+            width: 100%;
+        }
+        
+        footer div {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        footer p {
+            margin: 0;
+        }
+        
+        footer p:first-child {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        footer p:last-child {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+        }
+        
+        footer i {
+            color: var(--iwmi-green);
+            margin-right: 5px;
         }
         
         /* Responsive */
@@ -334,7 +578,60 @@
             
             .district-stats {
                 flex-direction: column;
-                gap: 0.5rem;
+                gap: 0.8rem;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.8rem;
+            }
+            
+            .nav-links a {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+            
+            .logo h2 {
+                font-size: 1.2rem;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .downloads-container {
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .quick-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .district-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 0.8rem;
+            }
+            
+            .district-btn {
+                padding: 1rem 0.5rem;
+                min-height: 80px;
+            }
+            
+            .data-type-card {
+                padding: 1.5rem 1rem;
             }
         }
     </style>
@@ -343,13 +640,13 @@
     <!-- Navigation Bar -->
     <nav>
         <div class="logo">
-            <h2><i class="fas fa-water"></i> Sri Lanka Wetlands</h2>
+            <h2><i class="fas fa-water"></i> National Wetland Inventory of Sri Lanka</h2>
         </div>
         <ul class="nav-links">
             <li><a href="index.html">Home</a></li>
             <li><a href="about.html">About Wetlands</a></li>
             <li><a href="news.html">News</a></li>
-            <li><a href="downloads.html" style="background-color:#4CAF50;border-radius:4px;">Downloads</a></li>
+            <li><a href="downloads.html" style="background-color:var(--iwmi-sky-blue);border-radius:4px;">Downloads</a></li>
         </ul>
     </nav>
 
@@ -365,7 +662,7 @@
         <div class="district-section">
             <h2 class="section-title">Step 1: Select District</h2>
             <div class="district-instructions">
-                <i class="fas fa-info-circle"></i> Click on a district below to view available wetland data for that area.
+                <i class="fas fa-info-circle" style="color:var(--iwmi-sky-blue);"></i> Click on a district below to view available wetland data for that area.
             </div>
             
             <!-- District Grid -->
@@ -376,8 +673,8 @@
             <!-- Selected District Info -->
             <div id="selectedDistrictInfo" class="selected-district-info" style="display: none;">
                 <div>
-                    <h3 style="margin: 0; color: #2c5f2d;">
-                        <i class="fas fa-map-marker-alt"></i> Selected District: <span id="currentDistrict">None</span>
+                    <h3 style="margin: 0; color: var(--iwmi-dark-blue); font-weight:600;">
+                        <i class="fas fa-map-marker-alt" style="color:var(--iwmi-green);"></i> Selected District: <span id="currentDistrict">None</span>
                     </h3>
                     <div class="district-stats">
                         <div class="stat-item">
@@ -415,8 +712,8 @@
         
         <!-- Quick Downloads -->
         <div class="quick-downloads">
-            <h2 style="color: #e65100; margin-bottom: 1rem;">National Datasets</h2>
-            <p>Download complete national wetland datasets:</p>
+            <h2>National Datasets</h2>
+            <p style="color:var(--iwmi-text-light); line-height:1.5;">Download complete national wetland datasets:</p>
             
             <div class="quick-buttons">
                 <button class="quick-btn" onclick="downloadNationalDataset('atlas')">
@@ -433,14 +730,12 @@
         
         <!-- Data Information -->
         <div class="data-info">
-            <h2 style="color: #1565c0; margin-bottom: 1rem;">Data Information</h2>
+            <h2>Data Information</h2>
             
             <div class="info-grid">
                 <div class="info-card">
-                    <h4 style="margin: 0 0 1rem 0; color: #2196F3;">
-                        <i class="fas fa-file-alt"></i> File Formats
-                    </h4>
-                    <ul style="margin: 0; padding-left: 1.2rem;">
+                    <h4><i class="fas fa-file-alt"></i> File Formats</h4>
+                    <ul>
                         <li>Shapefiles (.shp, .dbf, .shx)</li>
                         <li>GeoJSON (.geojson)</li>
                         <li>KML/KMZ (.kml, .kmz)</li>
@@ -450,23 +745,13 @@
                 </div>
                 
                 <div class="info-card">
-                    <h4 style="margin: 0 0 1rem 0; color: #2196F3;">
-                        <i class="fas fa-balance-scale"></i> Usage License
-                    </h4>
-                    <p style="margin: 0; font-size: 0.95rem;">
-                        Data provided under Creative Commons Attribution 4.0. 
-                        Free for research, education, and conservation purposes.
-                    </p>
+                    <h4><i class="fas fa-balance-scale"></i> Usage License</h4>
+                    <p>Data provided under Creative Commons Attribution 4.0. Free for research, education, and conservation purposes.</p>
                 </div>
                 
                 <div class="info-card">
-                    <h4 style="margin: 0 0 1rem 0; color: #2196F3;">
-                        <i class="fas fa-tools"></i> Required Software
-                    </h4>
-                    <p style="margin: 0; font-size: 0.95rem;">
-                        QGIS (free), ArcGIS, or any GIS software. 
-                        For shapefiles, all component files must be kept together.
-                    </p>
+                    <h4><i class="fas fa-tools"></i> Required Software</h4>
+                    <p>QGIS (free), ArcGIS, or any GIS software. For shapefiles, all component files must be kept together.</p>
                 </div>
             </div>
         </div>
@@ -474,11 +759,9 @@
 
     <!-- Footer -->
     <footer>
-        <div style="max-width: 1400px; margin: 0 auto; padding: 0 2rem;">
-            <p>&copy; Sri Lanka Wetland Inventory Project 2026 </p>
-            <p style="font-size: 0.9rem; color: #c1e1c1; margin-top: 0.5rem;">
-                <i class="fas fa-info-circle"></i> Data provided under Creative Commons Attribution 4.0 International License
-            </p>
+        <div>
+            <p>&copy; National Wetland Inventory of Sri Lanka 2026</p>
+            <p><i class="fas fa-info-circle"></i> Data provided under Creative Commons Attribution 4.0 International License</p>
         </div>
     </footer>
 
@@ -512,53 +795,122 @@
             { name: 'Kegalle', files: 24, size: '1.1 GB', wetlands: 24}
         ];
 
-        // Data types
+        // Data types with IWMI colors
         const dataTypes = [
-            { id: 'shapefiles', name: 'Shapefiles', icon: 'fas fa-layer-group', color: '#4CAF50', 
-              desc: 'GIS shapefiles for wetland boundaries, mangroves, water bodies' },
-            { id: 'maps', name: 'Maps', icon: 'fas fa-map', color: '#2196F3', 
-              desc: 'Printable maps in PDF and image formats' },
-            { id: 'data', name: 'Data Tables', icon: 'fas fa-table', color: '#FF9800', 
-              desc: 'Excel and CSV files with wetland data' },
-            { id: 'reports', name: 'Reports', icon: 'fas fa-file-pdf', color: '#f44336', 
-              desc: 'PDF reports and research papers' },
-            { id: 'imagery', name: 'Satellite Imagery', icon: 'fas fa-satellite', color: '#9C27B0', 
-              desc: 'GeoTIFF satellite images' }
+            { 
+                id: 'shapefiles', 
+                name: 'Shapefiles', 
+                icon: 'fas fa-layer-group', 
+                color: 'var(--iwmi-sky-blue)', 
+                desc: 'GIS shapefiles for wetland boundaries, mangroves, water bodies' 
+            },
+            { 
+                id: 'maps', 
+                name: 'Maps', 
+                icon: 'fas fa-map', 
+                color: 'var(--iwmi-teal)', 
+                desc: 'Printable maps in PDF and image formats' 
+            },
+            { 
+                id: 'data', 
+                name: 'Data Tables', 
+                icon: 'fas fa-table', 
+                color: 'var(--iwmi-orange)', 
+                desc: 'Excel and CSV files with wetland data' 
+            },
+            { 
+                id: 'reports', 
+                name: 'Reports', 
+                icon: 'fas fa-file-pdf', 
+                color: 'var(--iwmi-green)', 
+                desc: 'PDF reports and research papers' 
+            },
+            { 
+                id: 'imagery', 
+                name: 'Satellite Imagery', 
+                icon: 'fas fa-satellite', 
+                color: 'var(--iwmi-light-blue)', 
+                desc: 'GeoTIFF satellite images' 
+            }
         ];
 
         // Sample files for each data type
         const sampleFiles = {
             shapefiles: [
-                { name: 'Wetland Boundaries', type: 'SHP', size: '45 MB', 
-                  desc: 'Complete wetland boundary shapefiles with Ramsar classification data' },
-                { name: 'Mangrove Forest Areas', type: 'GeoJSON', size: '28 MB', 
-                  desc: 'Mangrove forest distribution and density data for coastal areas' },
-                { name: 'Water Body Network', type: 'KML', size: '32 MB', 
-                  desc: 'Rivers, lakes, reservoirs, and tanks in Google Earth format' },
-                { name: 'Wetland Classification', type: 'SHP', size: '38 MB', 
-                  desc: 'Detailed wetland classification by Ramsar types with attributes' }
+                { 
+                    name: 'Wetland Boundaries', 
+                    type: 'SHP', 
+                    size: '45 MB', 
+                    desc: 'Complete wetland boundary shapefiles with Ramsar classification data' 
+                },
+                { 
+                    name: 'Mangrove Forest Areas', 
+                    type: 'GeoJSON', 
+                    size: '28 MB', 
+                    desc: 'Mangrove forest distribution and density data for coastal areas' 
+                },
+                { 
+                    name: 'Water Body Network', 
+                    type: 'KML', 
+                    size: '32 MB', 
+                    desc: 'Rivers, lakes, reservoirs, and tanks in Google Earth format' 
+                },
+                { 
+                    name: 'Wetland Classification', 
+                    type: 'SHP', 
+                    size: '38 MB', 
+                    desc: 'Detailed wetland classification by Ramsar types with attributes' 
+                }
             ],
             maps: [
-                { name: 'Wetland Distribution Map', type: 'PDF', size: '15 MB', 
-                  desc: 'High-resolution wetland distribution map with classification legend' },
-                { name: 'Conservation Priority Map', type: 'PNG', size: '8 MB', 
-                  desc: 'Map showing wetland conservation priority areas based on biodiversity' }
+                { 
+                    name: 'Wetland Distribution Map', 
+                    type: 'PDF', 
+                    size: '15 MB', 
+                    desc: 'High-resolution wetland distribution map with classification legend' 
+                },
+                { 
+                    name: 'Conservation Priority Map', 
+                    type: 'PNG', 
+                    size: '8 MB', 
+                    desc: 'Map showing wetland conservation priority areas based on biodiversity' 
+                }
             ],
             data: [
-                { name: 'Wetland Species Database', type: 'CSV', size: '18 MB', 
-                  desc: 'Complete database of plant and animal species found in wetlands' },
-                { name: 'Water Quality Measurements', type: 'Excel', size: '22 MB', 
-                  desc: 'Historical water quality data from monitoring stations' }
+                { 
+                    name: 'Wetland Species Database', 
+                    type: 'CSV', 
+                    size: '18 MB', 
+                    desc: 'Complete database of plant and animal species found in wetlands' 
+                },
+                { 
+                    name: 'Water Quality Measurements', 
+                    type: 'Excel', 
+                    size: '22 MB', 
+                    desc: 'Historical water quality data from monitoring stations' 
+                }
             ],
             reports: [
-                { name: 'Annual Wetland Status Report', type: 'PDF', size: '8 MB', 
-                  desc: 'Comprehensive annual report on wetland status and changes' },
-                { name: 'Conservation Assessment', type: 'PDF', size: '12 MB', 
-                  desc: 'Detailed conservation needs assessment and recommendations' }
+                { 
+                    name: 'Annual Wetland Status Report', 
+                    type: 'PDF', 
+                    size: '8 MB', 
+                    desc: 'Comprehensive annual report on wetland status and changes' 
+                },
+                { 
+                    name: 'Conservation Assessment', 
+                    type: 'PDF', 
+                    size: '12 MB', 
+                    desc: 'Detailed conservation needs assessment and recommendations' 
+                }
             ],
             imagery: [
-                { name: '2023 Satellite Imagery', type: 'GeoTIFF', size: '850 MB', 
-                  desc: 'High-resolution satellite imagery for wetland monitoring' }
+                { 
+                    name: '2023 Satellite Imagery', 
+                    type: 'GeoTIFF', 
+                    size: '850 MB', 
+                    desc: 'High-resolution satellite imagery for wetland monitoring' 
+                }
             ]
         };
 
@@ -580,7 +932,7 @@
                 const button = document.createElement('button');
                 button.className = 'district-btn';
                 button.innerHTML = `
-                    <i class="${district.icon} district-icon" style="color: ${district.color}"></i>
+                    <i class="fas fa-map-marker-alt district-icon" style="color: var(--iwmi-sky-blue)"></i>
                     <span>${district.name}</span>
                 `;
                 button.onclick = () => selectDistrict(district);
@@ -627,8 +979,8 @@
                 card.className = `data-type-card ${type.id === selectedDataType ? 'active' : ''}`;
                 card.innerHTML = `
                     <i class="${type.icon} data-type-icon" style="color: ${type.color}"></i>
-                    <h3 style="margin: 0 0 0.5rem 0; color: ${type.color}">${type.name}</h3>
-                    <p style="margin: 0; color: #666; font-size: 0.9rem;">${type.desc}</p>
+                    <h3>${type.name}</h3>
+                    <p>${type.desc}</p>
                 `;
                 card.onclick = () => selectDataType(type.id);
                 dataTypesContainer.appendChild(card);
@@ -664,8 +1016,8 @@
                 downloadsGrid.innerHTML = `
                     <div class="no-selection">
                         <i class="fas fa-map-marker-alt no-selection-icon"></i>
-                        <h3 style="color: #666; margin-bottom: 0.5rem;">No District Selected</h3>
-                        <p style="color: #999;">Please select a district first to view available downloads.</p>
+                        <h3>No District Selected</h3>
+                        <p>Please select a district first to view available downloads.</p>
                     </div>
                 `;
                 return;
@@ -677,8 +1029,8 @@
                 downloadsGrid.innerHTML = `
                     <div class="no-selection">
                         <i class="fas fa-folder-open no-selection-icon"></i>
-                        <h3 style="color: #666; margin-bottom: 0.5rem;">No Files Available</h3>
-                        <p style="color: #999;">No ${selectedDataType} available for ${selectedDistrict.name} district.</p>
+                        <h3>No Files Available</h3>
+                        <p>No ${selectedDataType} available for ${selectedDistrict.name} district.</p>
                     </div>
                 `;
                 return;
@@ -692,13 +1044,13 @@
                 card.className = 'download-card';
                 card.innerHTML = `
                     <div class="download-header">
-                        <h3 style="margin: 0;">${districtPrefix}${file.name}</h3>
+                        <h3>${districtPrefix}${file.name}</h3>
                         <span class="file-type">${file.type}</span>
                     </div>
                     <div class="download-content">
                         <div class="file-info">
-                            <span><i class="far fa-hdd"></i> ${file.size}</span>
-                            <span><i class="far fa-calendar"></i> Updated: 2023</span>
+                            <span><i class="far fa-hdd" style="color:var(--iwmi-sky-blue);"></i> ${file.size}</span>
+                            <span><i class="far fa-calendar" style="color:var(--iwmi-green);"></i> Updated: 2023</span>
                         </div>
                         <p class="file-description">${file.desc}</p>
                         <button class="download-btn" onclick="downloadFile('${file.type}', '${file.name}', ${selectedDistrict.wetlands})">

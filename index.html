@@ -8,79 +8,185 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
    <style>
-    /* Hero Section with Banner - IWMI Blue Theme */
+    /* IWMI Brand Colors from https://branding.iwmi.org/our-colours/ */
+    :root {
+        --iwmi-dark-blue: #28537D;      /* Dark Blue */
+        --iwmi-light-blue: #5088C6;     /* Light Blue */
+        --iwmi-sky-blue: #46BBD4;       /* Sky Blue */
+        --iwmi-teal: #0297A6;           /* Teal */
+        --iwmi-green: #22AD7A;          /* Green */
+        --iwmi-orange: #E86933;         /* Orange */
+        --iwmi-yellow: #DD9103;         /* Yellow */
+        --iwmi-light-grey: #E8E7E7;     /* Light Grey */
+        --iwmi-white: #FFFFFF;
+        --iwmi-text-dark: #333333;
+        --iwmi-text-light: #666666;
+        --iwmi-background: #F8F9FA;
+        --iwmi-border: #E0E7EE;
+    }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        margin: 0;
+        padding: 0;
+        color: var(--iwmi-text-dark);
+        background: var(--iwmi-background);
+        -webkit-font-smoothing: antialiased;
+    }
+    
+    /* Navigation Bar - IWMI Dark Blue */
+    nav {
+        background: var(--iwmi-dark-blue);
+        padding: 0.8rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+    
+    .logo h2 {
+        color: var(--iwmi-white);
+        font-size: 1.4rem;
+        margin: 0;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .logo h2 i {
+        color: var(--iwmi-green);
+        font-size: 1.6rem;
+    }
+    
+    .nav-links {
+        display: flex;
+        list-style: none;
+        gap: 1.5rem;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .nav-links a {
+        color: var(--iwmi-white);
+        text-decoration: none;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        transition: all 0.3s;
+        font-size: 0.95rem;
+        opacity: 0.9;
+    }
+    
+    .nav-links a:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--iwmi-green);
+        opacity: 1;
+    }
+    
+    .nav-links a.active {
+        background: var(--iwmi-sky-blue);
+        color: var(--iwmi-white);
+        opacity: 1;
+    }
+    
+    /* Hero Section with Banner - IWMI Gradient Theme */
     .hero {
         position: relative;
         height: 60vh;
         min-height: 400px;
-        background: linear-gradient(rgba(0, 47, 108, 0.7), rgba(0, 47, 108, 0.9)), 
-                    url('https://github.com/lakshithamadusanka555-png/WETLAND-INVENTORY/raw/main/images/banner.jpg');
-        background-size: cover;
-        background-position: center;
+        background: linear-gradient(135deg, var(--iwmi-dark-blue) 0%, var(--iwmi-light-blue) 50%, var(--iwmi-sky-blue) 100%);
         color: white;
         display: flex;
         align-items: center;
         justify-content: center;
         text-align: center;
         padding: 0 2rem;
+        overflow: hidden;
+    }
+    
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('https://github.com/lakshithamadusanka555-png/WETLAND-INVENTORY/raw/main/images/banner.jpg');
+        background-size: cover;
+        background-position: center;
+        opacity: 0.3;
+        z-index: 1;
     }
     
     .hero-content {
         max-width: 800px;
         animation: fadeInUp 1s ease-out;
+        position: relative;
+        z-index: 2;
     }
     
     .hero h1 {
-        font-size: 3.5rem;
+        font-size: 3rem;
         margin-bottom: 1rem;
         text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         color: white;
+        font-weight: 600;
+        line-height: 1.2;
     }
     
     .hero p {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
         margin-bottom: 2rem;
         opacity: 0.9;
-        color: #E6F7FF;
+        color: rgba(255, 255, 255, 0.95);
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.6;
     }
     
     .hero-btn {
-        background: #00A3DA;
+        background: var(--iwmi-green);
         color: white;
         border: none;
         padding: 1rem 2.5rem;
         font-size: 1.1rem;
-        border-radius: 50px;
+        border-radius: 4px;
         cursor: pointer;
         transition: all 0.3s;
         display: inline-flex;
         align-items: center;
         gap: 10px;
-        font-weight: bold;
-        border: 2px solid transparent;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 12px rgba(34, 173, 122, 0.3);
     }
     
     .hero-btn:hover {
-        background: #0087B8;
-        transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(0, 163, 218, 0.3);
-        border-color: white;
+        background: var(--iwmi-teal);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(2, 151, 166, 0.4);
     }
     
-    /* Quick Stats */
+    /* Quick Stats - IWMI White Card with Blue Accent */
     .quick-stats {
         display: flex;
         justify-content: center;
         gap: 3rem;
-        background: white;
-        padding: 1.5rem;
-        margin: -30px auto 2rem auto;
+        background: var(--iwmi-white);
+        padding: 2rem;
+        margin: -40px auto 3rem auto;
         max-width: 1000px;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(40, 83, 125, 0.1);
         position: relative;
         z-index: 10;
-        border-top: 5px solid #6EAE4A;
+        border-top: 4px solid var(--iwmi-sky-blue);
     }
     
     .stat-item {
@@ -88,24 +194,25 @@
     }
     
     .stat-number {
-        font-size: 2.5rem;
-        font-weight: bold;
-        color: #002F6C;
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--iwmi-dark-blue);
         margin-bottom: 0.5rem;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     
     .stat-label {
-        color: #666666;
+        color: var(--iwmi-text-light);
         font-weight: 500;
         font-size: 0.9rem;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 1px;
     }
     
     /* Map Section */
     .map-section {
-        padding: 4rem 2rem;
-        background: #F5F9FC;
+        padding: 3rem 2rem;
+        background: linear-gradient(to bottom, var(--iwmi-background) 0%, #f0f4f8 100%);
         min-height: 85vh;
         display: flex;
         flex-direction: column;
@@ -113,24 +220,37 @@
     
     .map-header {
         text-align: center;
-        margin-bottom: 2rem;
+        margin-bottom: 2.5rem;
         flex-shrink: 0;
     }
     
     .map-header h2 {
-        color: #002F6C;
-        font-size: 2.2rem;
-        margin-bottom: 0.5rem;
-        border-bottom: 3px solid #6EAE4A;
+        color: var(--iwmi-dark-blue);
+        font-size: 2rem;
+        margin-bottom: 0.8rem;
+        position: relative;
         display: inline-block;
         padding-bottom: 10px;
+        font-weight: 600;
+    }
+    
+    .map-header h2::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: var(--iwmi-green);
     }
     
     .map-header p {
-        color: #666666;
+        color: var(--iwmi-text-light);
         max-width: 600px;
         margin: 0 auto 2rem auto;
-        font-size: 1.1rem;
+        font-size: 1rem;
+        line-height: 1.6;
     }
     
     /* Enhanced Map Container */
@@ -141,20 +261,20 @@
         display: grid;
         grid-template-columns: 350px 1fr;
         gap: 20px;
-        background: white;
-        border-radius: 15px;
+        background: var(--iwmi-white);
+        border-radius: 12px;
         overflow: hidden;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        box-shadow: 0 15px 35px rgba(40, 83, 125, 0.1);
         height: 75vh;
         min-height: 650px;
         flex-grow: 1;
-        border: 1px solid #E0EDF5;
+        border: 1px solid var(--iwmi-border);
     }
     
     .map-sidebar {
-        background: #F5F9FC;
-        padding: 20px;
-        border-right: 1px solid #E0EDF5;
+        background: var(--iwmi-white);
+        padding: 25px;
+        border-right: 1px solid var(--iwmi-border);
         height: 100%;
         overflow-y: auto;
         display: flex;
@@ -172,107 +292,124 @@
         width: 100%;
         flex-grow: 1;
         min-height: 550px;
+        border-radius: 0 8px 0 0;
     }
     
     .map-controls {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 1.5rem;
-        background: white;
-        border-top: 1px solid #E0EDF5;
+        padding: 1.2rem 1.5rem;
+        background: var(--iwmi-white);
+        border-top: 1px solid var(--iwmi-border);
         flex-wrap: wrap;
         gap: 10px;
         flex-shrink: 0;
+        border-radius: 0 0 8px 0;
     }
     
     .control-group {
         display: flex;
-        gap: 1rem;
+        gap: 0.8rem;
         align-items: center;
         flex-wrap: wrap;
     }
     
     .map-btn {
-        background: #00A3DA;
-        color: white;
+        background: var(--iwmi-light-blue);
+        color: var(--iwmi-white);
         border: none;
-        padding: 0.8rem 1.5rem;
-        border-radius: 6px;
+        padding: 0.7rem 1.2rem;
+        border-radius: 4px;
         cursor: pointer;
         display: flex;
         align-items: center;
         gap: 8px;
         transition: all 0.3s;
-        font-size: 0.9rem;
-        font-weight: 500;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
     }
     
     .map-btn:hover {
-        background: #0087B8;
+        background: var(--iwmi-dark-blue);
         transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 163, 218, 0.2);
+        box-shadow: 0 4px 12px rgba(40, 83, 125, 0.2);
     }
     
     .map-btn.secondary {
-        background: #6EAE4A;
+        background: var(--iwmi-green);
     }
     
     .map-btn.secondary:hover {
-        background: #5D9740;
-        box-shadow: 0 4px 8px rgba(110, 174, 74, 0.2);
+        background: var(--iwmi-teal);
+        box-shadow: 0 4px 12px rgba(2, 151, 166, 0.2);
     }
     
     .map-btn.danger {
-        background: #D9534F;
+        background: var(--iwmi-orange);
     }
     
     .map-btn.danger:hover {
-        background: #C9302C;
-        box-shadow: 0 4px 8px rgba(217, 83, 79, 0.2);
+        background: #D45A23;
+        box-shadow: 0 4px 12px rgba(232, 105, 51, 0.2);
     }
     
     /* Layer Control Panel */
     .layer-control-panel {
         margin-bottom: 20px;
         flex-shrink: 0;
-        background: white;
+        background: var(--iwmi-white);
         padding: 20px;
-        border-radius: 10px;
-        border: 1px solid #E0EDF5;
+        border-radius: 8px;
+        border: 1px solid var(--iwmi-border);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
     
     .panel-title {
-        font-size: 1.2rem;
-        font-weight: bold;
-        color: #002F6C;
-        margin-bottom: 15px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--iwmi-dark-blue);
+        margin-bottom: 20px;
         display: flex;
         align-items: center;
         gap: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .panel-title i {
+        color: var(--iwmi-sky-blue);
+        font-size: 1.2rem;
     }
     
     .layer-group {
         margin-bottom: 15px;
-        background: #F5F9FC;
-        padding: 12px;
-        border-radius: 8px;
-        border: 1px solid #E0EDF5;
+        background: rgba(232, 231, 231, 0.3);
+        padding: 15px;
+        border-radius: 6px;
+        border: 1px solid var(--iwmi-border);
         transition: all 0.3s;
     }
     
     .layer-group:hover {
-        border-color: #00A3DA;
+        border-color: var(--iwmi-light-blue);
+        box-shadow: 0 2px 8px rgba(80, 136, 198, 0.1);
     }
     
     .layer-group-title {
         font-weight: 600;
-        color: #002F6C;
-        margin-bottom: 15px;
-        font-size: 1rem;
+        color: var(--iwmi-dark-blue);
+        margin-bottom: 12px;
+        font-size: 0.95rem;
         display: flex;
         align-items: center;
         gap: 8px;
+    }
+    
+    .layer-group-title i {
+        color: var(--iwmi-light-blue);
     }
     
     .layer-item {
@@ -281,108 +418,121 @@
         gap: 10px;
         margin-bottom: 10px;
         padding: 10px;
-        background: white;
-        border-radius: 6px;
+        background: var(--iwmi-white);
+        border-radius: 4px;
         cursor: pointer;
         transition: all 0.3s;
-        border: 1px solid #E0EDF5;
+        border: 1px solid var(--iwmi-border);
     }
     
     .layer-item:hover {
-        background: #E6F7FF;
-        border-color: #00A3DA;
+        background: rgba(70, 187, 212, 0.05);
+        border-color: var(--iwmi-sky-blue);
+        transform: translateX(2px);
     }
     
     .layer-checkbox {
         width: 18px;
         height: 18px;
         cursor: pointer;
-        accent-color: #00A3DA;
+        accent-color: var(--iwmi-green);
     }
     
     .layer-label {
         flex-grow: 1;
-        font-size: 0.95rem;
-        color: #333333;
+        font-size: 0.9rem;
+        color: var(--iwmi-text-dark);
         font-weight: 500;
     }
     
     .layer-color {
         width: 20px;
         height: 20px;
-        border-radius: 4px;
-        border: 2px solid white;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-radius: 3px;
+        border: 2px solid var(--iwmi-white);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
     
     .layer-stats {
-        font-size: 0.8rem;
-        color: #666666;
-        background: #E0EDF5;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-weight: 500;
+        font-size: 0.75rem;
+        color: var(--iwmi-text-light);
+        background: rgba(232, 231, 231, 0.5);
+        padding: 3px 8px;
+        border-radius: 10px;
+        font-weight: 600;
+        min-width: 70px;
+        text-align: center;
     }
     
     .layer-opacity {
         width: 100%;
-        margin-top: 8px;
+        margin-top: 10px;
         height: 6px;
         border-radius: 3px;
-        accent-color: #00A3DA;
+        accent-color: var(--iwmi-light-blue);
+        cursor: pointer;
     }
     
     /* Legend */
     .legend {
-        background: white;
+        background: var(--iwmi-white);
         padding: 20px;
-        border-radius: 10px;
+        border-radius: 8px;
         margin-top: 15px;
-        border: 1px solid #E0EDF5;
+        border: 1px solid var(--iwmi-border);
         flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
     
     .legend-title {
-        font-weight: bold;
+        font-weight: 700;
         margin-bottom: 15px;
-        color: #002F6C;
+        color: var(--iwmi-dark-blue);
         display: flex;
         align-items: center;
         gap: 10px;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .legend-title i {
+        color: var(--iwmi-green);
     }
     
     .legend-item {
         display: flex;
         align-items: center;
         margin-bottom: 10px;
-        padding: 8px;
-        background: #F5F9FC;
-        border-radius: 6px;
+        padding: 8px 10px;
+        background: rgba(232, 231, 231, 0.3);
+        border-radius: 4px;
     }
     
     .legend-color {
-        width: 24px;
-        height: 24px;
+        width: 22px;
+        height: 22px;
         margin-right: 12px;
         border-radius: 4px;
-        border: 2px solid white;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border: 2px solid var(--iwmi-white);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
     
     .legend-label {
-        font-size: 0.95rem;
-        color: #333333;
+        font-size: 0.9rem;
+        color: var(--iwmi-text-dark);
         font-weight: 500;
     }
     
     /* Statistics Panel */
     .stats-panel {
-        background: white;
+        background: var(--iwmi-white);
         padding: 20px;
-        border-radius: 10px;
-        border: 1px solid #E0EDF5;
+        border-radius: 8px;
+        border: 1px solid var(--iwmi-border);
         margin-top: 15px;
         flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
     
     .stats-header {
@@ -394,111 +544,68 @@
     
     .stat-display {
         margin-top: 10px;
-        font-size: 0.9rem;
-        color: #666666;
-        line-height: 1.4;
-        background: #F5F9FC;
+        font-size: 0.85rem;
+        color: var(--iwmi-text-dark);
+        line-height: 1.5;
+        background: rgba(232, 231, 231, 0.3);
         padding: 15px;
-        border-radius: 8px;
+        border-radius: 6px;
         min-height: 60px;
-        border-left: 4px solid #6EAE4A;
+        border-left: 3px solid var(--iwmi-green);
     }
     
     .loading {
-        color: #00A3DA;
+        color: var(--iwmi-light-blue);
         font-style: italic;
     }
     
     .success {
-        color: #6EAE4A;
+        color: var(--iwmi-green);
     }
     
     .error {
-        color: #D9534F;
+        color: var(--iwmi-orange);
     }
     
     .feature-count {
-        background: #6EAE4A;
-        color: white;
-        padding: 4px 10px;
+        background: var(--iwmi-green);
+        color: var(--iwmi-white);
+        padding: 3px 10px;
         border-radius: 12px;
-        font-size: 0.85rem;
-        font-weight: bold;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
     }
     
     /* Measurement Tools */
     .measurement-panel {
-        background: white;
+        background: var(--iwmi-white);
         padding: 20px;
-        border-radius: 10px;
-        border: 1px solid #E0EDF5;
+        border-radius: 8px;
+        border: 1px solid var(--iwmi-border);
         margin-top: 15px;
         flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
     
     /* Dropdown Styles */
     .filter-dropdown {
         padding: 0.7rem 1rem;
-        border: 1px solid #00A3DA;
-        border-radius: 6px;
-        background: white;
-        color: #002F6C;
+        border: 1px solid var(--iwmi-light-blue);
+        border-radius: 4px;
+        background: var(--iwmi-white);
+        color: var(--iwmi-dark-blue);
         font-size: 0.9rem;
         cursor: pointer;
         font-weight: 500;
+        min-width: 140px;
+        transition: all 0.3s;
     }
     
     .filter-dropdown:focus {
         outline: none;
-        box-shadow: 0 0 0 3px rgba(0, 163, 218, 0.1);
-        border-color: #0087B8;
-    }
-    
-    /* Navigation Bar (Add this if you want to update nav too) */
-    nav {
-        background: #002F6C;
-        padding: 1rem 2rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    
-    .logo h2 {
-        color: white;
-        font-size: 1.5rem;
-        margin: 0;
-    }
-    
-    .logo h2 i {
-        color: #6EAE4A;
-    }
-    
-    .nav-links {
-        display: flex;
-        list-style: none;
-        gap: 2rem;
-        margin: 0;
-        padding: 0;
-    }
-    
-    .nav-links a {
-        color: white;
-        text-decoration: none;
-        font-weight: 500;
-        padding: 0.5rem 1rem;
-        border-radius: 4px;
-        transition: all 0.3s;
-    }
-    
-    .nav-links a:hover {
-        background: rgba(255, 255, 255, 0.1);
-        color: #6EAE4A;
-    }
-    
-    .nav-links a.active {
-        background: #00A3DA;
-        color: white;
+        border-color: var(--iwmi-dark-blue);
+        box-shadow: 0 0 0 2px rgba(40, 83, 125, 0.1);
     }
     
     /* Animations */
@@ -513,7 +620,18 @@
         }
     }
     
-    /* Responsive adjustments remain the same */
+    /* Notification Styles */
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+    
+    /* Responsive Design */
     @media (max-width: 1200px) {
         .map-container {
             height: 70vh;
@@ -533,7 +651,7 @@
             height: auto;
             max-height: 350px;
             border-right: none;
-            border-bottom: 1px solid #E0EDF5;
+            border-bottom: 1px solid var(--iwmi-border);
         }
         
         #map {
@@ -542,8 +660,18 @@
     }
     
     @media (max-width: 768px) {
+        .hero {
+            height: 50vh;
+            min-height: 350px;
+            padding: 0 1rem;
+        }
+        
         .hero h1 {
-            font-size: 2.5rem;
+            font-size: 2rem;
+        }
+        
+        .hero p {
+            font-size: 1rem;
         }
         
         .quick-stats {
@@ -551,20 +679,35 @@
             gap: 1.5rem;
             margin-top: -30px;
             padding: 1.5rem;
+            max-width: 90%;
+        }
+        
+        .stat-number {
+            font-size: 1.8rem;
+        }
+        
+        .map-section {
+            padding: 2rem 1rem;
+        }
+        
+        .map-container {
+            min-height: 700px;
         }
         
         .map-controls {
             flex-direction: column;
+            gap: 10px;
         }
         
         .control-group {
             width: 100%;
             justify-content: center;
+            flex-wrap: wrap;
         }
         
         .map-btn {
             padding: 0.6rem 1rem;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
         
         nav {
@@ -576,7 +719,45 @@
         .nav-links {
             flex-wrap: wrap;
             justify-content: center;
-            gap: 1rem;
+            gap: 0.8rem;
+        }
+        
+        .nav-links a {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+        }
+        
+        .logo h2 {
+            font-size: 1.2rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .hero {
+            height: 40vh;
+            min-height: 300px;
+        }
+        
+        .hero h1 {
+            font-size: 1.6rem;
+        }
+        
+        .hero-btn {
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+        }
+        
+        .map-container {
+            min-height: 600px;
+            border-radius: 8px;
+        }
+        
+        .map-sidebar {
+            padding: 15px;
+        }
+        
+        .quick-stats {
+            padding: 1rem;
         }
     }
 </style>
@@ -650,7 +831,7 @@
                         <div class="layer-item" onclick="toggleLayer('water')">
                             <input type="checkbox" class="layer-checkbox" id="waterLayer" checked>
                             <span class="layer-label">Water Bodies Shapefile</span>
-                            <div class="layer-color" style="background-color: rgba(33, 150, 243, 0.7);"></div>
+                            <div class="layer-color" style="background-color: rgba(70, 187, 212, 0.7);"></div>
                             <span class="layer-stats" id="waterStats">0 features</span>
                         </div>
                         <input type="range" class="layer-opacity" id="waterOpacity" min="0" max="100" value="70"
@@ -665,7 +846,7 @@
                         <div class="layer-item" onclick="toggleLayer('paddy')">
                             <input type="checkbox" class="layer-checkbox" id="paddyLayer" checked>
                             <span class="layer-label">Paddy Fields Shapefile</span>
-                            <div class="layer-color" style="background-color: rgba(76, 175, 80, 0.7);"></div>
+                            <div class="layer-color" style="background-color: rgba(34, 173, 122, 0.7);"></div>
                             <span class="layer-stats" id="paddyStats">0 features</span>
                         </div>
                         <input type="range" class="layer-opacity" id="paddyOpacity" min="0" max="100" value="70"
@@ -680,7 +861,7 @@
                         <div class="layer-item" onclick="toggleLayer('marsh')">
                             <input type="checkbox" class="layer-checkbox" id="marshLayer" checked>
                             <span class="layer-label">Marsh Areas Shapefile</span>
-                            <div class="layer-color" style="background-color: rgba(156, 39, 176, 0.7);"></div>
+                            <div class="layer-color" style="background-color: rgba(2, 151, 166, 0.7);"></div>
                             <span class="layer-stats" id="marshStats">0 features</span>
                         </div>
                         <input type="range" class="layer-opacity" id="marshOpacity" min="0" max="100" value="70"
@@ -690,18 +871,20 @@
                 
                 <!-- Legend -->
                 <div class="legend">
-                    <div class="legend-title">Layer Colors</div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background-color: rgba(33, 150, 243, 0.7);"></div>
-                        <span class="legend-label">Water Bodies</span>
+                    <div class="legend-title">
+                        <i class="fas fa-palette"></i> Layer Colors
                     </div>
                     <div class="legend-item">
-                        <div class="legend-color" style="background-color: rgba(76, 175, 80, 0.7);"></div>
-                        <span class="legend-label">Paddy Fields</span>
+                        <div class="legend-color" style="background-color: rgba(70, 187, 212, 0.7);"></div>
+                        <span class="legend-label">Water Bodies (Sky Blue)</span>
                     </div>
                     <div class="legend-item">
-                        <div class="legend-color" style="background-color: rgba(156, 39, 176, 0.7);"></div>
-                        <span class="legend-label">Marsh Areas</span>
+                        <div class="legend-color" style="background-color: rgba(34, 173, 122, 0.7);"></div>
+                        <span class="legend-label">Paddy Fields (Green)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: rgba(2, 151, 166, 0.7);"></div>
+                        <span class="legend-label">Marsh Areas (Teal)</span>
                     </div>
                 </div>
                 
@@ -793,11 +976,11 @@
         let drawnItems = new L.FeatureGroup();
         let currentMeasurement = null;
         
-        // Color scheme for layers
+        // IWMI Color scheme for layers
         const layerColors = {
-            water: 'rgba(33, 150, 243, 0.7)',
-            paddy: 'rgba(76, 175, 80, 0.7)',
-            marsh: 'rgba(156, 39, 176, 0.7)'
+            water: 'rgba(70, 187, 212, 0.7)',    // IWMI Sky Blue
+            paddy: 'rgba(34, 173, 122, 0.7)',    // IWMI Green
+            marsh: 'rgba(2, 151, 166, 0.7)'      // IWMI Teal
         };
         
         // Statistics
@@ -809,7 +992,7 @@
         
         // Initialize map when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            console.log("Initializing Wetland Map with Real Shapefiles");
+            console.log("Initializing Wetland Map with Real Shapefiles - IWMI Brand");
             initializeMap();
             loadShapefiles();
             updateQuickStats();
@@ -847,7 +1030,7 @@
             // Add drawn items layer
             map.addLayer(drawnItems);
             
-            console.log("Map initialized successfully");
+            console.log("Map initialized successfully with IWMI theme");
         }
         
         // Load shapefiles from GeoJSON files
@@ -870,14 +1053,15 @@
                     
                     const geojsonData = await response.json();
                     
-                    // Create Leaflet GeoJSON layer
+                    // Create Leaflet GeoJSON layer with IWMI colors
                     shapefileLayers[layer] = L.geoJSON(geojsonData, {
                         style: {
                             fillColor: layerColors[layer],
                             weight: 2,
                             opacity: 1,
                             color: layerColors[layer].replace('0.7', '1'),
-                            fillOpacity: 0.7
+                            fillOpacity: 0.7,
+                            dashArray: layer === 'marsh' ? '5, 5' : null
                         },
                         onEachFeature: function(feature, layer) {
                             // Add click event for feature info
@@ -906,7 +1090,7 @@
                     // Add to map by default
                     map.addLayer(shapefileLayers[layer]);
                     
-                    // Update UI
+                    // Update UI with IWMI colors
                     document.getElementById(`${layer}Stats`).textContent = `${layerStats[layer].features} features`;
                     document.getElementById(`${layer}Stats`).className = 'layer-stats success';
                     
@@ -927,16 +1111,18 @@
             updateStatisticsDisplay();
             
             // Update quick stats
-            document.getElementById('featureCount').textContent = totalFeatures;
+            document.getElementById('featureCount').textContent = totalFeatures.toLocaleString();
             document.getElementById('totalArea').textContent = formatArea(totalArea);
             
             if (loadedCount > 0) {
-                showNotification(`Loaded ${loadedCount} shapefiles with ${totalFeatures} total features`);
+                showNotification(`Loaded ${loadedCount} shapefiles with ${totalFeatures.toLocaleString()} total features`, 'info');
                 
                 // Fit map to show all data
                 setTimeout(() => {
                     fitToAllData();
                 }, 500);
+            } else {
+                showNotification('No shapefiles loaded. Please check data folder.', 'error');
             }
         }
         
@@ -979,11 +1165,11 @@
                 if (isVisible) {
                     map.removeLayer(shapefileLayers[layerName]);
                     checkbox.checked = false;
-                    showNotification(`${layerName} layer turned OFF`);
+                    showNotification(`${layerName} layer turned OFF`, 'info');
                 } else {
                     map.addLayer(shapefileLayers[layerName]);
                     checkbox.checked = true;
-                    showNotification(`${layerName} layer turned ON`);
+                    showNotification(`${layerName} layer turned ON`, 'info');
                 }
                 updateStatisticsDisplay();
             }
@@ -1008,7 +1194,7 @@
                     document.getElementById(layer + 'Layer').checked = true;
                 }
             });
-            showNotification('All layers turned ON');
+            showNotification('All layers turned ON', 'info');
             updateStatisticsDisplay();
         }
         
@@ -1020,7 +1206,7 @@
                     document.getElementById(layer + 'Layer').checked = false;
                 }
             });
-            showNotification('All layers turned OFF');
+            showNotification('All layers turned OFF', 'info');
             updateStatisticsDisplay();
         }
         
@@ -1039,26 +1225,31 @@
             
             if (bounds.isValid()) {
                 map.fitBounds(bounds, { padding: [50, 50] });
-                showNotification('Map zoomed to show all wetland data');
+                showNotification('Map zoomed to show all wetland data', 'info');
             } else {
                 map.setView([7.8731, 80.7718], 8);
-                showNotification('No data bounds available, centered on Sri Lanka');
+                showNotification('No data bounds available, centered on Sri Lanka', 'info');
             }
         }
         
         // Show feature information
         function showFeatureInfo(feature, latlng) {
-            let infoHtml = `<div style="padding: 10px; max-width: 300px;">
-                <h4 style="margin: 0 0 10px 0; color: #2c5f2d;">Wetland Feature</h4>`;
+            let infoHtml = `<div style="padding: 15px; max-width: 300px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+                <h4 style="margin: 0 0 12px 0; color: #28537D; font-weight: 600; border-bottom: 2px solid #46BBD4; padding-bottom: 8px;">Wetland Feature</h4>`;
             
             // Show properties if available
             if (feature.properties) {
                 Object.keys(feature.properties).forEach(key => {
-                    infoHtml += `<p style="margin: 5px 0;"><strong>${key}:</strong> ${feature.properties[key]}</p>`;
+                    infoHtml += `<p style="margin: 6px 0; font-size: 0.9rem;">
+                        <strong style="color: #5088C6;">${key}:</strong> 
+                        <span style="color: #333;">${feature.properties[key]}</span>
+                    </p>`;
                 });
             }
             
-            infoHtml += `<p style="margin: 5px 0;"><strong>Coordinates:</strong> ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}</p>`;
+            infoHtml += `<p style="margin: 10px 0 0 0; padding-top: 10px; border-top: 1px solid #E8E7E7; font-size: 0.85rem; color: #666;">
+                <strong>Coordinates:</strong> ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}
+            </p>`;
             infoHtml += `</div>`;
             
             // Create popup
@@ -1082,18 +1273,24 @@
                 }
             });
             
-            let statsHtml = `<strong>Active Layers:</strong> ${activeLayers}<br>`;
-            statsHtml += `<strong>Active Features:</strong> ${activeFeatures}<br>`;
-            statsHtml += `<strong>Total Area:</strong> ${formatArea(activeArea)}<br><br>`;
+            let statsHtml = `<div style="font-size: 0.85rem;">
+                <p style="margin: 0 0 8px 0; color: #28537D; font-weight: 600;">Active Layers: <span style="color: #22AD7A;">${activeLayers}</span></p>
+                <p style="margin: 0 0 8px 0; color: #28537D; font-weight: 600;">Active Features: <span style="color: #22AD7A;">${activeFeatures.toLocaleString()}</span></p>
+                <p style="margin: 0 0 12px 0; color: #28537D; font-weight: 600;">Total Area: <span style="color: #22AD7A;">${formatArea(activeArea)}</span></p>
+                <div style="background: #F8F9FA; padding: 10px; border-radius: 4px; margin-top: 10px;">`;
             
             Object.keys(shapefileLayers).forEach(layer => {
                 if (shapefileLayers[layer]) {
                     const isVisible = map.hasLayer(shapefileLayers[layer]);
-                    statsHtml += `<span style="color: ${isVisible ? '#4CAF50' : '#666'}">`;
-                    statsHtml += `${layer}: ${layerStats[layer].features} features`;
-                    statsHtml += `</span><br>`;
+                    const color = isVisible ? '#22AD7A' : '#666';
+                    const icon = isVisible ? '✓' : '✗';
+                    statsHtml += `<p style="margin: 5px 0; font-size: 0.8rem; color: ${color};">
+                        <span style="font-weight: 600;">${icon} ${layer}:</span> ${layerStats[layer].features.toLocaleString()} features
+                    </p>`;
                 }
             });
+            
+            statsHtml += `</div></div>`;
             
             document.getElementById('areaStats').innerHTML = statsHtml;
             document.getElementById('areaStats').className = 'stat-display success';
@@ -1101,23 +1298,21 @@
         
         // Recalculate statistics
         function recalculateStats() {
-            showNotification('Recalculating statistics...');
+            showNotification('Recalculating statistics...', 'info');
             updateStatisticsDisplay();
+            showNotification('Statistics updated', 'info');
         }
         
         // Update quick stats
         function updateQuickStats() {
-            // This would update the quick stats at the top
-            // For now, we'll just show placeholders
-            setTimeout(() => {
-                document.getElementById('featureCount').textContent = 'Loading...';
-                document.getElementById('totalArea').textContent = 'Loading...';
-            }, 1000);
+            // Update with sample data initially
+            document.getElementById('featureCount').textContent = '0';
+            document.getElementById('totalArea').textContent = '0 km²';
         }
         
         // Measurement tools
         function startMeasurement(type) {
-            showNotification(`Click on map to ${type === 'area' ? 'draw area polygon' : 'measure distance'}`);
+            showNotification(`Click on map to ${type === 'area' ? 'draw area polygon' : 'measure distance'}`, 'info');
             
             // Clear previous measurements
             clearMeasurements();
@@ -1128,9 +1323,10 @@
             // For area measurement
             if (type === 'area') {
                 measurementLayer = L.polygon([], {
-                    color: '#f44336',
+                    color: '#E86933',  // IWMI Orange
                     weight: 2,
-                    fillOpacity: 0.3
+                    fillOpacity: 0.2,
+                    fillColor: '#E86933'
                 }).addTo(map);
                 
                 map.on('click', addAreaPoint);
@@ -1138,7 +1334,7 @@
             // For distance measurement
             else if (type === 'distance') {
                 measurementLayer = L.polyline([], {
-                    color: '#2196F3',
+                    color: '#5088C6',  // IWMI Light Blue
                     weight: 3,
                     dashArray: '5, 10'
                 }).addTo(map);
@@ -1157,7 +1353,7 @@
             // Calculate and show area when 3+ points
             if (latlngs.length >= 3) {
                 const area = calculatePolygonArea(latlngs);
-                showNotification(`Area: ${area.toFixed(2)} km² (Click to add more points)`);
+                showNotification(`Area: ${area.toFixed(2)} km² (Click to add more points)`, 'info');
             }
         }
         
@@ -1171,19 +1367,18 @@
             // Calculate and show distance
             if (latlngs.length >= 2) {
                 const distance = calculateDistance(latlngs);
-                showNotification(`Distance: ${distance.toFixed(2)} km (Click to add more points)`);
+                showNotification(`Distance: ${distance.toFixed(2)} km (Click to add more points)`, 'info');
             }
         }
         
         function calculatePolygonArea(latlngs) {
-            // Simplified area calculation
             let area = 0;
             for (let i = 0; i < latlngs.length; i++) {
                 const j = (i + 1) % latlngs.length;
                 area += latlngs[i].lng * latlngs[j].lat;
                 area -= latlngs[j].lng * latlngs[i].lat;
             }
-            return Math.abs(area) * 111 * 111 / 2; // Rough conversion to km²
+            return Math.abs(area) * 111 * 111 / 2;
         }
         
         function calculateDistance(latlngs) {
@@ -1202,7 +1397,7 @@
                          Math.sin(dLon/2) * Math.sin(dLon/2);
                 
                 const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-                totalDistance += 6371 * c; // Earth radius in km
+                totalDistance += 6371 * c;
             }
             return totalDistance;
         }
@@ -1213,12 +1408,11 @@
                 measurementLayer = null;
             }
             
-            // Remove click events
             map.off('click', addAreaPoint);
             map.off('click', addDistancePoint);
             
             currentMeasurement = null;
-            showNotification('Measurements cleared');
+            showNotification('Measurements cleared', 'info');
         }
         
         // Change base map
@@ -1231,7 +1425,7 @@
             
             if (baseLayers[mapType]) {
                 map.addLayer(baseLayers[mapType]);
-                showNotification(`Changed to ${mapType} base map`);
+                showNotification(`Changed to ${mapType} base map`, 'info');
             }
         }
         
@@ -1244,7 +1438,7 @@
                 }
             });
             
-            showNotification(`Exporting ${activeLayers.length} active layers as GeoJSON\n\nNote: In production, this would generate downloadable files.`);
+            showNotification(`Exporting ${activeLayers.length} active layers as GeoJSON\n\nNote: In production, this would generate downloadable files.`, 'info');
         }
         
         // Print map
@@ -1259,12 +1453,20 @@
             });
         }
         
-        // Show notification
+        // Show notification with IWMI colors
         function showNotification(message, type = 'info') {
             const colors = {
-                info: '#4CAF50',
-                error: '#f44336',
-                warning: '#FF9800'
+                info: '#46BBD4',    // IWMI Sky Blue
+                error: '#E86933',   // IWMI Orange
+                warning: '#DD9103', // IWMI Yellow
+                success: '#22AD7A'  // IWMI Green
+            };
+            
+            const icons = {
+                info: 'info-circle',
+                error: 'exclamation-triangle',
+                warning: 'exclamation-circle',
+                success: 'check-circle'
             };
             
             const notification = document.createElement('div');
@@ -1272,22 +1474,24 @@
                 position: fixed;
                 top: 20px;
                 right: 20px;
-                background: ${colors[type] || '#4CAF50'};
+                background: ${colors[type] || '#46BBD4'};
                 color: white;
                 padding: 15px 20px;
-                border-radius: 8px;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                border-radius: 4px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.15);
                 z-index: 10000;
                 max-width: 400px;
                 animation: slideIn 0.3s ease-out;
-                font-size: 0.95rem;
+                font-size: 0.9rem;
                 line-height: 1.4;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                border-left: 4px solid ${type === 'info' ? '#28537D' : type === 'error' ? '#D45A23' : type === 'warning' ? '#C07E02' : '#1B8A5E'};
             `;
             
             notification.innerHTML = `
-                <div style="display: flex; align-items: flex-start; gap: 10px;">
-                    <i class="fas fa-${type === 'error' ? 'exclamation-triangle' : 'info-circle'}" 
-                       style="font-size: 18px; flex-shrink: 0;"></i>
+                <div style="display: flex; align-items: flex-start; gap: 12px;">
+                    <i class="fas fa-${icons[type] || 'info-circle'}" 
+                       style="font-size: 16px; flex-shrink: 0; margin-top: 2px;"></i>
                     <div>${message}</div>
                 </div>
             `;
@@ -1298,28 +1502,7 @@
                 notification.style.animation = 'slideOut 0.3s ease-out';
                 setTimeout(() => notification.remove(), 300);
             }, 4000);
-            
-            // Add CSS for animations
-            if (!document.getElementById('notification-styles')) {
-                const style = document.createElement('style');
-                style.id = 'notification-styles';
-                style.textContent = `
-                    @keyframes slideIn {
-                        from { transform: translateX(100%); opacity: 0; }
-                        to { transform: translateX(0); opacity: 1; }
-                    }
-                    @keyframes slideOut {
-                        from { transform: translateX(0); opacity: 1; }
-                        to { transform: translateX(100%); opacity: 0; }
-                    }
-                `;
-                document.head.appendChild(style);
-            }
         }
     </script>
 </body>
 </html>
-
-
-
-

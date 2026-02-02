@@ -56,5 +56,23 @@ document.querySelectorAll('.wetland-item').forEach(item => {
         
         alert(`${title}\n\n${area}\n${types}\n\nClick 'OK' to close.`);
     });
+    
+    // Cover
+function checkBannerImage() {
+    const img = new Image();
+    img.onload = function() {
+        console.log('✅ Banner image loaded successfully');
+        console.log('Image dimensions:', img.width, 'x', img.height);
+    };
+    img.onerror = function() {
+        console.error('❌ Banner image failed to load');
+        console.log('Attempted URL:', img.src);
+    };
+    img.src = 'https://github.com/lakshithamadusanka555-png/WETLAND-INVENTORY/raw/main/images/banner.jpg';
+}
+
+// Call when page loads
+document.addEventListener('DOMContentLoaded', checkBannerImage);
 });
+
 });

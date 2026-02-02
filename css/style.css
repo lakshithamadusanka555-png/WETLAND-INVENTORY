@@ -53,7 +53,7 @@ nav {
     height: 85vh;
     min-height: 600px;
     background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), 
-                url('https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+                url('https://github.com/lakshithamadusanka555-png/WETLAND-INVENTORY/blob/main/images/banner.jpg');
     background-size: cover;
     background-position: center 30%;
     background-attachment: fixed; /* Parallax effect */
@@ -252,3 +252,4 @@ footer {
     color: #666;
 
 }
+

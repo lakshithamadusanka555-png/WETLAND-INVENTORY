@@ -17,6 +17,7 @@
         --iwmi-green: #22AD7A;          /* Green */
         --iwmi-orange: #E86933;         /* Orange */
         --iwmi-yellow: #DD9103;         /* Yellow */
+        --iwmi-mangrove: #8B4513;       /* Brown for Mangroves */
         --iwmi-light-grey: #E8E7E7;     /* Light Grey */
         --iwmi-white: #FFFFFF;
         --iwmi-text-dark: #333333;
@@ -798,7 +799,7 @@
             <div class="stat-label">Wetland Features</div>
         </div>
         <div class="stat-item">
-            <div class="stat-number">3</div>
+            <div class="stat-number">4</div>
             <div class="stat-label">Data Layers</div>
         </div>
         <div class="stat-item">
@@ -867,6 +868,21 @@
                         <input type="range" class="layer-opacity" id="marshOpacity" min="0" max="100" value="70"
                                oninput="updateLayerOpacity('marsh', this.value)">
                     </div>
+                    
+                    <div class="layer-group">
+                        <div class="layer-group-title">
+                            <i class="fas fa-tree"></i> Mangroves
+                        </div>
+                        
+                        <div class="layer-item" onclick="toggleLayer('mangroves')">
+                            <input type="checkbox" class="layer-checkbox" id="mangrovesLayer" checked>
+                            <span class="layer-label">Mangroves Shapefile</span>
+                            <div class="layer-color" style="background-color: rgba(139, 69, 19, 0.7);"></div>
+                            <span class="layer-stats" id="mangrovesStats">0 features</span>
+                        </div>
+                        <input type="range" class="layer-opacity" id="mangrovesOpacity" min="0" max="100" value="70"
+                               oninput="updateLayerOpacity('mangroves', this.value)">
+                    </div>
                 </div>
                 
                 <!-- Legend -->
@@ -885,6 +901,10 @@
                     <div class="legend-item">
                         <div class="legend-color" style="background-color: rgba(2, 151, 166, 0.7);"></div>
                         <span class="legend-label">Marsh Areas (Teal)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: rgba(139, 69, 19, 0.7);"></div>
+                        <span class="legend-label">Mangroves (Brown)</span>
                     </div>
                 </div>
                 
@@ -969,7 +989,8 @@
         let shapefileLayers = {
             water: null,
             paddy: null,
-            marsh: null
+            marsh: null,
+            mangroves: null
         };
         let baseLayers = {};
         let measurementLayer = null;
@@ -980,14 +1001,16 @@
         const layerColors = {
             water: 'rgba(70, 187, 212, 0.7)',    // IWMI Sky Blue
             paddy: 'rgba(34, 173, 122, 0.7)',    // IWMI Green
-            marsh: 'rgba(2, 151, 166, 0.7)'      // IWMI Teal
+            marsh: 'rgba(2, 151, 166, 0.7)',     // IWMI Teal
+            mangroves: 'rgba(139, 69, 19, 0.7)'  // Brown for Mangroves
         };
         
         // Statistics
         let layerStats = {
             water: { features: 0, area: 0 },
             paddy: { features: 0, area: 0 },
-            marsh: { features: 0, area: 0 }
+            marsh: { features: 0, area: 0 },
+            mangroves: { features: 0, area: 0 }
         };
         
         // Initialize map when page loads
@@ -1035,7 +1058,7 @@
         
         // Load shapefiles from GeoJSON files
         async function loadShapefiles() {
-            const layers = ['water', 'paddy', 'marsh'];
+            const layers = ['water', 'paddy', 'marsh', 'mangroves'];
             let loadedCount = 0;
             let totalFeatures = 0;
             let totalArea = 0;
@@ -1247,6 +1270,13 @@
                 });
             }
             
+            // Add wetland type based on layer
+            const layerType = getLayerTypeFromProperties(feature);
+            infoHtml += `<p style="margin: 6px 0; font-size: 0.9rem;">
+                <strong style="color: #5088C6;">Wetland Type:</strong> 
+                <span style="color: #333;">${layerType}</span>
+            </p>`;
+            
             infoHtml += `<p style="margin: 10px 0 0 0; padding-top: 10px; border-top: 1px solid #E8E7E7; font-size: 0.85rem; color: #666;">
                 <strong>Coordinates:</strong> ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}
             </p>`;
@@ -1257,6 +1287,21 @@
                 .setLatLng(latlng)
                 .setContent(infoHtml)
                 .openOn(map);
+        }
+        
+        // Determine layer type from feature properties
+        function getLayerTypeFromProperties(feature) {
+            if (feature.properties) {
+                if (feature.properties.type) return feature.properties.type;
+                if (feature.properties.name) {
+                    const name = feature.properties.name.toLowerCase();
+                    if (name.includes('mangrove')) return 'Mangrove';
+                    if (name.includes('water')) return 'Water Body';
+                    if (name.includes('paddy') || name.includes('rice')) return 'Paddy Field';
+                    if (name.includes('marsh') || name.includes('swamp')) return 'Marsh Area';
+                }
+            }
+            return 'Wetland Area';
         }
         
         // Update statistics display
@@ -1512,17 +1557,5 @@
             <p style="font-size:0.9rem; opacity:0.8; margin-top:0.5rem;">Project of International Water Management Institute Sri Lanka</p>
         </div>
     </footer>
-
-    <!-- JavaScript -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
-        // (Your existing JavaScript code remains here)
-    </script>
-    
-</body>
 </body>
 </html>
-
-
-
-

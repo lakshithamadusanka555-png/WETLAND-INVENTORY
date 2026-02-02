@@ -47,36 +47,117 @@ nav {
     border-radius: 4px;
 }
 
-/* Hero Section */
+/* Hero Section with Banner - UPDATED WITH WETLAND IMAGE */
 .hero {
-    text-align: center;
-    padding: 4rem 2rem;
-    background: linear-gradient(rgba(44, 95, 45, 0.8), rgba(76, 175, 80, 0.7));
+    position: relative;
+    height: 85vh;
+    min-height: 600px;
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), 
+                url('https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center 30%;
+    background-attachment: fixed; /* Parallax effect */
     color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 2rem;
+    overflow: hidden;
+}
+
+.hero-content {
+    max-width: 900px;
+    animation: fadeInUp 1s ease-out;
+    position: relative;
+    z-index: 2;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 3rem;
+    border-radius: 15px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .hero h1 {
-    font-size: 2.5rem;
+    font-size: 4rem;
     margin-bottom: 1rem;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+    font-weight: 700;
+    letter-spacing: 0.5px;
 }
 
 .hero p {
-    font-size: 1.2rem;
-    margin-bottom: 2rem;
+    font-size: 1.4rem;
+    margin-bottom: 2.5rem;
+    opacity: 0.95;
+    line-height: 1.6;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
 }
 
-.hero button {
-    background-color: #FF9800;
+.hero-btn {
+    background: linear-gradient(135deg, #4CAF50, #2c5f2d);
     color: white;
     border: none;
-    padding: 1rem 2rem;
-    font-size: 1rem;
-    border-radius: 4px;
+    padding: 1.2rem 3rem;
+    font-size: 1.2rem;
+    border-radius: 50px;
     cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: bold;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    position: relative;
+    overflow: hidden;
 }
 
-.hero button:hover {
-    background-color: #F57C00;
+.hero-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.7s;
+}
+
+.hero-btn:hover {
+    background: linear-gradient(135deg, #388E3C, #1e451f);
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+}
+
+.hero-btn:hover::before {
+    left: 100%;
+}
+
+.hero-btn i {
+    font-size: 1.3rem;
+    transition: transform 0.3s;
+}
+
+.hero-btn:hover i {
+    transform: translateX(5px);
+}
+
+/* Optional: Add water ripple effect overlay */
+.hero::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="%23000000"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="%23000000"/><path d="M0,0V5.63C149.93,59,314.09,71.78,475.83,42.57,430,21.3,382.31-1.72,333.82,2.19,277.64,6.82,222.15,23.91,178.11,50.29,141.58,71.74,104.27,95.24,66.77,117.14,29.58,138.67,-7.69,159.57,-45,180V0Z" opacity=".75" fill="%23000000"/></svg>');
+    background-size: cover;
+    background-position: bottom;
+    opacity: 0.15;
+    pointer-events: none;
 }
 
 /* Intro Section */
@@ -169,4 +250,5 @@ footer {
 .stat-label {
     font-size: 0.8rem;
     color: #666;
+
 }

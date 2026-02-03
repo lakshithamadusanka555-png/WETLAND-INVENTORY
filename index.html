@@ -413,6 +413,7 @@
         color: var(--iwmi-light-blue);
     }
     
+    /* Improved Layer Item with Better Toggle */
     .layer-item {
         display: flex;
         align-items: center;
@@ -424,6 +425,7 @@
         cursor: pointer;
         transition: all 0.3s;
         border: 1px solid var(--iwmi-border);
+        position: relative;
     }
     
     .layer-item:hover {
@@ -432,11 +434,40 @@
         transform: translateX(2px);
     }
     
+    .layer-item.active {
+        background: rgba(70, 187, 212, 0.08);
+        border-color: var(--iwmi-light-blue);
+    }
+    
     .layer-checkbox {
-        width: 18px;
-        height: 18px;
+        width: 20px;
+        height: 20px;
         cursor: pointer;
         accent-color: var(--iwmi-green);
+        position: relative;
+        z-index: 2;
+    }
+    
+    .layer-checkbox:checked {
+        background-color: var(--iwmi-green);
+    }
+    
+    .layer-toggle-wrapper {
+        position: relative;
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+    }
+    
+    .layer-toggle {
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        opacity: 0;
     }
     
     .layer-label {
@@ -452,6 +483,7 @@
         border-radius: 3px;
         border: 2px solid var(--iwmi-white);
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        flex-shrink: 0;
     }
     
     .layer-stats {
@@ -463,6 +495,7 @@
         font-weight: 600;
         min-width: 70px;
         text-align: center;
+        flex-shrink: 0;
     }
     
     .layer-opacity {
@@ -472,6 +505,15 @@
         border-radius: 3px;
         accent-color: var(--iwmi-light-blue);
         cursor: pointer;
+        background: var(--iwmi-light-grey);
+    }
+    
+    .opacity-label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.75rem;
+        color: var(--iwmi-text-light);
+        margin-top: 5px;
     }
     
     /* Legend */
@@ -829,14 +871,22 @@
                             <i class="fas fa-water"></i> Water Bodies
                         </div>
                         
-                        <div class="layer-item" onclick="toggleLayer('water')">
-                            <input type="checkbox" class="layer-checkbox" id="waterLayer" checked>
+                        <div class="layer-item" id="waterItem">
+                            <div class="layer-toggle-wrapper">
+                                <input type="checkbox" class="layer-checkbox" id="waterLayer" checked>
+                                <div class="layer-toggle" onclick="toggleLayer('water')"></div>
+                            </div>
                             <span class="layer-label">Water Bodies Shapefile</span>
                             <div class="layer-color" style="background-color: rgba(70, 187, 212, 0.7);"></div>
                             <span class="layer-stats" id="waterStats">0 features</span>
                         </div>
                         <input type="range" class="layer-opacity" id="waterOpacity" min="0" max="100" value="70"
                                oninput="updateLayerOpacity('water', this.value)">
+                        <div class="opacity-label">
+                            <span>0%</span>
+                            <span id="waterOpacityValue">70%</span>
+                            <span>100%</span>
+                        </div>
                     </div>
                     
                     <div class="layer-group">
@@ -844,14 +894,22 @@
                             <i class="fas fa-seedling"></i> Paddy Fields
                         </div>
                         
-                        <div class="layer-item" onclick="toggleLayer('paddy')">
-                            <input type="checkbox" class="layer-checkbox" id="paddyLayer" checked>
+                        <div class="layer-item" id="paddyItem">
+                            <div class="layer-toggle-wrapper">
+                                <input type="checkbox" class="layer-checkbox" id="paddyLayer" checked>
+                                <div class="layer-toggle" onclick="toggleLayer('paddy')"></div>
+                            </div>
                             <span class="layer-label">Paddy Fields Shapefile</span>
                             <div class="layer-color" style="background-color: rgba(34, 173, 122, 0.7);"></div>
                             <span class="layer-stats" id="paddyStats">0 features</span>
                         </div>
                         <input type="range" class="layer-opacity" id="paddyOpacity" min="0" max="100" value="70"
                                oninput="updateLayerOpacity('paddy', this.value)">
+                        <div class="opacity-label">
+                            <span>0%</span>
+                            <span id="paddyOpacityValue">70%</span>
+                            <span>100%</span>
+                        </div>
                     </div>
                     
                     <div class="layer-group">
@@ -859,14 +917,22 @@
                             <i class="fas fa-swamp"></i> Marsh Areas
                         </div>
                         
-                        <div class="layer-item" onclick="toggleLayer('marsh')">
-                            <input type="checkbox" class="layer-checkbox" id="marshLayer" checked>
+                        <div class="layer-item" id="marshItem">
+                            <div class="layer-toggle-wrapper">
+                                <input type="checkbox" class="layer-checkbox" id="marshLayer" checked>
+                                <div class="layer-toggle" onclick="toggleLayer('marsh')"></div>
+                            </div>
                             <span class="layer-label">Marsh Areas Shapefile</span>
                             <div class="layer-color" style="background-color: rgba(2, 151, 166, 0.7);"></div>
                             <span class="layer-stats" id="marshStats">0 features</span>
                         </div>
                         <input type="range" class="layer-opacity" id="marshOpacity" min="0" max="100" value="70"
                                oninput="updateLayerOpacity('marsh', this.value)">
+                        <div class="opacity-label">
+                            <span>0%</span>
+                            <span id="marshOpacityValue">70%</span>
+                            <span>100%</span>
+                        </div>
                     </div>
                     
                     <div class="layer-group">
@@ -874,14 +940,22 @@
                             <i class="fas fa-tree"></i> Mangroves
                         </div>
                         
-                        <div class="layer-item" onclick="toggleLayer('mangroves')">
-                            <input type="checkbox" class="layer-checkbox" id="mangrovesLayer" checked>
+                        <div class="layer-item" id="mangrovesItem">
+                            <div class="layer-toggle-wrapper">
+                                <input type="checkbox" class="layer-checkbox" id="mangrovesLayer" checked>
+                                <div class="layer-toggle" onclick="toggleLayer('mangroves')"></div>
+                            </div>
                             <span class="layer-label">Mangroves Shapefile</span>
                             <div class="layer-color" style="background-color: rgba(139, 69, 19, 0.7);"></div>
                             <span class="layer-stats" id="mangrovesStats">0 features</span>
                         </div>
                         <input type="range" class="layer-opacity" id="mangrovesOpacity" min="0" max="100" value="70"
                                oninput="updateLayerOpacity('mangroves', this.value)">
+                        <div class="opacity-label">
+                            <span>0%</span>
+                            <span id="mangrovesOpacityValue">70%</span>
+                            <span>100%</span>
+                        </div>
                     </div>
                 </div>
                 
@@ -992,18 +1066,44 @@
             marsh: null,
             mangroves: null
         };
+        
+        // Store individual layer styles for opacity control
+        let layerStyles = {
+            water: { 
+                fillColor: 'rgba(70, 187, 212, 0.7)',
+                weight: 2,
+                opacity: 1,
+                color: 'rgba(70, 187, 212, 1)',
+                fillOpacity: 0.7
+            },
+            paddy: {
+                fillColor: 'rgba(34, 173, 122, 0.7)',
+                weight: 2,
+                opacity: 1,
+                color: 'rgba(34, 173, 122, 1)',
+                fillOpacity: 0.7
+            },
+            marsh: {
+                fillColor: 'rgba(2, 151, 166, 0.7)',
+                weight: 2,
+                opacity: 1,
+                color: 'rgba(2, 151, 166, 1)',
+                fillOpacity: 0.7,
+                dashArray: '5, 5'
+            },
+            mangroves: {
+                fillColor: 'rgba(139, 69, 19, 0.7)',
+                weight: 2,
+                opacity: 1,
+                color: 'rgba(139, 69, 19, 1)',
+                fillOpacity: 0.7
+            }
+        };
+        
         let baseLayers = {};
         let measurementLayer = null;
         let drawnItems = new L.FeatureGroup();
         let currentMeasurement = null;
-        
-        // IWMI Color scheme for layers
-        const layerColors = {
-            water: 'rgba(70, 187, 212, 0.7)',    // IWMI Sky Blue
-            paddy: 'rgba(34, 173, 122, 0.7)',    // IWMI Green
-            marsh: 'rgba(2, 151, 166, 0.7)',     // IWMI Teal
-            mangroves: 'rgba(139, 69, 19, 0.7)'  // Brown for Mangroves
-        };
         
         // Statistics
         let layerStats = {
@@ -1019,6 +1119,12 @@
             initializeMap();
             loadShapefiles();
             updateQuickStats();
+            
+            // Initialize opacity value displays
+            updateOpacityDisplay('water', 70);
+            updateOpacityDisplay('paddy', 70);
+            updateOpacityDisplay('marsh', 70);
+            updateOpacityDisplay('mangroves', 70);
         });
         
         // Initialize the map
@@ -1078,14 +1184,7 @@
                     
                     // Create Leaflet GeoJSON layer with IWMI colors
                     shapefileLayers[layer] = L.geoJSON(geojsonData, {
-                        style: {
-                            fillColor: layerColors[layer],
-                            weight: 2,
-                            opacity: 1,
-                            color: layerColors[layer].replace('0.7', '1'),
-                            fillOpacity: 0.7,
-                            dashArray: layer === 'marsh' ? '5, 5' : null
-                        },
+                        style: layerStyles[layer],
                         onEachFeature: function(feature, layer) {
                             // Add click event for feature info
                             layer.on('click', function(e) {
@@ -1113,7 +1212,7 @@
                     // Add to map by default
                     map.addLayer(shapefileLayers[layer]);
                     
-                    // Update UI with IWMI colors
+                    // Update UI
                     document.getElementById(`${layer}Stats`).textContent = `${layerStats[layer].features} features`;
                     document.getElementById(`${layer}Stats`).className = 'layer-stats success';
                     
@@ -1124,7 +1223,9 @@
                     document.getElementById(`${layer}Stats`).textContent = 'Load failed';
                     document.getElementById(`${layer}Stats`).className = 'layer-stats error';
                     document.getElementById(`${layer}Layer`).disabled = true;
-                    document.getElementById(`${layer}Layer`).parentElement.style.opacity = '0.5';
+                    document.getElementById(`${layer}Item`).style.opacity = '0.5';
+                    document.getElementById(`${layer}Item`).style.cursor = 'not-allowed';
+                    document.getElementById(`${layer}Opacity`).disabled = true;
                     
                     showNotification(`Failed to load ${layer} shapefile: ${error.message}`, 'error');
                 }
@@ -1151,8 +1252,6 @@
         
         // Calculate area from GeoJSON geometry (simplified calculation)
         function calculateArea(geometry) {
-            // This is a simplified area calculation
-            // For accurate calculations, you should use a library like turf.js
             if (geometry.type === 'Polygon') {
                 const coords = geometry.coordinates[0];
                 let area = 0;
@@ -1165,7 +1264,7 @@
                 area = Math.abs(area) / 2;
                 
                 // Convert to square kilometers (approximate)
-                return area * 111 * 111; // Rough conversion
+                return area * 111 * 111;
             }
             return 0;
         }
@@ -1179,33 +1278,57 @@
             }
         }
         
-        // Toggle layer visibility
+        // Improved Toggle Layer function
         function toggleLayer(layerName) {
             const checkbox = document.getElementById(layerName + 'Layer');
-            const isVisible = checkbox.checked;
+            const layerItem = document.getElementById(layerName + 'Item');
+            const isCurrentlyVisible = checkbox.checked;
             
             if (shapefileLayers[layerName]) {
-                if (isVisible) {
+                if (isCurrentlyVisible) {
+                    // Layer is currently visible, so hide it
                     map.removeLayer(shapefileLayers[layerName]);
                     checkbox.checked = false;
-                    showNotification(`${layerName} layer turned OFF`, 'info');
+                    layerItem.classList.remove('active');
+                    showNotification(`${layerName.replace(/^\w/, c => c.toUpperCase())} layer turned OFF`, 'info');
                 } else {
+                    // Layer is currently hidden, so show it
                     map.addLayer(shapefileLayers[layerName]);
                     checkbox.checked = true;
-                    showNotification(`${layerName} layer turned ON`, 'info');
+                    layerItem.classList.add('active');
+                    showNotification(`${layerName.replace(/^\w/, c => c.toUpperCase())} layer turned ON`, 'info');
                 }
                 updateStatisticsDisplay();
             }
         }
         
-        // Update layer opacity
+        // Update layer opacity with border transparency fix
         function updateLayerOpacity(layerName, opacityValue) {
             const opacity = opacityValue / 100;
             
+            // Update the opacity display
+            updateOpacityDisplay(layerName, opacityValue);
+            
             if (shapefileLayers[layerName]) {
-                shapefileLayers[layerName].setStyle({
-                    fillOpacity: opacity
+                // Update the style object
+                layerStyles[layerName].fillOpacity = opacity;
+                layerStyles[layerName].opacity = opacity;
+                
+                // Apply the updated style to all features in the layer
+                shapefileLayers[layerName].eachLayer(function(layer) {
+                    layer.setStyle({
+                        fillOpacity: opacity,
+                        opacity: opacity
+                    });
                 });
+            }
+        }
+        
+        // Update opacity value display
+        function updateOpacityDisplay(layerName, value) {
+            const displayElement = document.getElementById(layerName + 'OpacityValue');
+            if (displayElement) {
+                displayElement.textContent = value + '%';
             }
         }
         
@@ -1215,6 +1338,7 @@
                 if (shapefileLayers[layer] && !map.hasLayer(shapefileLayers[layer])) {
                     map.addLayer(shapefileLayers[layer]);
                     document.getElementById(layer + 'Layer').checked = true;
+                    document.getElementById(layer + 'Item').classList.add('active');
                 }
             });
             showNotification('All layers turned ON', 'info');
@@ -1227,6 +1351,7 @@
                 if (shapefileLayers[layer] && map.hasLayer(shapefileLayers[layer])) {
                     map.removeLayer(shapefileLayers[layer]);
                     document.getElementById(layer + 'Layer').checked = false;
+                    document.getElementById(layer + 'Item').classList.remove('active');
                 }
             });
             showNotification('All layers turned OFF', 'info');
@@ -1236,22 +1361,24 @@
         // Fit map to show all data
         function fitToAllData() {
             const bounds = new L.LatLngBounds();
+            let hasValidBounds = false;
             
             Object.keys(shapefileLayers).forEach(layer => {
-                if (shapefileLayers[layer] && shapefileLayers[layer].getBounds) {
+                if (shapefileLayers[layer] && shapefileLayers[layer].getBounds && map.hasLayer(shapefileLayers[layer])) {
                     const layerBounds = shapefileLayers[layer].getBounds();
                     if (layerBounds.isValid()) {
                         bounds.extend(layerBounds);
+                        hasValidBounds = true;
                     }
                 }
             });
             
-            if (bounds.isValid()) {
+            if (hasValidBounds && bounds.isValid()) {
                 map.fitBounds(bounds, { padding: [50, 50] });
                 showNotification('Map zoomed to show all wetland data', 'info');
             } else {
                 map.setView([7.8731, 80.7718], 8);
-                showNotification('No data bounds available, centered on Sri Lanka', 'info');
+                showNotification('No visible data bounds available, centered on Sri Lanka', 'info');
             }
         }
         
@@ -1263,10 +1390,12 @@
             // Show properties if available
             if (feature.properties) {
                 Object.keys(feature.properties).forEach(key => {
-                    infoHtml += `<p style="margin: 6px 0; font-size: 0.9rem;">
-                        <strong style="color: #5088C6;">${key}:</strong> 
-                        <span style="color: #333;">${feature.properties[key]}</span>
-                    </p>`;
+                    if (feature.properties[key] !== null && feature.properties[key] !== undefined) {
+                        infoHtml += `<p style="margin: 6px 0; font-size: 0.9rem;">
+                            <strong style="color: #5088C6;">${key}:</strong> 
+                            <span style="color: #333;">${feature.properties[key]}</span>
+                        </p>`;
+                    }
                 });
             }
             
@@ -1300,6 +1429,13 @@
                     if (name.includes('paddy') || name.includes('rice')) return 'Paddy Field';
                     if (name.includes('marsh') || name.includes('swamp')) return 'Marsh Area';
                 }
+                if (feature.properties.class) {
+                    const cls = feature.properties.class.toLowerCase();
+                    if (cls.includes('mangrove')) return 'Mangrove';
+                    if (cls.includes('water')) return 'Water Body';
+                    if (cls.includes('paddy') || cls.includes('rice')) return 'Paddy Field';
+                    if (cls.includes('marsh') || cls.includes('swamp')) return 'Marsh Area';
+                }
             }
             return 'Wetland Area';
         }
@@ -1330,7 +1466,7 @@
                     const color = isVisible ? '#22AD7A' : '#666';
                     const icon = isVisible ? '✓' : '✗';
                     statsHtml += `<p style="margin: 5px 0; font-size: 0.8rem; color: ${color};">
-                        <span style="font-weight: 600;">${icon} ${layer}:</span> ${layerStats[layer].features.toLocaleString()} features
+                        <span style="font-weight: 600;">${icon} ${layer.replace(/^\w/, c => c.toUpperCase())}:</span> ${layerStats[layer].features.toLocaleString()} features
                     </p>`;
                 }
             });
@@ -1370,6 +1506,7 @@
                 measurementLayer = L.polygon([], {
                     color: '#E86933',  // IWMI Orange
                     weight: 2,
+                    opacity: 1,
                     fillOpacity: 0.2,
                     fillColor: '#E86933'
                 }).addTo(map);
@@ -1381,6 +1518,7 @@
                 measurementLayer = L.polyline([], {
                     color: '#5088C6',  // IWMI Light Blue
                     weight: 3,
+                    opacity: 1,
                     dashArray: '5, 10'
                 }).addTo(map);
                 

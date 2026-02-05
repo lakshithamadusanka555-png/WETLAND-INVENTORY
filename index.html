@@ -452,24 +452,6 @@
         background-color: var(--iwmi-green);
     }
     
-    .layer-toggle-wrapper {
-        position: relative;
-        width: 20px;
-        height: 20px;
-        flex-shrink: 0;
-    }
-    
-    .layer-toggle {
-        width: 100%;
-        height: 100%;
-        cursor: pointer;
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 1;
-        opacity: 0;
-    }
-    
     .layer-label {
         flex-grow: 1;
         font-size: 0.9rem;
@@ -871,11 +853,8 @@
                             <i class="fas fa-water"></i> Water Bodies
                         </div>
                         
-                        <div class="layer-item" id="waterItem">
-                            <div class="layer-toggle-wrapper">
-                                <input type="checkbox" class="layer-checkbox" id="waterLayer" checked>
-                                <div class="layer-toggle" onclick="toggleLayer('water')"></div>
-                            </div>
+                        <div class="layer-item" onclick="toggleLayer('water')">
+                            <input type="checkbox" class="layer-checkbox" id="waterLayer" checked>
                             <span class="layer-label">Water Bodies Shapefile</span>
                             <div class="layer-color" style="background-color: rgba(70, 187, 212, 0.7);"></div>
                             <span class="layer-stats" id="waterStats">0 features</span>
@@ -894,11 +873,8 @@
                             <i class="fas fa-seedling"></i> Paddy Fields
                         </div>
                         
-                        <div class="layer-item" id="paddyItem">
-                            <div class="layer-toggle-wrapper">
-                                <input type="checkbox" class="layer-checkbox" id="paddyLayer" checked>
-                                <div class="layer-toggle" onclick="toggleLayer('paddy')"></div>
-                            </div>
+                        <div class="layer-item" onclick="toggleLayer('paddy')">
+                            <input type="checkbox" class="layer-checkbox" id="paddyLayer" checked>
                             <span class="layer-label">Paddy Fields Shapefile</span>
                             <div class="layer-color" style="background-color: rgba(34, 173, 122, 0.7);"></div>
                             <span class="layer-stats" id="paddyStats">0 features</span>
@@ -917,11 +893,8 @@
                             <i class="fas fa-swamp"></i> Marsh Areas
                         </div>
                         
-                        <div class="layer-item" id="marshItem">
-                            <div class="layer-toggle-wrapper">
-                                <input type="checkbox" class="layer-checkbox" id="marshLayer" checked>
-                                <div class="layer-toggle" onclick="toggleLayer('marsh')"></div>
-                            </div>
+                        <div class="layer-item" onclick="toggleLayer('marsh')">
+                            <input type="checkbox" class="layer-checkbox" id="marshLayer" checked>
                             <span class="layer-label">Marsh Areas Shapefile</span>
                             <div class="layer-color" style="background-color: rgba(2, 151, 166, 0.7);"></div>
                             <span class="layer-stats" id="marshStats">0 features</span>
@@ -940,11 +913,8 @@
                             <i class="fas fa-tree"></i> Mangroves
                         </div>
                         
-                        <div class="layer-item" id="mangrovesItem">
-                            <div class="layer-toggle-wrapper">
-                                <input type="checkbox" class="layer-checkbox" id="mangrovesLayer" checked>
-                                <div class="layer-toggle" onclick="toggleLayer('mangroves')"></div>
-                            </div>
+                        <div class="layer-item" onclick="toggleLayer('mangroves')">
+                            <input type="checkbox" class="layer-checkbox" id="mangrovesLayer" checked>
                             <span class="layer-label">Mangroves Shapefile</span>
                             <div class="layer-color" style="background-color: rgba(139, 69, 19, 0.7);"></div>
                             <span class="layer-stats" id="mangrovesStats">0 features</span>
@@ -1072,21 +1042,21 @@
             water: { 
                 fillColor: 'rgba(70, 187, 212, 0.7)',
                 weight: 2,
-                opacity: 1,
+                opacity: 0.7,
                 color: 'rgba(70, 187, 212, 1)',
                 fillOpacity: 0.7
             },
             paddy: {
                 fillColor: 'rgba(34, 173, 122, 0.7)',
                 weight: 2,
-                opacity: 1,
+                opacity: 0.7,
                 color: 'rgba(34, 173, 122, 1)',
                 fillOpacity: 0.7
             },
             marsh: {
                 fillColor: 'rgba(2, 151, 166, 0.7)',
                 weight: 2,
-                opacity: 1,
+                opacity: 0.7,
                 color: 'rgba(2, 151, 166, 1)',
                 fillOpacity: 0.7,
                 dashArray: '5, 5'
@@ -1094,7 +1064,7 @@
             mangroves: {
                 fillColor: 'rgba(139, 69, 19, 0.7)',
                 weight: 2,
-                opacity: 1,
+                opacity: 0.7,
                 color: 'rgba(139, 69, 19, 1)',
                 fillOpacity: 0.7
             }
@@ -1125,6 +1095,11 @@
             updateOpacityDisplay('paddy', 70);
             updateOpacityDisplay('marsh', 70);
             updateOpacityDisplay('mangroves', 70);
+            
+            // Add active class to all layer items initially
+            document.querySelectorAll('.layer-item').forEach(item => {
+                item.classList.add('active');
+            });
         });
         
         // Initialize the map
@@ -1185,9 +1160,9 @@
                     // Create Leaflet GeoJSON layer with IWMI colors
                     shapefileLayers[layer] = L.geoJSON(geojsonData, {
                         style: layerStyles[layer],
-                        onEachFeature: function(feature, layer) {
+                        onEachFeature: function(feature, layerObj) {
                             // Add click event for feature info
-                            layer.on('click', function(e) {
+                            layerObj.on('click', function(e) {
                                 showFeatureInfo(feature, e.latlng);
                             });
                             
@@ -1223,8 +1198,8 @@
                     document.getElementById(`${layer}Stats`).textContent = 'Load failed';
                     document.getElementById(`${layer}Stats`).className = 'layer-stats error';
                     document.getElementById(`${layer}Layer`).disabled = true;
-                    document.getElementById(`${layer}Item`).style.opacity = '0.5';
-                    document.getElementById(`${layer}Item`).style.cursor = 'not-allowed';
+                    document.getElementById(`${layer}Layer`).parentElement.style.opacity = '0.5';
+                    document.getElementById(`${layer}Layer`).parentElement.style.cursor = 'not-allowed';
                     document.getElementById(`${layer}Opacity`).disabled = true;
                     
                     showNotification(`Failed to load ${layer} shapefile: ${error.message}`, 'error');
@@ -1278,28 +1253,40 @@
             }
         }
         
-        // Improved Toggle Layer function
+        // Toggle Layer function - Fixed version
         function toggleLayer(layerName) {
             const checkbox = document.getElementById(layerName + 'Layer');
-            const layerItem = document.getElementById(layerName + 'Item');
-            const isCurrentlyVisible = checkbox.checked;
+            const layerItem = checkbox.closest('.layer-item');
             
             if (shapefileLayers[layerName]) {
-                if (isCurrentlyVisible) {
+                const isVisible = checkbox.checked;
+                
+                if (isVisible) {
                     // Layer is currently visible, so hide it
                     map.removeLayer(shapefileLayers[layerName]);
                     checkbox.checked = false;
                     layerItem.classList.remove('active');
-                    showNotification(`${layerName.replace(/^\w/, c => c.toUpperCase())} layer turned OFF`, 'info');
+                    showNotification(`${getLayerDisplayName(layerName)} layer turned OFF`, 'info');
                 } else {
                     // Layer is currently hidden, so show it
                     map.addLayer(shapefileLayers[layerName]);
                     checkbox.checked = true;
                     layerItem.classList.add('active');
-                    showNotification(`${layerName.replace(/^\w/, c => c.toUpperCase())} layer turned ON`, 'info');
+                    showNotification(`${getLayerDisplayName(layerName)} layer turned ON`, 'info');
                 }
                 updateStatisticsDisplay();
             }
+        }
+        
+        // Helper function to get display name for layers
+        function getLayerDisplayName(layerName) {
+            const names = {
+                water: 'Water Bodies',
+                paddy: 'Paddy Fields',
+                marsh: 'Marsh Areas',
+                mangroves: 'Mangroves'
+            };
+            return names[layerName] || layerName;
         }
         
         // Update layer opacity with border transparency fix
@@ -1338,7 +1325,7 @@
                 if (shapefileLayers[layer] && !map.hasLayer(shapefileLayers[layer])) {
                     map.addLayer(shapefileLayers[layer]);
                     document.getElementById(layer + 'Layer').checked = true;
-                    document.getElementById(layer + 'Item').classList.add('active');
+                    document.getElementById(layer + 'Layer').closest('.layer-item').classList.add('active');
                 }
             });
             showNotification('All layers turned ON', 'info');
@@ -1351,7 +1338,7 @@
                 if (shapefileLayers[layer] && map.hasLayer(shapefileLayers[layer])) {
                     map.removeLayer(shapefileLayers[layer]);
                     document.getElementById(layer + 'Layer').checked = false;
-                    document.getElementById(layer + 'Item').classList.remove('active');
+                    document.getElementById(layer + 'Layer').closest('.layer-item').classList.remove('active');
                 }
             });
             showNotification('All layers turned OFF', 'info');
@@ -1466,7 +1453,7 @@
                     const color = isVisible ? '#22AD7A' : '#666';
                     const icon = isVisible ? '✓' : '✗';
                     statsHtml += `<p style="margin: 5px 0; font-size: 0.8rem; color: ${color};">
-                        <span style="font-weight: 600;">${icon} ${layer.replace(/^\w/, c => c.toUpperCase())}:</span> ${layerStats[layer].features.toLocaleString()} features
+                        <span style="font-weight: 600;">${icon} ${getLayerDisplayName(layer)}:</span> ${layerStats[layer].features.toLocaleString()} features
                     </p>`;
                 }
             });

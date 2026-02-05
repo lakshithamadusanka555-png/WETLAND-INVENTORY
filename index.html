@@ -1056,12 +1056,12 @@
                     
                     <div class="layer-group">
                         <div class="layer-group-title">
-                            <i class="fas fa-swamp"></i> Marsh Areas
+                            <i class="fas fa-swamp"></i> Freshwater Marshes
                         </div>
                         
                         <div class="layer-item" onclick="toggleLayer('marsh')">
                             <input type="checkbox" class="layer-checkbox" id="marshLayer">
-                            <span class="layer-label">Marsh Areas</span>
+                            <span class="layer-label">Freshwater Marshes</span>
                             <div class="layer-color" style="background-color: rgba(70, 187, 212, 0.7);"></div>
                         </div>
                         <input type="range" class="layer-opacity" id="marshOpacity" min="0" max="100" value="70"
@@ -1108,7 +1108,7 @@
                     </div>
                     <div class="legend-item">
                         <div class="legend-color" style="background-color: rgba(70, 187, 212, 0.7);"></div>
-                        <span class="legend-label">Marsh Areas (Cyan)</span>
+                        <span class="legend-label">Freshwater Marshes (Cyan)</span>
                     </div>
                     <div class="legend-item">
                         <div class="legend-color" style="background-color: rgba(139, 69, 19, 0.7);"></div>
@@ -1631,7 +1631,7 @@
             const names = {
                 water: 'Water Bodies',
                 paddy: 'Paddy Fields',
-                marsh: 'Marsh Areas',
+                marsh: 'Freshwater Marshes',
                 mangroves: 'Mangroves'
             };
             return names[layerName] || layerName;
@@ -2026,3 +2026,4 @@
     </footer>
 </body>
 </html>
+

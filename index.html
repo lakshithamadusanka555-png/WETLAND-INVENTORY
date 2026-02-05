@@ -75,6 +75,7 @@
         gap: 1.5rem;
         margin: 0;
         padding: 0;
+        align-items: center;
     }
     
     .nav-links a {
@@ -98,6 +99,30 @@
         background: var(--iwmi-sky-blue);
         color: var(--iwmi-white);
         opacity: 1;
+    }
+    
+    /* Chatbot Button in Navigation */
+    .chatbot-btn {
+        background: var(--iwmi-green);
+        color: white;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        font-size: 0.95rem;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 8px rgba(34, 173, 122, 0.3);
+    }
+    
+    .chatbot-btn:hover {
+        background: var(--iwmi-teal);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(2, 151, 166, 0.4);
     }
     
     /* Hero Section with Banner - IWMI Gradient Theme */
@@ -590,6 +615,103 @@
         color: var(--iwmi-orange);
     }
     
+    /* Chatbot Modal */
+    .chatbot-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 2000;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .chatbot-modal.active {
+        display: flex;
+        animation: fadeIn 0.3s ease-out;
+    }
+    
+    .chatbot-container {
+        background: var(--iwmi-white);
+        border-radius: 12px;
+        width: 90%;
+        max-width: 1000px;
+        height: 85%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    
+    .chatbot-header {
+        background: var(--iwmi-dark-blue);
+        color: white;
+        padding: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .chatbot-header h3 {
+        margin: 0;
+        font-size: 1.4rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .chatbot-header h3 i {
+        color: var(--iwmi-green);
+    }
+    
+    .close-chatbot {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 4px;
+        transition: all 0.3s;
+    }
+    
+    .close-chatbot:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .chatbot-iframe {
+        flex-grow: 1;
+        border: none;
+        width: 100%;
+    }
+    
+    /* Chatbot Button in Map Controls */
+    .chatbot-map-btn {
+        background: var(--iwmi-teal);
+        color: var(--iwmi-white);
+        border: none;
+        padding: 0.6rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+    
+    .chatbot-map-btn:hover {
+        background: var(--iwmi-sky-blue);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(2, 151, 166, 0.2);
+    }
+    
     /* Compact Measurement Tools */
     .measurement-panel {
         background: var(--iwmi-white);
@@ -630,6 +752,15 @@
         to {
             opacity: 1;
             transform: translateY(0);
+        }
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
         }
     }
     
@@ -694,6 +825,11 @@
             font-size: 1rem;
         }
         
+        .chatbot-btn {
+            padding: 0.5rem 0.8rem;
+            font-size: 0.8rem;
+        }
+        
         .quick-stats {
             flex-direction: column;
             gap: 1.5rem;
@@ -726,7 +862,7 @@
             flex-wrap: wrap;
         }
         
-        .map-btn {
+        .map-btn, .chatbot-map-btn {
             padding: 0.5rem 0.8rem;
             font-size: 0.75rem;
         }
@@ -750,6 +886,15 @@
         
         .logo h2 {
             font-size: 1.2rem;
+        }
+        
+        .chatbot-container {
+            width: 95%;
+            height: 90%;
+        }
+        
+        .chatbot-header h3 {
+            font-size: 1.1rem;
         }
     }
     
@@ -779,7 +924,7 @@
 </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
+    <!-- Navigation Bar with Chatbot Button -->
     <nav>
         <div class="logo">
             <h2><i class="fas fa-water"></i> National Wetland Inventory of Sri Lanka</h2>
@@ -789,6 +934,11 @@
             <li><a href="about.html">About Wetlands</a></li>
             <li><a href="news.html">News</a></li>
             <li><a href="downloads.html">Downloads</a></li>
+            <li>
+                <button class="chatbot-btn" onclick="openChatbot()">
+                    <i class="fas fa-robot"></i> Marsh Warden
+                </button>
+            </li>
         </ul>
     </nav>
 
@@ -989,6 +1139,10 @@
                         <button class="map-btn" onclick="fitToAllData()">
                             <i class="fas fa-search"></i> Fit to Data
                         </button>
+                        
+                        <button class="chatbot-map-btn" onclick="openChatbot()">
+                            <i class="fas fa-robot"></i> Chat with Marsh Warden
+                        </button>
                     </div>
                     
                     <div class="control-group">
@@ -1011,6 +1165,24 @@
             </div>
         </div>
     </section>
+
+    <!-- Chatbot Modal -->
+    <div class="chatbot-modal" id="chatbotModal">
+        <div class="chatbot-container">
+            <div class="chatbot-header">
+                <h3><i class="fas fa-robot"></i> Marsh Warden - Wetland AI Assistant</h3>
+                <button class="close-chatbot" onclick="closeChatbot()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <iframe 
+                src="https://chatbot-wetlandiwmi-85xo9ngytfknlrrck4n6ur.streamlit.app/" 
+                class="chatbot-iframe"
+                title="Marsh Warden Wetland Chatbot"
+                allow="camera; microphone">
+            </iframe>
+        </div>
+    </div>
 
     <!-- JavaScript -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -1213,6 +1385,31 @@
                 showNotification('No shapefiles loaded. Please check data folder.', 'error');
             }
         }
+        
+        // Chatbot Functions
+        function openChatbot() {
+            document.getElementById('chatbotModal').classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+        
+        function closeChatbot() {
+            document.getElementById('chatbotModal').classList.remove('active');
+            document.body.style.overflow = 'auto'; // Re-enable scrolling
+        }
+        
+        // Close chatbot when clicking outside
+        document.getElementById('chatbotModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeChatbot();
+            }
+        });
+        
+        // Close chatbot with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeChatbot();
+            }
+        });
         
         // Calculate area from GeoJSON geometry (simplified calculation)
         function calculateArea(geometry) {

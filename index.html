@@ -117,12 +117,14 @@
         font-weight: 600;
         letter-spacing: 0.5px;
         box-shadow: 0 2px 8px rgba(34, 173, 122, 0.3);
+        text-decoration: none;
     }
     
     .chatbot-btn:hover {
         background: var(--iwmi-teal);
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(2, 151, 166, 0.4);
+        color: white;
     }
     
     /* Hero Section with Banner - IWMI Gradient Theme */
@@ -388,6 +390,65 @@
         box-shadow: 0 4px 12px rgba(232, 105, 51, 0.2);
     }
     
+    /* District Selection Panel */
+    .district-panel {
+        margin-bottom: 15px;
+        flex-shrink: 0;
+        background: var(--iwmi-white);
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid var(--iwmi-border);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    
+    .district-header {
+        font-weight: 700;
+        color: var(--iwmi-dark-blue);
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .district-header i {
+        color: var(--iwmi-sky-blue);
+        font-size: 1.1rem;
+    }
+    
+    .district-select {
+        width: 100%;
+        padding: 0.6rem 0.8rem;
+        border: 2px solid var(--iwmi-light-blue);
+        border-radius: 6px;
+        background: var(--iwmi-white);
+        color: var(--iwmi-dark-blue);
+        font-size: 0.9rem;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s;
+        margin-bottom: 10px;
+    }
+    
+    .district-select:focus {
+        outline: none;
+        border-color: var(--iwmi-dark-blue);
+        box-shadow: 0 0 0 3px rgba(40, 83, 125, 0.1);
+    }
+    
+    .district-info {
+        font-size: 0.8rem;
+        color: var(--iwmi-text-light);
+        line-height: 1.4;
+        background: rgba(232, 231, 231, 0.3);
+        padding: 10px;
+        border-radius: 6px;
+        margin-top: 10px;
+        border-left: 3px solid var(--iwmi-sky-blue);
+    }
+    
     /* Layer Control Panel - Compact Design */
     .layer-control-panel {
         margin-bottom: 15px;
@@ -397,6 +458,23 @@
         border-radius: 8px;
         border: 1px solid var(--iwmi-border);
         box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        display: none; /* Hidden until district is selected */
+    }
+    
+    .layer-control-panel.active {
+        display: block;
+        animation: fadeIn 0.5s ease-out;
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
     
     .panel-title {
@@ -501,7 +579,6 @@
         flex-shrink: 0;
     }
     
-    /* Feature count removed from layer items as requested */
     .layer-opacity {
         width: 100%;
         margin-top: 8px;
@@ -615,79 +692,6 @@
         color: var(--iwmi-orange);
     }
     
-    /* Chatbot Modal */
-    .chatbot-modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        z-index: 2000;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .chatbot-modal.active {
-        display: flex;
-        animation: fadeIn 0.3s ease-out;
-    }
-    
-    .chatbot-container {
-        background: var(--iwmi-white);
-        border-radius: 12px;
-        width: 90%;
-        max-width: 1000px;
-        height: 85%;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    }
-    
-    .chatbot-header {
-        background: var(--iwmi-dark-blue);
-        color: white;
-        padding: 1.5rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    
-    .chatbot-header h3 {
-        margin: 0;
-        font-size: 1.4rem;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    
-    .chatbot-header h3 i {
-        color: var(--iwmi-green);
-    }
-    
-    .close-chatbot {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 1.5rem;
-        cursor: pointer;
-        padding: 0.5rem;
-        border-radius: 4px;
-        transition: all 0.3s;
-    }
-    
-    .close-chatbot:hover {
-        background: rgba(255, 255, 255, 0.1);
-    }
-    
-    .chatbot-iframe {
-        flex-grow: 1;
-        border: none;
-        width: 100%;
-    }
-    
     /* Chatbot Button in Map Controls */
     .chatbot-map-btn {
         background: var(--iwmi-teal);
@@ -755,15 +759,6 @@
         }
     }
     
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
-    }
-    
     /* Notification Styles */
     @keyframes slideIn {
         from { transform: translateX(100%); opacity: 0; }
@@ -795,7 +790,7 @@
         
         .map-sidebar {
             height: auto;
-            max-height: 320px;
+            max-height: 400px;
             border-right: none;
             border-bottom: 1px solid var(--iwmi-border);
         }
@@ -887,15 +882,6 @@
         .logo h2 {
             font-size: 1.2rem;
         }
-        
-        .chatbot-container {
-            width: 95%;
-            height: 90%;
-        }
-        
-        .chatbot-header h3 {
-            font-size: 1.1rem;
-        }
     }
     
     @media (max-width: 480px) {
@@ -935,9 +921,11 @@
             <li><a href="news.html">News</a></li>
             <li><a href="downloads.html">Downloads</a></li>
             <li>
-                <button class="chatbot-btn" onclick="openChatbot()">
+                <a href="https://chatbot-wetlandiwmi-85xo9ngytfknlrrck4n6ur.streamlit.app/" 
+                   target="_blank" 
+                   class="chatbot-btn">
                     <i class="fas fa-robot"></i> Marsh Warden
-                </button>
+                </a>
             </li>
         </ul>
     </nav>
@@ -968,7 +956,7 @@
             <div class="stat-label">Data Layers</div>
         </div>
         <div class="stat-item">
-            <div class="stat-number">25+</div>
+            <div class="stat-number">25</div>
             <div class="stat-label">Districts Covered</div>
         </div>
     </section>
@@ -981,11 +969,50 @@
         </div>
         
         <div class="map-container">
-            <!-- Sidebar with layer controls -->
+            <!-- Sidebar with district selection and layer controls -->
             <div class="map-sidebar">
-                <div class="layer-control-panel">
+                <!-- District Selection Panel -->
+                <div class="district-panel">
+                    <div class="district-header">
+                        <i class="fas fa-map-marker-alt"></i> Select District
+                    </div>
+                    <select class="district-select" id="districtSelect" onchange="loadDistrictData(this.value)">
+                        <option value="">-- Select a District --</option>
+                        <option value="colombo">Colombo</option>
+                        <option value="gampaha">Gampaha</option>
+                        <option value="kalutara">Kalutara</option>
+                        <option value="kandy">Kandy</option>
+                        <option value="matale">Matale</option>
+                        <option value="nuwaraeliya">Nuwara Eliya</option>
+                        <option value="galle">Galle</option>
+                        <option value="matara">Matara</option>
+                        <option value="hambantota">Hambantota</option>
+                        <option value="jaffna">Jaffna</option>
+                        <option value="kilinochchi">Kilinochchi</option>
+                        <option value="mannar">Mannar</option>
+                        <option value="vavuniya">Vavuniya</option>
+                        <option value="mullaitivu">Mullaitivu</option>
+                        <option value="batticaloa">Batticaloa</option>
+                        <option value="ampara">Ampara</option>
+                        <option value="trincomalee">Trincomalee</option>
+                        <option value="kurunegala">Kurunegala</option>
+                        <option value="puttalam">Puttalam</option>
+                        <option value="anuradhapura">Anuradhapura</option>
+                        <option value="polonnaruwa">Polonnaruwa</option>
+                        <option value="badulla">Badulla</option>
+                        <option value="monaragala">Monaragala</option>
+                        <option value="ratnapura">Ratnapura</option>
+                        <option value="kegalle">Kegalle</option>
+                    </select>
+                    <div class="district-info" id="districtInfo">
+                        <p><strong>Please select a district</strong> to view wetland data. Wetland layers will appear after district selection.</p>
+                    </div>
+                </div>
+                
+                <!-- Layer Control Panel (Hidden until district is selected) -->
+                <div class="layer-control-panel" id="layerPanel">
                     <div class="panel-title">
-                        <i class="fas fa-layer-group"></i> Wetland Shapefile Layers
+                        <i class="fas fa-layer-group"></i> Wetland Layers for <span id="currentDistrict">District</span>
                     </div>
                     
                     <!-- Real Shapefile Layers - Compact Design -->
@@ -995,8 +1022,8 @@
                         </div>
                         
                         <div class="layer-item" onclick="toggleLayer('water')">
-                            <input type="checkbox" class="layer-checkbox" id="waterLayer" checked>
-                            <span class="layer-label">Water Bodies Shapefile</span>
+                            <input type="checkbox" class="layer-checkbox" id="waterLayer">
+                            <span class="layer-label">Water Bodies</span>
                             <div class="layer-color" style="background-color: rgba(80, 136, 198, 0.7);"></div>
                         </div>
                         <input type="range" class="layer-opacity" id="waterOpacity" min="0" max="100" value="70"
@@ -1014,8 +1041,8 @@
                         </div>
                         
                         <div class="layer-item" onclick="toggleLayer('paddy')">
-                            <input type="checkbox" class="layer-checkbox" id="paddyLayer" checked>
-                            <span class="layer-label">Paddy Fields Shapefile</span>
+                            <input type="checkbox" class="layer-checkbox" id="paddyLayer">
+                            <span class="layer-label">Paddy Fields</span>
                             <div class="layer-color" style="background-color: rgba(221, 145, 3, 0.7);"></div>
                         </div>
                         <input type="range" class="layer-opacity" id="paddyOpacity" min="0" max="100" value="70"
@@ -1033,8 +1060,8 @@
                         </div>
                         
                         <div class="layer-item" onclick="toggleLayer('marsh')">
-                            <input type="checkbox" class="layer-checkbox" id="marshLayer" checked>
-                            <span class="layer-label">Marsh Areas Shapefile</span>
+                            <input type="checkbox" class="layer-checkbox" id="marshLayer">
+                            <span class="layer-label">Marsh Areas</span>
                             <div class="layer-color" style="background-color: rgba(70, 187, 212, 0.7);"></div>
                         </div>
                         <input type="range" class="layer-opacity" id="marshOpacity" min="0" max="100" value="70"
@@ -1052,8 +1079,8 @@
                         </div>
                         
                         <div class="layer-item" onclick="toggleLayer('mangroves')">
-                            <input type="checkbox" class="layer-checkbox" id="mangrovesLayer" checked>
-                            <span class="layer-label">Mangroves Shapefile</span>
+                            <input type="checkbox" class="layer-checkbox" id="mangrovesLayer">
+                            <span class="layer-label">Mangroves</span>
                             <div class="layer-color" style="background-color: rgba(139, 69, 19, 0.7);"></div>
                         </div>
                         <input type="range" class="layer-opacity" id="mangrovesOpacity" min="0" max="100" value="70"
@@ -1100,7 +1127,7 @@
                         </button>
                     </div>
                     <div class="stat-display" id="areaStats">
-                        <span class="loading">Loading shapefile data...</span>
+                        <span class="loading">Select a district to view statistics</span>
                     </div>
                 </div>
                 
@@ -1140,7 +1167,7 @@
                             <i class="fas fa-search"></i> Fit to Data
                         </button>
                         
-                        <button class="chatbot-map-btn" onclick="openChatbot()">
+                        <button class="chatbot-map-btn" onclick="window.open('https://chatbot-wetlandiwmi-85xo9ngytfknlrrck4n6ur.streamlit.app/', '_blank')">
                             <i class="fas fa-robot"></i> Chat with Marsh Warden
                         </button>
                     </div>
@@ -1166,24 +1193,6 @@
         </div>
     </section>
 
-    <!-- Chatbot Modal -->
-    <div class="chatbot-modal" id="chatbotModal">
-        <div class="chatbot-container">
-            <div class="chatbot-header">
-                <h3><i class="fas fa-robot"></i> Marsh Warden - Wetland AI Assistant</h3>
-                <button class="close-chatbot" onclick="closeChatbot()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <iframe 
-                src="https://chatbot-wetlandiwmi-85xo9ngytfknlrrck4n6ur.streamlit.app/" 
-                class="chatbot-iframe"
-                title="Marsh Warden Wetland Chatbot"
-                allow="camera; microphone">
-            </iframe>
-        </div>
-    </div>
-
     <!-- JavaScript -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
@@ -1195,6 +1204,9 @@
             marsh: null,
             mangroves: null
         };
+        
+        let currentDistrict = null;
+        let districtBounds = {};
         
         // Updated layer colors as requested
         const layerColors = {
@@ -1250,11 +1262,39 @@
             mangroves: { features: 0, area: 0 }
         };
         
+        // District information
+        const districtInfo = {
+            colombo: { name: "Colombo", center: [6.9271, 79.8612], zoom: 11 },
+            gampaha: { name: "Gampaha", center: [7.0840, 80.0098], zoom: 11 },
+            kalutara: { name: "Kalutara", center: [6.5894, 80.0629], zoom: 11 },
+            kandy: { name: "Kandy", center: [7.2906, 80.6337], zoom: 11 },
+            matale: { name: "Matale", center: [7.4675, 80.6234], zoom: 11 },
+            nuwaraeliya: { name: "Nuwara Eliya", center: [6.9497, 80.7891], zoom: 11 },
+            galle: { name: "Galle", center: [6.0535, 80.2210], zoom: 11 },
+            matara: { name: "Matara", center: [5.9483, 80.5353], zoom: 11 },
+            hambantota: { name: "Hambantota", center: [6.1240, 81.1185], zoom: 11 },
+            jaffna: { name: "Jaffna", center: [9.6615, 80.0255], zoom: 11 },
+            kilinochchi: { name: "Kilinochchi", center: [9.3964, 80.3982], zoom: 11 },
+            mannar: { name: "Mannar", center: [8.9770, 79.9095], zoom: 11 },
+            vavuniya: { name: "Vavuniya", center: [8.7560, 80.4971], zoom: 11 },
+            mullaitivu: { name: "Mullaitivu", center: [9.2671, 80.8142], zoom: 11 },
+            batticaloa: { name: "Batticaloa", center: [7.7102, 81.6924], zoom: 11 },
+            ampara: { name: "Ampara", center: [7.2975, 81.6820], zoom: 11 },
+            trincomalee: { name: "Trincomalee", center: [8.5874, 81.2152], zoom: 11 },
+            kurunegala: { name: "Kurunegala", center: [7.4800, 80.3600], zoom: 11 },
+            puttalam: { name: "Puttalam", center: [8.0362, 79.8283], zoom: 11 },
+            anuradhapura: { name: "Anuradhapura", center: [8.3114, 80.4037], zoom: 11 },
+            polonnaruwa: { name: "Polonnaruwa", center: [7.9320, 81.0081], zoom: 11 },
+            badulla: { name: "Badulla", center: [6.9934, 81.0550], zoom: 11 },
+            monaragala: { name: "Monaragala", center: [6.8728, 81.3508], zoom: 11 },
+            ratnapura: { name: "Ratnapura", center: [6.6828, 80.3992], zoom: 11 },
+            kegalle: { name: "Kegalle", center: [7.2514, 80.3464], zoom: 11 }
+        };
+        
         // Initialize map when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            console.log("Initializing Wetland Map with Real Shapefiles");
+            console.log("Initializing Wetland Map with District-Based Data");
             initializeMap();
-            loadShapefiles();
             updateQuickStats();
             
             // Initialize opacity value displays
@@ -1262,11 +1302,6 @@
             updateOpacityDisplay('paddy', 70);
             updateOpacityDisplay('marsh', 70);
             updateOpacityDisplay('mangroves', 70);
-            
-            // Add active class to all layer items initially
-            document.querySelectorAll('.layer-item').forEach(item => {
-                item.classList.add('active');
-            });
         });
         
         // Initialize the map
@@ -1304,8 +1339,59 @@
             console.log("Map initialized successfully");
         }
         
-        // Load shapefiles from GeoJSON files
-        async function loadShapefiles() {
+        // Load district data
+        async function loadDistrictData(districtCode) {
+            if (!districtCode) {
+                document.getElementById('layerPanel').classList.remove('active');
+                document.getElementById('districtInfo').innerHTML = 
+                    '<p><strong>Please select a district</strong> to view wetland data. Wetland layers will appear after district selection.</p>';
+                return;
+            }
+            
+            currentDistrict = districtCode;
+            const districtName = districtInfo[districtCode]?.name || districtCode;
+            
+            // Update UI
+            document.getElementById('currentDistrict').textContent = districtName;
+            document.getElementById('districtInfo').innerHTML = 
+                `<p><strong>Loading wetland data for ${districtName} district...</strong></p>`;
+            
+            // Show layer panel
+            document.getElementById('layerPanel').classList.add('active');
+            
+            // Clear any existing layers
+            clearAllLayers();
+            
+            // Reset statistics
+            resetStatistics();
+            
+            // Zoom to district
+            zoomToDistrict(districtCode);
+            
+            // Load wetland data for the district
+            await loadWetlandDataForDistrict(districtCode);
+            
+            // Update district info
+            document.getElementById('districtInfo').innerHTML = 
+                `<p><strong>${districtName} District</strong><br>
+                Wetland data loaded. Select layers to display on the map.</p>`;
+            
+            // Update statistics display
+            updateStatisticsDisplay();
+            
+            showNotification(`Loaded wetland data for ${districtName} district`, 'info');
+        }
+        
+        // Zoom to selected district
+        function zoomToDistrict(districtCode) {
+            const district = districtInfo[districtCode];
+            if (district && district.center) {
+                map.setView(district.center, district.zoom || 11);
+            }
+        }
+        
+        // Load wetland data for a specific district
+        async function loadWetlandDataForDistrict(districtCode) {
             const layers = ['water', 'paddy', 'marsh', 'mangroves'];
             let loadedCount = 0;
             let totalFeatures = 0;
@@ -1313,103 +1399,175 @@
             
             for (const layer of layers) {
                 try {
-                    console.log(`Loading ${layer} shapefile...`);
+                    console.log(`Loading ${layer} data for ${districtCode}...`);
                     
-                    // Load GeoJSON file
-                    const response = await fetch(`data/${layer}_areas.geojson`);
+                    // Load GeoJSON file for the specific district
+                    const response = await fetch(`data/${districtCode}/${layer}_areas.geojson`);
                     
                     if (!response.ok) {
-                        throw new Error(`Failed to load ${layer}_areas.geojson: ${response.status}`);
+                        // If district-specific file doesn't exist, try the general folder
+                        const generalResponse = await fetch(`data/${layer}_areas.geojson`);
+                        
+                        if (!generalResponse.ok) {
+                            throw new Error(`No data found for ${layer} in ${districtCode}`);
+                        }
+                        
+                        const geojsonData = await generalResponse.json();
+                        
+                        // Filter features for the district (if district property exists)
+                        const districtFeatures = geojsonData.features.filter(feature => {
+                            return feature.properties && 
+                                  feature.properties.district && 
+                                  feature.properties.district.toLowerCase() === districtCode.toLowerCase();
+                        });
+                        
+                        if (districtFeatures.length === 0) {
+                            console.log(`No ${layer} features found for ${districtCode}`);
+                            continue;
+                        }
+                        
+                        // Create filtered GeoJSON
+                        const filteredGeoJSON = {
+                            type: "FeatureCollection",
+                            features: districtFeatures
+                        };
+                        
+                        // Create layer
+                        createLayer(layer, filteredGeoJSON, districtCode);
+                        loadedCount++;
+                        totalFeatures += districtFeatures.length;
+                        
+                    } else {
+                        // District-specific file exists
+                        const geojsonData = await response.json();
+                        createLayer(layer, geojsonData, districtCode);
+                        loadedCount++;
+                        totalFeatures += geojsonData.features.length;
                     }
                     
-                    const geojsonData = await response.json();
-                    
-                    // Create Leaflet GeoJSON layer with updated colors
-                    shapefileLayers[layer] = L.geoJSON(geojsonData, {
-                        style: layerStyles[layer],
-                        onEachFeature: function(feature, layerObj) {
-                            // Add click event for feature info
-                            layerObj.on('click', function(e) {
-                                showFeatureInfo(feature, e.latlng);
-                            });
-                            
-                            // Calculate area if geometry type is polygon
-                            if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
-                                try {
-                                    const area = calculateArea(feature.geometry);
-                                    layerStats[layer].area += area;
-                                    totalArea += area;
-                                } catch (error) {
-                                    console.log(`Could not calculate area for ${layer} feature`);
-                                }
-                            }
-                        }
-                    });
-                    
-                    // Count features
-                    layerStats[layer].features = geojsonData.features.length;
-                    totalFeatures += geojsonData.features.length;
-                    loadedCount++;
-                    
-                    // Add to map by default
-                    map.addLayer(shapefileLayers[layer]);
-                    
-                    console.log(`✓ ${layer} shapefile loaded: ${layerStats[layer].features} features`);
-                    
                 } catch (error) {
-                    console.error(`Error loading ${layer} shapefile:`, error);
+                    console.error(`Error loading ${layer} data for ${districtCode}:`, error.message);
                     document.getElementById(`${layer}Layer`).disabled = true;
                     document.getElementById(`${layer}Layer`).parentElement.style.opacity = '0.5';
                     document.getElementById(`${layer}Layer`).parentElement.style.cursor = 'not-allowed';
                     document.getElementById(`${layer}Opacity`).disabled = true;
-                    
-                    showNotification(`Failed to load ${layer} shapefile: ${error.message}`, 'error');
                 }
             }
             
-            // Update statistics display
-            updateStatisticsDisplay();
-            
             // Update quick stats
             document.getElementById('featureCount').textContent = totalFeatures.toLocaleString();
-            document.getElementById('totalArea').textContent = formatArea(totalArea);
             
             if (loadedCount > 0) {
-                showNotification(`Loaded ${loadedCount} shapefiles with ${totalFeatures.toLocaleString()} total features`, 'info');
-                
-                // Fit map to show all data
-                setTimeout(() => {
-                    fitToAllData();
-                }, 500);
+                showNotification(`Loaded ${loadedCount} wetland layers for ${districtInfo[districtCode]?.name || districtCode}`, 'info');
             } else {
-                showNotification('No shapefiles loaded. Please check data folder.', 'error');
+                showNotification(`No wetland data found for ${districtInfo[districtCode]?.name || districtCode}`, 'warning');
             }
         }
         
-        // Chatbot Functions
-        function openChatbot() {
-            document.getElementById('chatbotModal').classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        // Create a layer from GeoJSON data
+        function createLayer(layerName, geojsonData, districtCode) {
+            // Clear existing layer if it exists
+            if (shapefileLayers[layerName]) {
+                map.removeLayer(shapefileLayers[layerName]);
+                shapefileLayers[layerName] = null;
+            }
+            
+            // Create Leaflet GeoJSON layer with updated colors
+            shapefileLayers[layerName] = L.geoJSON(geojsonData, {
+                style: layerStyles[layerName],
+                onEachFeature: function(feature, layerObj) {
+                    // Add click event for feature info
+                    layerObj.on('click', function(e) {
+                        showFeatureInfo(feature, e.latlng, districtCode);
+                    });
+                    
+                    // Calculate area if geometry type is polygon
+                    if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
+                        try {
+                            const area = calculateArea(feature.geometry);
+                            layerStats[layerName].area += area;
+                        } catch (error) {
+                            console.log(`Could not calculate area for ${layerName} feature`);
+                        }
+                    }
+                }
+            });
+            
+            // Count features
+            layerStats[layerName].features = geojsonData.features.length;
+            
+            // Enable layer controls
+            document.getElementById(`${layerName}Layer`).disabled = false;
+            document.getElementById(`${layerName}Layer`).parentElement.style.opacity = '1';
+            document.getElementById(`${layerName}Layer`).parentElement.style.cursor = 'pointer';
+            document.getElementById(`${layerName}Opacity`).disabled = false;
+            
+            console.log(`✓ ${layerName} layer created: ${geojsonData.features.length} features`);
         }
         
-        function closeChatbot() {
-            document.getElementById('chatbotModal').classList.remove('active');
-            document.body.style.overflow = 'auto'; // Re-enable scrolling
+        // Clear all layers
+        function clearAllLayers() {
+            Object.keys(shapefileLayers).forEach(layer => {
+                if (shapefileLayers[layer]) {
+                    map.removeLayer(shapefileLayers[layer]);
+                    shapefileLayers[layer] = null;
+                }
+                // Disable layer controls
+                document.getElementById(`${layer}Layer`).checked = false;
+                document.getElementById(`${layer}Layer`).disabled = true;
+                document.getElementById(`${layer}Layer`).closest('.layer-item').classList.remove('active');
+                document.getElementById(`${layer}Opacity`).disabled = true;
+            });
         }
         
-        // Close chatbot when clicking outside
-        document.getElementById('chatbotModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeChatbot();
-            }
-        });
+        // Reset statistics
+        function resetStatistics() {
+            Object.keys(layerStats).forEach(layer => {
+                layerStats[layer] = { features: 0, area: 0 };
+            });
+        }
         
-        // Close chatbot with Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeChatbot();
+        // Show feature information with district context
+        function showFeatureInfo(feature, latlng, districtCode) {
+            const districtName = districtInfo[districtCode]?.name || districtCode;
+            
+            let infoHtml = `<div style="padding: 15px; max-width: 300px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+                <h4 style="margin: 0 0 12px 0; color: #28537D; font-weight: 600; border-bottom: 2px solid #46BBD4; padding-bottom: 8px;">Wetland Feature</h4>
+                <p style="margin: 6px 0; font-size: 0.9rem;">
+                    <strong style="color: #5088C6;">District:</strong> 
+                    <span style="color: #333;">${districtName}</span>
+                </p>`;
+            
+            // Show properties if available
+            if (feature.properties) {
+                Object.keys(feature.properties).forEach(key => {
+                    if (feature.properties[key] !== null && feature.properties[key] !== undefined && key !== 'district') {
+                        infoHtml += `<p style="margin: 6px 0; font-size: 0.9rem;">
+                            <strong style="color: #5088C6;">${key}:</strong> 
+                            <span style="color: #333;">${feature.properties[key]}</span>
+                        </p>`;
+                    }
+                });
             }
-        });
+            
+            // Add wetland type based on layer
+            const layerType = getLayerTypeFromProperties(feature);
+            infoHtml += `<p style="margin: 6px 0; font-size: 0.9rem;">
+                <strong style="color: #5088C6;">Wetland Type:</strong> 
+                <span style="color: #333;">${layerType}</span>
+            </p>`;
+            
+            infoHtml += `<p style="margin: 10px 0 0 0; padding-top: 10px; border-top: 1px solid #E8E7E7; font-size: 0.85rem; color: #666;">
+                <strong>Coordinates:</strong> ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}
+            </p>`;
+            infoHtml += `</div>`;
+            
+            // Create popup
+            L.popup()
+                .setLatLng(latlng)
+                .setContent(infoHtml)
+                .openOn(map);
+        }
         
         // Calculate area from GeoJSON geometry (simplified calculation)
         function calculateArea(geometry) {
@@ -1434,8 +1592,12 @@
         function formatArea(areaKm2) {
             if (areaKm2 > 1000) {
                 return (areaKm2 / 1000).toFixed(1) + ' thousand km²';
-            } else {
+            } else if (areaKm2 > 1) {
                 return areaKm2.toFixed(1) + ' km²';
+            } else if (areaKm2 > 0.01) {
+                return (areaKm2 * 100).toFixed(1) + ' hectares';
+            } else {
+                return (areaKm2 * 10000).toFixed(1) + ' m²';
             }
         }
         
@@ -1507,6 +1669,11 @@
         
         // Show all layers
         function showAllLayers() {
+            if (!currentDistrict) {
+                showNotification('Please select a district first', 'warning');
+                return;
+            }
+            
             Object.keys(shapefileLayers).forEach(layer => {
                 if (shapefileLayers[layer] && !map.hasLayer(shapefileLayers[layer])) {
                     map.addLayer(shapefileLayers[layer]);
@@ -1533,6 +1700,11 @@
         
         // Fit map to show all data
         function fitToAllData() {
+            if (!currentDistrict) {
+                showNotification('Please select a district first', 'warning');
+                return;
+            }
+            
             const bounds = new L.LatLngBounds();
             let hasValidBounds = false;
             
@@ -1548,47 +1720,12 @@
             
             if (hasValidBounds && bounds.isValid()) {
                 map.fitBounds(bounds, { padding: [50, 50] });
-                showNotification('Map zoomed to show all wetland data', 'info');
+                showNotification('Map zoomed to show all wetland data in district', 'info');
             } else {
-                map.setView([7.8731, 80.7718], 8);
-                showNotification('No visible data bounds available, centered on Sri Lanka', 'info');
+                // Zoom to district if no visible data
+                zoomToDistrict(currentDistrict);
+                showNotification('No visible data bounds available, zoomed to district', 'info');
             }
-        }
-        
-        // Show feature information
-        function showFeatureInfo(feature, latlng) {
-            let infoHtml = `<div style="padding: 15px; max-width: 300px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-                <h4 style="margin: 0 0 12px 0; color: #28537D; font-weight: 600; border-bottom: 2px solid #46BBD4; padding-bottom: 8px;">Wetland Feature</h4>`;
-            
-            // Show properties if available
-            if (feature.properties) {
-                Object.keys(feature.properties).forEach(key => {
-                    if (feature.properties[key] !== null && feature.properties[key] !== undefined) {
-                        infoHtml += `<p style="margin: 6px 0; font-size: 0.9rem;">
-                            <strong style="color: #5088C6;">${key}:</strong> 
-                            <span style="color: #333;">${feature.properties[key]}</span>
-                        </p>`;
-                    }
-                });
-            }
-            
-            // Add wetland type based on layer
-            const layerType = getLayerTypeFromProperties(feature);
-            infoHtml += `<p style="margin: 6px 0; font-size: 0.9rem;">
-                <strong style="color: #5088C6;">Wetland Type:</strong> 
-                <span style="color: #333;">${layerType}</span>
-            </p>`;
-            
-            infoHtml += `<p style="margin: 10px 0 0 0; padding-top: 10px; border-top: 1px solid #E8E7E7; font-size: 0.85rem; color: #666;">
-                <strong>Coordinates:</strong> ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}
-            </p>`;
-            infoHtml += `</div>`;
-            
-            // Create popup
-            L.popup()
-                .setLatLng(latlng)
-                .setContent(infoHtml)
-                .openOn(map);
         }
         
         // Determine layer type from feature properties
@@ -1615,6 +1752,13 @@
         
         // Update statistics display
         function updateStatisticsDisplay() {
+            if (!currentDistrict) {
+                document.getElementById('areaStats').innerHTML = 
+                    '<span class="loading">Select a district to view statistics</span>';
+                return;
+            }
+            
+            const districtName = districtInfo[currentDistrict]?.name || currentDistrict;
             let activeLayers = 0;
             let activeFeatures = 0;
             let activeArea = 0;
@@ -1628,8 +1772,9 @@
             });
             
             let statsHtml = `<div style="font-size: 0.8rem;">
+                <p style="margin: 0 0 6px 0; color: #28537D; font-weight: 600;">District: <span style="color: #22AD7A;">${districtName}</span></p>
                 <p style="margin: 0 0 6px 0; color: #28537D; font-weight: 600;">Active Layers: <span style="color: #22AD7A;">${activeLayers}</span></p>
-                <p style="margin: 0 0 6px 0; color: #28537D; font-weight: 600;">Active Features: <span style="color: #22AD7A;">${activeFeatures.toLocaleString()}</span></p>
+                <p style="margin: 0 0 6px 0; color: #28537D; font-weight: 600;">Total Features: <span style="color: #22AD7A;">${activeFeatures.toLocaleString()}</span></p>
                 <p style="margin: 0 0 10px 0; color: #28537D; font-weight: 600;">Total Area: <span style="color: #22AD7A;">${formatArea(activeArea)}</span></p>
                 <div style="background: #F8F9FA; padding: 8px; border-radius: 4px; margin-top: 8px;">`;
             
@@ -1652,6 +1797,11 @@
         
         // Recalculate statistics
         function recalculateStats() {
+            if (!currentDistrict) {
+                showNotification('Please select a district first', 'warning');
+                return;
+            }
+            
             showNotification('Recalculating statistics...', 'info');
             updateStatisticsDisplay();
             showNotification('Statistics updated', 'info');
@@ -1787,6 +1937,11 @@
         
         // Export data
         function exportData() {
+            if (!currentDistrict) {
+                showNotification('Please select a district first', 'warning');
+                return;
+            }
+            
             const activeLayers = [];
             Object.keys(shapefileLayers).forEach(layer => {
                 if (shapefileLayers[layer] && map.hasLayer(shapefileLayers[layer])) {
@@ -1794,7 +1949,8 @@
                 }
             });
             
-            showNotification(`Exporting ${activeLayers.length} active layers as GeoJSON\n\nNote: In production, this would generate downloadable files.`, 'info');
+            const districtName = districtInfo[currentDistrict]?.name || currentDistrict;
+            showNotification(`Exporting ${activeLayers.length} active layers for ${districtName} as GeoJSON\n\nNote: In production, this would generate downloadable files.`, 'info');
         }
         
         // Print map

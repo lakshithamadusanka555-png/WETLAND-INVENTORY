@@ -1037,12 +1037,12 @@
                     
                     <div class="layer-group">
                         <div class="layer-group-title">
-                            <i class="fas fa-seedling"></i> Paddy Fields
+                            <i class="fas fa-seedling"></i> Irrigated Land
                         </div>
                         
                         <div class="layer-item" onclick="toggleLayer('paddy')">
                             <input type="checkbox" class="layer-checkbox" id="paddyLayer">
-                            <span class="layer-label">Paddy Fields</span>
+                            <span class="layer-label">Irrigated Land</span>
                             <div class="layer-color" style="background-color: rgba(221, 145, 3, 0.7);"></div>
                         </div>
                         <input type="range" class="layer-opacity" id="paddyOpacity" min="0" max="100" value="70"
@@ -1100,19 +1100,19 @@
                     </div>
                     <div class="legend-item">
                         <div class="legend-color" style="background-color: rgba(80, 136, 198, 0.7);"></div>
-                        <span class="legend-label">Water Bodies (Blue)</span>
+                        <span class="legend-label">Water Bodies </span>
                     </div>
                     <div class="legend-item">
                         <div class="legend-color" style="background-color: rgba(221, 145, 3, 0.7);"></div>
-                        <span class="legend-label">Paddy Fields (Yellow)</span>
+                        <span class="legend-label">Irrigated Land </span>
                     </div>
                     <div class="legend-item">
                         <div class="legend-color" style="background-color: rgba(70, 187, 212, 0.7);"></div>
-                        <span class="legend-label">Freshwater Marshes (Cyan)</span>
+                        <span class="legend-label">Freshwater Marshes </span>
                     </div>
                     <div class="legend-item">
                         <div class="legend-color" style="background-color: rgba(139, 69, 19, 0.7);"></div>
-                        <span class="legend-label">Mangroves (Brown)</span>
+                        <span class="legend-label">Mangroves </span>
                     </div>
                 </div>
                 
@@ -1630,7 +1630,7 @@
         function getLayerDisplayName(layerName) {
             const names = {
                 water: 'Water Bodies',
-                paddy: 'Paddy Fields',
+                paddy: 'Irrigated Land',
                 marsh: 'Freshwater Marshes',
                 mangroves: 'Mangroves'
             };
@@ -2026,4 +2026,5 @@
     </footer>
 </body>
 </html>
+
 

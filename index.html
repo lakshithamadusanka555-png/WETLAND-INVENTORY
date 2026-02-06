@@ -18,6 +18,8 @@
         --iwmi-orange: #E86933;         /* Orange */
         --iwmi-yellow: #DD9103;         /* Yellow */
         --iwmi-mangrove: #8B4513;       /* Brown for Mangroves */
+        --iwmi-red: #DC3545;            /* Red for Sand Shores */
+        --iwmi-aqua-yellow: #FFC107;    /* Yellow for Aquaculture Farms */
         --iwmi-light-grey: #E8E7E7;     /* Light Grey */
         --iwmi-white: #FFFFFF;
         --iwmi-text-dark: #333333;
@@ -30,6 +32,8 @@
         --color-paddy: #DD9103;        /* Yellow */
         --color-marsh: #46BBD4;        /* Cyan */
         --color-mangroves: #8B4513;    /* Brown */
+        --color-sand: #DC3545;         /* Red for Sand Shores */
+        --color-aquaculture: #FFC107;  /* Yellow for Aquaculture Farms */
     }
     
     body {
@@ -952,7 +956,7 @@
             <div class="stat-label">Wetland Features</div>
         </div>
         <div class="stat-item">
-            <div class="stat-number">4</div>
+            <div class="stat-number">6</div>
             <div class="stat-label">Data Layers</div>
         </div>
         <div class="stat-item">
@@ -1091,6 +1095,44 @@
                             <span>100%</span>
                         </div>
                     </div>
+                    
+                    <div class="layer-group">
+                        <div class="layer-group-title">
+                            <i class="fas fa-umbrella-beach"></i> Sand Shores
+                        </div>
+                        
+                        <div class="layer-item" onclick="toggleLayer('sand')">
+                            <input type="checkbox" class="layer-checkbox" id="sandLayer">
+                            <span class="layer-label">Sand Shores</span>
+                            <div class="layer-color" style="background-color: rgba(220, 53, 69, 0.7);"></div>
+                        </div>
+                        <input type="range" class="layer-opacity" id="sandOpacity" min="0" max="100" value="70"
+                               oninput="updateLayerOpacity('sand', this.value)">
+                        <div class="opacity-label">
+                            <span>0%</span>
+                            <span id="sandOpacityValue">70%</span>
+                            <span>100%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="layer-group">
+                        <div class="layer-group-title">
+                            <i class="fas fa-fish"></i> Aquaculture Farms
+                        </div>
+                        
+                        <div class="layer-item" onclick="toggleLayer('aquaculture')">
+                            <input type="checkbox" class="layer-checkbox" id="aquacultureLayer">
+                            <span class="layer-label">Aquaculture Farms</span>
+                            <div class="layer-color" style="background-color: rgba(255, 193, 7, 0.7);"></div>
+                        </div>
+                        <input type="range" class="layer-opacity" id="aquacultureOpacity" min="0" max="100" value="70"
+                               oninput="updateLayerOpacity('aquaculture', this.value)">
+                        <div class="opacity-label">
+                            <span>0%</span>
+                            <span id="aquacultureOpacityValue">70%</span>
+                            <span>100%</span>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Legend -->
@@ -1113,6 +1155,14 @@
                     <div class="legend-item">
                         <div class="legend-color" style="background-color: rgba(139, 69, 19, 0.7);"></div>
                         <span class="legend-label">Mangroves </span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: rgba(220, 53, 69, 0.7);"></div>
+                        <span class="legend-label">Sand Shores </span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: rgba(255, 193, 7, 0.7);"></div>
+                        <span class="legend-label">Aquaculture Farms </span>
                     </div>
                 </div>
                 
@@ -1202,7 +1252,9 @@
             water: null,
             paddy: null,
             marsh: null,
-            mangroves: null
+            mangroves: null,
+            sand: null,
+            aquaculture: null
         };
         
         let currentDistrict = null;
@@ -1213,7 +1265,9 @@
             water: 'rgba(80, 136, 198, 0.7)',    // Blue (#5088C6)
             paddy: 'rgba(221, 145, 3, 0.7)',     // Yellow (#DD9103)
             marsh: 'rgba(70, 187, 212, 0.7)',    // Cyan (#46BBD4)
-            mangroves: 'rgba(139, 69, 19, 0.7)'  // Brown (#8B4513)
+            mangroves: 'rgba(139, 69, 19, 0.7)', // Brown (#8B4513)
+            sand: 'rgba(220, 53, 69, 0.7)',      // Red for Sand Shores
+            aquaculture: 'rgba(255, 193, 7, 0.7)' // Yellow for Aquaculture Farms
         };
         
         // Store individual layer styles for opacity control
@@ -1246,6 +1300,22 @@
                 opacity: 0.7,
                 color: 'rgba(139, 69, 19, 1)',
                 fillOpacity: 0.7
+            },
+            sand: {
+                fillColor: layerColors.sand,
+                weight: 1.5,
+                opacity: 0.7,
+                color: 'rgba(220, 53, 69, 1)',
+                fillOpacity: 0.7,
+                dashArray: '6, 3'
+            },
+            aquaculture: {
+                fillColor: layerColors.aquaculture,
+                weight: 1.5,
+                opacity: 0.7,
+                color: 'rgba(255, 193, 7, 1)',
+                fillOpacity: 0.7,
+                dashArray: '2, 2'
             }
         };
         
@@ -1259,7 +1329,9 @@
             water: { features: 0, area: 0 },
             paddy: { features: 0, area: 0 },
             marsh: { features: 0, area: 0 },
-            mangroves: { features: 0, area: 0 }
+            mangroves: { features: 0, area: 0 },
+            sand: { features: 0, area: 0 },
+            aquaculture: { features: 0, area: 0 }
         };
         
         // District information
@@ -1302,6 +1374,8 @@
             updateOpacityDisplay('paddy', 70);
             updateOpacityDisplay('marsh', 70);
             updateOpacityDisplay('mangroves', 70);
+            updateOpacityDisplay('sand', 70);
+            updateOpacityDisplay('aquaculture', 70);
         });
         
         // Initialize the map
@@ -1392,7 +1466,7 @@
         
         // Load wetland data for a specific district
         async function loadWetlandDataForDistrict(districtCode) {
-            const layers = ['water', 'paddy', 'marsh', 'mangroves'];
+            const layers = ['water', 'paddy', 'marsh', 'mangroves', 'sand', 'aquaculture'];
             let loadedCount = 0;
             let totalFeatures = 0;
             let totalArea = 0;
@@ -1632,7 +1706,9 @@
                 water: 'Water Bodies',
                 paddy: 'Irrigated Land',
                 marsh: 'Freshwater Marshes',
-                mangroves: 'Mangroves'
+                mangroves: 'Mangroves',
+                sand: 'Sand Shores',
+                aquaculture: 'Aquaculture Farms'
             };
             return names[layerName] || layerName;
         }
@@ -1738,6 +1814,8 @@
                     if (name.includes('water')) return 'Water Body';
                     if (name.includes('paddy') || name.includes('rice')) return 'Paddy Field';
                     if (name.includes('marsh') || name.includes('swamp')) return 'Marsh Area';
+                    if (name.includes('sand') || name.includes('shore') || name.includes('beach')) return 'Sand Shore';
+                    if (name.includes('aquaculture') || name.includes('fish') || name.includes('farm')) return 'Aquaculture Farm';
                 }
                 if (feature.properties.class) {
                     const cls = feature.properties.class.toLowerCase();
@@ -1745,6 +1823,8 @@
                     if (cls.includes('water')) return 'Water Body';
                     if (cls.includes('paddy') || cls.includes('rice')) return 'Paddy Field';
                     if (cls.includes('marsh') || cls.includes('swamp')) return 'Marsh Area';
+                    if (cls.includes('sand') || cls.includes('shore') || cls.includes('beach')) return 'Sand Shore';
+                    if (cls.includes('aquaculture') || cls.includes('fish') || cls.includes('farm')) return 'Aquaculture Farm';
                 }
             }
             return 'Wetland Area';
@@ -2026,5 +2106,3 @@
     </footer>
 </body>
 </html>
-
-

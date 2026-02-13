@@ -297,7 +297,7 @@
         width: 95%;
         margin: 0 auto;
         display: grid;
-        grid-template-columns: 300px 1fr; /* Reduced sidebar width */
+        grid-template-columns: 280px 1fr; /* Reduced sidebar width */
         gap: 20px;
         background: var(--iwmi-white);
         border-radius: 12px;
@@ -311,12 +311,27 @@
     
     .map-sidebar {
         background: var(--iwmi-white);
-        padding: 20px;
+        padding: 15px;
         border-right: 1px solid var(--iwmi-border);
         height: 100%;
         overflow-y: auto;
         display: flex;
         flex-direction: column;
+        scrollbar-width: thin;
+        scrollbar-color: var(--iwmi-light-blue) var(--iwmi-light-grey);
+    }
+    
+    .map-sidebar::-webkit-scrollbar {
+        width: 5px;
+    }
+    
+    .map-sidebar::-webkit-scrollbar-track {
+        background: var(--iwmi-light-grey);
+    }
+    
+    .map-sidebar::-webkit-scrollbar-thumb {
+        background: var(--iwmi-light-blue);
+        border-radius: 10px;
     }
     
     .map-content {
@@ -337,7 +352,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 1rem 1.5rem;
+        padding: 0.8rem 1.2rem;
         background: var(--iwmi-white);
         border-top: 1px solid var(--iwmi-border);
         flex-wrap: wrap;
@@ -348,7 +363,7 @@
     
     .control-group {
         display: flex;
-        gap: 0.8rem;
+        gap: 0.6rem;
         align-items: center;
         flex-wrap: wrap;
     }
@@ -357,14 +372,14 @@
         background: var(--iwmi-light-blue);
         color: var(--iwmi-white);
         border: none;
-        padding: 0.6rem 1rem;
+        padding: 0.5rem 0.8rem;
         border-radius: 4px;
         cursor: pointer;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
         transition: all 0.3s;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.3px;
@@ -394,298 +409,305 @@
         box-shadow: 0 4px 12px rgba(232, 105, 51, 0.2);
     }
     
-    /* District Selection Panel */
+    /* District Selection Panel - More Compact */
     .district-panel {
-        margin-bottom: 15px;
+        margin-bottom: 12px;
         flex-shrink: 0;
         background: var(--iwmi-white);
-        padding: 15px;
-        border-radius: 8px;
+        padding: 12px;
+        border-radius: 6px;
         border: 1px solid var(--iwmi-border);
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        box-shadow: 0 1px 4px rgba(0,0,0,0.03);
     }
     
     .district-header {
-        font-weight: 700;
+        font-weight: 600;
         color: var(--iwmi-dark-blue);
-        margin-bottom: 15px;
+        margin-bottom: 10px;
         display: flex;
         align-items: center;
-        gap: 10px;
-        font-size: 0.95rem;
+        gap: 8px;
+        font-size: 0.85rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
     
     .district-header i {
         color: var(--iwmi-sky-blue);
-        font-size: 1.1rem;
+        font-size: 0.95rem;
     }
     
     .district-select {
         width: 100%;
-        padding: 0.6rem 0.8rem;
-        border: 2px solid var(--iwmi-light-blue);
-        border-radius: 6px;
+        padding: 0.5rem 0.6rem;
+        border: 1.5px solid var(--iwmi-light-blue);
+        border-radius: 5px;
         background: var(--iwmi-white);
         color: var(--iwmi-dark-blue);
-        font-size: 0.9rem;
+        font-size: 0.8rem;
         cursor: pointer;
         font-weight: 500;
         transition: all 0.3s;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
     }
     
     .district-select:focus {
         outline: none;
         border-color: var(--iwmi-dark-blue);
-        box-shadow: 0 0 0 3px rgba(40, 83, 125, 0.1);
+        box-shadow: 0 0 0 2px rgba(40, 83, 125, 0.1);
     }
     
     .district-info {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         color: var(--iwmi-text-light);
         line-height: 1.4;
-        background: rgba(232, 231, 231, 0.3);
-        padding: 10px;
-        border-radius: 6px;
-        margin-top: 10px;
-        border-left: 3px solid var(--iwmi-sky-blue);
+        background: rgba(232, 231, 231, 0.2);
+        padding: 8px;
+        border-radius: 5px;
+        margin-top: 6px;
+        border-left: 2px solid var(--iwmi-sky-blue);
     }
     
-    /* Layer Control Panel - Compact Design */
+    /* Layer Control Panel - ULTRA COMPACT DESIGN */
     .layer-control-panel {
-        margin-bottom: 15px;
+        margin-bottom: 12px;
         flex-shrink: 0;
         background: var(--iwmi-white);
-        padding: 15px;
-        border-radius: 8px;
+        padding: 12px;
+        border-radius: 6px;
         border: 1px solid var(--iwmi-border);
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        display: none; /* Hidden until district is selected */
+        box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+        display: none;
     }
     
     .layer-control-panel.active {
         display: block;
-        animation: fadeIn 0.5s ease-out;
-    }
-    
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        animation: fadeIn 0.3s ease-out;
     }
     
     .panel-title {
-        font-size: 1rem;
+        font-size: 0.9rem;
         font-weight: 700;
         color: var(--iwmi-dark-blue);
-        margin-bottom: 15px;
+        margin-bottom: 10px;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
     
     .panel-title i {
         color: var(--iwmi-sky-blue);
-        font-size: 1.1rem;
+        font-size: 0.95rem;
     }
     
-    /* Smaller Layer Groups */
-    .layer-group {
-        margin-bottom: 10px;
-        background: rgba(232, 231, 231, 0.3);
-        padding: 10px;
-        border-radius: 6px;
-        border: 1px solid var(--iwmi-border);
-        transition: all 0.3s;
-    }
-    
-    .layer-group:hover {
-        border-color: var(--iwmi-light-blue);
-        box-shadow: 0 2px 8px rgba(80, 136, 198, 0.1);
-    }
-    
-    .layer-group-title {
-        font-weight: 600;
-        color: var(--iwmi-dark-blue);
+    /* COMPACT LAYER GRID - 2 COLUMN LAYOUT */
+    .layer-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
         margin-bottom: 8px;
-        font-size: 0.9rem;
+    }
+    
+    /* Ultra Compact Layer Items */
+    .layer-item-compact {
         display: flex;
         align-items: center;
         gap: 6px;
-    }
-    
-    .layer-group-title i {
-        color: var(--iwmi-light-blue);
-        font-size: 0.9rem;
-    }
-    
-    /* Compact Layer Items */
-    .layer-item {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 8px;
-        padding: 8px;
-        background: var(--iwmi-white);
+        padding: 6px 8px;
+        background: rgba(232, 231, 231, 0.2);
         border-radius: 4px;
         cursor: pointer;
-        transition: all 0.3s;
+        transition: all 0.2s;
         border: 1px solid var(--iwmi-border);
         position: relative;
     }
     
-    .layer-item:hover {
+    .layer-item-compact:hover {
         background: rgba(70, 187, 212, 0.05);
         border-color: var(--iwmi-sky-blue);
-        transform: translateX(2px);
     }
     
-    .layer-item.active {
+    .layer-item-compact.active {
         background: rgba(70, 187, 212, 0.08);
         border-color: var(--iwmi-light-blue);
     }
     
-    .layer-checkbox {
-        width: 18px;
-        height: 18px;
+    .layer-checkbox-compact {
+        width: 16px;
+        height: 16px;
         cursor: pointer;
         accent-color: var(--iwmi-green);
-        position: relative;
-        z-index: 2;
+        margin: 0;
     }
     
-    .layer-checkbox:checked {
-        background-color: var(--iwmi-green);
-    }
-    
-    .layer-label {
+    .layer-label-compact {
         flex-grow: 1;
-        font-size: 0.85rem;
+        font-size: 0.75rem;
         color: var(--iwmi-text-dark);
         font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     
-    .layer-color {
-        width: 18px;
-        height: 18px;
+    .layer-color-compact {
+        width: 14px;
+        height: 14px;
         border-radius: 3px;
-        border: 2px solid var(--iwmi-white);
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        border: 1.5px solid var(--iwmi-white);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         flex-shrink: 0;
     }
     
-    .layer-opacity {
+    /* Ultra Compact Opacity Sliders */
+    .opacity-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 5px;
+    }
+    
+    .opacity-item {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .opacity-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2px;
+    }
+    
+    .opacity-label-compact {
+        font-size: 0.65rem;
+        color: var(--iwmi-text-light);
+        font-weight: 500;
+    }
+    
+    .opacity-value {
+        font-size: 0.6rem;
+        color: var(--iwmi-dark-blue);
+        font-weight: 600;
+    }
+    
+    .layer-opacity-compact {
         width: 100%;
-        margin-top: 8px;
-        height: 4px;
+        height: 3px;
         border-radius: 2px;
         accent-color: var(--iwmi-light-blue);
         cursor: pointer;
         background: var(--iwmi-light-grey);
     }
     
-    .opacity-label {
-        display: flex;
-        justify-content: space-between;
-        font-size: 0.7rem;
-        color: var(--iwmi-text-light);
-        margin-top: 4px;
-    }
-    
     /* Compact Legend */
     .legend {
         background: var(--iwmi-white);
-        padding: 15px;
-        border-radius: 8px;
-        margin-top: 12px;
+        padding: 12px;
+        border-radius: 6px;
+        margin-top: 10px;
         border: 1px solid var(--iwmi-border);
         flex-shrink: 0;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        box-shadow: 0 1px 4px rgba(0,0,0,0.03);
     }
     
     .legend-title {
-        font-weight: 700;
-        margin-bottom: 12px;
+        font-weight: 600;
+        margin-bottom: 10px;
         color: var(--iwmi-dark-blue);
         display: flex;
         align-items: center;
-        gap: 8px;
-        font-size: 0.9rem;
+        gap: 6px;
+        font-size: 0.8rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
     
     .legend-title i {
         color: var(--iwmi-green);
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
     
-    .legend-item {
+    .legend-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+    }
+    
+    .legend-item-compact {
         display: flex;
         align-items: center;
-        margin-bottom: 8px;
-        padding: 6px 8px;
-        background: rgba(232, 231, 231, 0.3);
+        gap: 6px;
+        padding: 4px 6px;
+        background: rgba(232, 231, 231, 0.2);
         border-radius: 4px;
     }
     
-    .legend-color {
-        width: 18px;
-        height: 18px;
-        margin-right: 10px;
+    .legend-color-compact {
+        width: 14px;
+        height: 14px;
         border-radius: 3px;
-        border: 2px solid var(--iwmi-white);
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        border: 1.5px solid var(--iwmi-white);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
     
-    .legend-label {
-        font-size: 0.85rem;
+    .legend-label-compact {
+        font-size: 0.7rem;
         color: var(--iwmi-text-dark);
         font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     
-    /* Compact Statistics Panel */
+    /* Statistics Panel - More Compact */
     .stats-panel {
         background: var(--iwmi-white);
-        padding: 15px;
-        border-radius: 8px;
+        padding: 12px;
+        border-radius: 6px;
         border: 1px solid var(--iwmi-border);
-        margin-top: 12px;
+        margin-top: 10px;
         flex-shrink: 0;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        box-shadow: 0 1px 4px rgba(0,0,0,0.03);
     }
     
     .stats-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 12px;
+        margin-bottom: 8px;
     }
     
     .stat-display {
-        margin-top: 8px;
-        font-size: 0.8rem;
+        margin-top: 6px;
+        font-size: 0.75rem;
         color: var(--iwmi-text-dark);
         line-height: 1.4;
-        background: rgba(232, 231, 231, 0.3);
-        padding: 12px;
-        border-radius: 6px;
-        min-height: 50px;
-        border-left: 3px solid var(--iwmi-green);
+        background: rgba(232, 231, 231, 0.2);
+        padding: 10px;
+        border-radius: 5px;
+        min-height: 40px;
+        border-left: 2px solid var(--iwmi-green);
     }
     
+    /* Measurement Tools - More Compact */
+    .measurement-panel {
+        background: var(--iwmi-white);
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid var(--iwmi-border);
+        margin-top: 10px;
+        flex-shrink: 0;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    }
+    
+    /* Loading and Status */
     .loading {
         color: var(--iwmi-light-blue);
         font-style: italic;
+        font-size: 0.75rem;
     }
     
     .success {
@@ -701,14 +723,14 @@
         background: var(--iwmi-teal);
         color: var(--iwmi-white);
         border: none;
-        padding: 0.6rem 1rem;
+        padding: 0.5rem 0.8rem;
         border-radius: 4px;
         cursor: pointer;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
         transition: all 0.3s;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.3px;
@@ -720,28 +742,17 @@
         box-shadow: 0 4px 12px rgba(2, 151, 166, 0.2);
     }
     
-    /* Compact Measurement Tools */
-    .measurement-panel {
-        background: var(--iwmi-white);
-        padding: 15px;
-        border-radius: 8px;
-        border: 1px solid var(--iwmi-border);
-        margin-top: 12px;
-        flex-shrink: 0;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    }
-    
     /* Dropdown Styles */
     .filter-dropdown {
-        padding: 0.6rem 0.8rem;
+        padding: 0.5rem 0.6rem;
         border: 1px solid var(--iwmi-light-blue);
         border-radius: 4px;
         background: var(--iwmi-white);
         color: var(--iwmi-dark-blue);
-        font-size: 0.85rem;
+        font-size: 0.75rem;
         cursor: pointer;
         font-weight: 500;
-        min-width: 120px;
+        min-width: 100px;
         transition: all 0.3s;
     }
     
@@ -756,6 +767,17 @@
         from {
             opacity: 0;
             transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-5px);
         }
         to {
             opacity: 1;
@@ -780,7 +802,7 @@
             height: 75vh;
             min-height: 650px;
             width: 98%;
-            grid-template-columns: 280px 1fr;
+            grid-template-columns: 260px 1fr;
         }
     }
     
@@ -794,13 +816,21 @@
         
         .map-sidebar {
             height: auto;
-            max-height: 400px;
+            max-height: 450px;
             border-right: none;
             border-bottom: 1px solid var(--iwmi-border);
         }
         
         #map {
             min-height: 500px;
+        }
+        
+        .layer-grid {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+        
+        .legend-grid {
+            grid-template-columns: 1fr 1fr 1fr;
         }
     }
     
@@ -850,6 +880,18 @@
             width: 100%;
         }
         
+        .layer-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+        
+        .legend-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+        
+        .opacity-grid {
+            grid-template-columns: 1fr;
+        }
+        
         .map-controls {
             flex-direction: column;
             gap: 10px;
@@ -859,11 +901,6 @@
             width: 100%;
             justify-content: center;
             flex-wrap: wrap;
-        }
-        
-        .map-btn, .chatbot-map-btn {
-            padding: 0.5rem 0.8rem;
-            font-size: 0.75rem;
         }
         
         nav {
@@ -877,15 +914,6 @@
             justify-content: center;
             gap: 0.8rem;
         }
-        
-        .nav-links a {
-            padding: 0.4rem 0.8rem;
-            font-size: 0.9rem;
-        }
-        
-        .logo h2 {
-            font-size: 1.2rem;
-        }
     }
     
     @media (max-width: 480px) {
@@ -898,13 +926,12 @@
             font-size: 1.6rem;
         }
         
-        .map-container {
-            min-height: 600px;
-            border-radius: 8px;
+        .layer-grid {
+            grid-template-columns: 1fr;
         }
         
-        .map-sidebar {
-            padding: 15px;
+        .legend-grid {
+            grid-template-columns: 1fr;
         }
         
         .quick-stats {
@@ -1013,166 +1040,155 @@
                     </div>
                 </div>
                 
-                <!-- Layer Control Panel (Hidden until district is selected) -->
+                <!-- Layer Control Panel (Hidden until district is selected) - ULTRA COMPACT -->
                 <div class="layer-control-panel" id="layerPanel">
                     <div class="panel-title">
-                        <i class="fas fa-layer-group"></i> Wetland Layers for <span id="currentDistrict">District</span>
+                        <i class="fas fa-layer-group"></i> Layers: <span id="currentDistrict" style="color: var(--iwmi-green);">District</span>
                     </div>
                     
-                    <!-- Real Shapefile Layers - Compact Design -->
-                    <div class="layer-group">
-                        <div class="layer-group-title">
-                            <i class="fas fa-water"></i> Water Bodies
+                    <!-- 2-Column Grid for Layer Checkboxes -->
+                    <div class="layer-grid">
+                        <!-- Water Bodies -->
+                        <div class="layer-item-compact" onclick="toggleLayer('water')">
+                            <input type="checkbox" class="layer-checkbox-compact" id="waterLayer">
+                            <span class="layer-label-compact">Water</span>
+                            <div class="layer-color-compact" style="background-color: rgba(80, 136, 198, 0.7);"></div>
                         </div>
                         
-                        <div class="layer-item" onclick="toggleLayer('water')">
-                            <input type="checkbox" class="layer-checkbox" id="waterLayer">
-                            <span class="layer-label">Water Bodies</span>
-                            <div class="layer-color" style="background-color: rgba(80, 136, 198, 0.7);"></div>
-                        </div>
-                        <input type="range" class="layer-opacity" id="waterOpacity" min="0" max="100" value="70"
-                               oninput="updateLayerOpacity('water', this.value)">
-                        <div class="opacity-label">
-                            <span>0%</span>
-                            <span id="waterOpacityValue">70%</span>
-                            <span>100%</span>
-                        </div>
-                    </div>
-                    
-                    <div class="layer-group">
-                        <div class="layer-group-title">
-                            <i class="fas fa-seedling"></i> Irrigated Land
+                        <!-- Irrigated Land -->
+                        <div class="layer-item-compact" onclick="toggleLayer('paddy')">
+                            <input type="checkbox" class="layer-checkbox-compact" id="paddyLayer">
+                            <span class="layer-label-compact">Irrigated</span>
+                            <div class="layer-color-compact" style="background-color: rgba(221, 145, 3, 0.7);"></div>
                         </div>
                         
-                        <div class="layer-item" onclick="toggleLayer('paddy')">
-                            <input type="checkbox" class="layer-checkbox" id="paddyLayer">
-                            <span class="layer-label">Irrigated Land</span>
-                            <div class="layer-color" style="background-color: rgba(221, 145, 3, 0.7);"></div>
-                        </div>
-                        <input type="range" class="layer-opacity" id="paddyOpacity" min="0" max="100" value="70"
-                               oninput="updateLayerOpacity('paddy', this.value)">
-                        <div class="opacity-label">
-                            <span>0%</span>
-                            <span id="paddyOpacityValue">70%</span>
-                            <span>100%</span>
-                        </div>
-                    </div>
-                    
-                    <div class="layer-group">
-                        <div class="layer-group-title">
-                            <i class="fas fa-swamp"></i> Freshwater Marshes
+                        <!-- Freshwater Marshes -->
+                        <div class="layer-item-compact" onclick="toggleLayer('marsh')">
+                            <input type="checkbox" class="layer-checkbox-compact" id="marshLayer">
+                            <span class="layer-label-compact">Marshes</span>
+                            <div class="layer-color-compact" style="background-color: rgba(70, 187, 212, 0.7);"></div>
                         </div>
                         
-                        <div class="layer-item" onclick="toggleLayer('marsh')">
-                            <input type="checkbox" class="layer-checkbox" id="marshLayer">
-                            <span class="layer-label">Freshwater Marshes</span>
-                            <div class="layer-color" style="background-color: rgba(70, 187, 212, 0.7);"></div>
+                        <!-- Mangroves -->
+                        <div class="layer-item-compact" onclick="toggleLayer('mangroves')">
+                            <input type="checkbox" class="layer-checkbox-compact" id="mangrovesLayer">
+                            <span class="layer-label-compact">Mangroves</span>
+                            <div class="layer-color-compact" style="background-color: rgba(139, 69, 19, 0.7);"></div>
                         </div>
-                        <input type="range" class="layer-opacity" id="marshOpacity" min="0" max="100" value="70"
-                               oninput="updateLayerOpacity('marsh', this.value)">
-                        <div class="opacity-label">
-                            <span>0%</span>
-                            <span id="marshOpacityValue">70%</span>
-                            <span>100%</span>
+                        
+                        <!-- Sand Shores -->
+                        <div class="layer-item-compact" onclick="toggleLayer('sand')">
+                            <input type="checkbox" class="layer-checkbox-compact" id="sandLayer">
+                            <span class="layer-label-compact">Sand Shores</span>
+                            <div class="layer-color-compact" style="background-color: rgba(220, 53, 69, 0.7);"></div>
+                        </div>
+                        
+                        <!-- Aquaculture Farms -->
+                        <div class="layer-item-compact" onclick="toggleLayer('aquaculture')">
+                            <input type="checkbox" class="layer-checkbox-compact" id="aquacultureLayer">
+                            <span class="layer-label-compact">Aquaculture</span>
+                            <div class="layer-color-compact" style="background-color: rgba(255, 193, 7, 0.7);"></div>
                         </div>
                     </div>
                     
-                    <div class="layer-group">
-                        <div class="layer-group-title">
-                            <i class="fas fa-tree"></i> Mangroves
+                    <!-- Compact Opacity Sliders - 2 Column Grid -->
+                    <div class="opacity-grid">
+                        <div class="opacity-item">
+                            <div class="opacity-header">
+                                <span class="opacity-label-compact">Water</span>
+                                <span class="opacity-value" id="waterOpacityValue">70%</span>
+                            </div>
+                            <input type="range" class="layer-opacity-compact" id="waterOpacity" min="0" max="100" value="70"
+                                   oninput="updateLayerOpacity('water', this.value)">
                         </div>
                         
-                        <div class="layer-item" onclick="toggleLayer('mangroves')">
-                            <input type="checkbox" class="layer-checkbox" id="mangrovesLayer">
-                            <span class="layer-label">Mangroves</span>
-                            <div class="layer-color" style="background-color: rgba(139, 69, 19, 0.7);"></div>
-                        </div>
-                        <input type="range" class="layer-opacity" id="mangrovesOpacity" min="0" max="100" value="70"
-                               oninput="updateLayerOpacity('mangroves', this.value)">
-                        <div class="opacity-label">
-                            <span>0%</span>
-                            <span id="mangrovesOpacityValue">70%</span>
-                            <span>100%</span>
-                        </div>
-                    </div>
-                    
-                    <div class="layer-group">
-                        <div class="layer-group-title">
-                            <i class="fas fa-umbrella-beach"></i> Sand Shores
+                        <div class="opacity-item">
+                            <div class="opacity-header">
+                                <span class="opacity-label-compact">Irrigated</span>
+                                <span class="opacity-value" id="paddyOpacityValue">70%</span>
+                            </div>
+                            <input type="range" class="layer-opacity-compact" id="paddyOpacity" min="0" max="100" value="70"
+                                   oninput="updateLayerOpacity('paddy', this.value)">
                         </div>
                         
-                        <div class="layer-item" onclick="toggleLayer('sand')">
-                            <input type="checkbox" class="layer-checkbox" id="sandLayer">
-                            <span class="layer-label">Sand Shores</span>
-                            <div class="layer-color" style="background-color: rgba(220, 53, 69, 0.7);"></div>
-                        </div>
-                        <input type="range" class="layer-opacity" id="sandOpacity" min="0" max="100" value="70"
-                               oninput="updateLayerOpacity('sand', this.value)">
-                        <div class="opacity-label">
-                            <span>0%</span>
-                            <span id="sandOpacityValue">70%</span>
-                            <span>100%</span>
-                        </div>
-                    </div>
-                    
-                    <div class="layer-group">
-                        <div class="layer-group-title">
-                            <i class="fas fa-fish"></i> Aquaculture Farms
+                        <div class="opacity-item">
+                            <div class="opacity-header">
+                                <span class="opacity-label-compact">Marshes</span>
+                                <span class="opacity-value" id="marshOpacityValue">70%</span>
+                            </div>
+                            <input type="range" class="layer-opacity-compact" id="marshOpacity" min="0" max="100" value="70"
+                                   oninput="updateLayerOpacity('marsh', this.value)">
                         </div>
                         
-                        <div class="layer-item" onclick="toggleLayer('aquaculture')">
-                            <input type="checkbox" class="layer-checkbox" id="aquacultureLayer">
-                            <span class="layer-label">Aquaculture Farms</span>
-                            <div class="layer-color" style="background-color: rgba(255, 193, 7, 0.7);"></div>
+                        <div class="opacity-item">
+                            <div class="opacity-header">
+                                <span class="opacity-label-compact">Mangroves</span>
+                                <span class="opacity-value" id="mangrovesOpacityValue">70%</span>
+                            </div>
+                            <input type="range" class="layer-opacity-compact" id="mangrovesOpacity" min="0" max="100" value="70"
+                                   oninput="updateLayerOpacity('mangroves', this.value)">
                         </div>
-                        <input type="range" class="layer-opacity" id="aquacultureOpacity" min="0" max="100" value="70"
-                               oninput="updateLayerOpacity('aquaculture', this.value)">
-                        <div class="opacity-label">
-                            <span>0%</span>
-                            <span id="aquacultureOpacityValue">70%</span>
-                            <span>100%</span>
+                        
+                        <div class="opacity-item">
+                            <div class="opacity-header">
+                                <span class="opacity-label-compact">Sand</span>
+                                <span class="opacity-value" id="sandOpacityValue">70%</span>
+                            </div>
+                            <input type="range" class="layer-opacity-compact" id="sandOpacity" min="0" max="100" value="70"
+                                   oninput="updateLayerOpacity('sand', this.value)">
+                        </div>
+                        
+                        <div class="opacity-item">
+                            <div class="opacity-header">
+                                <span class="opacity-label-compact">Aquaculture</span>
+                                <span class="opacity-value" id="aquacultureOpacityValue">70%</span>
+                            </div>
+                            <input type="range" class="layer-opacity-compact" id="aquacultureOpacity" min="0" max="100" value="70"
+                                   oninput="updateLayerOpacity('aquaculture', this.value)">
                         </div>
                     </div>
                 </div>
                 
-                <!-- Legend -->
+                <!-- Legend - Compact 2 Column Grid -->
                 <div class="legend">
                     <div class="legend-title">
-                        <i class="fas fa-palette"></i> Layer Colors
+                        <i class="fas fa-palette"></i> Legend
                     </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background-color: rgba(80, 136, 198, 0.7);"></div>
-                        <span class="legend-label">Water Bodies </span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background-color: rgba(221, 145, 3, 0.7);"></div>
-                        <span class="legend-label">Irrigated Land </span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background-color: rgba(70, 187, 212, 0.7);"></div>
-                        <span class="legend-label">Freshwater Marshes </span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background-color: rgba(139, 69, 19, 0.7);"></div>
-                        <span class="legend-label">Mangroves </span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background-color: rgba(220, 53, 69, 0.7);"></div>
-                        <span class="legend-label">Sand Shores </span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background-color: rgba(255, 193, 7, 0.7);"></div>
-                        <span class="legend-label">Aquaculture Farms </span>
+                    <div class="legend-grid">
+                        <div class="legend-item-compact">
+                            <div class="legend-color-compact" style="background-color: rgba(80, 136, 198, 0.7);"></div>
+                            <span class="legend-label-compact">Water</span>
+                        </div>
+                        <div class="legend-item-compact">
+                            <div class="legend-color-compact" style="background-color: rgba(221, 145, 3, 0.7);"></div>
+                            <span class="legend-label-compact">Irrigated</span>
+                        </div>
+                        <div class="legend-item-compact">
+                            <div class="legend-color-compact" style="background-color: rgba(70, 187, 212, 0.7);"></div>
+                            <span class="legend-label-compact">Marshes</span>
+                        </div>
+                        <div class="legend-item-compact">
+                            <div class="legend-color-compact" style="background-color: rgba(139, 69, 19, 0.7);"></div>
+                            <span class="legend-label-compact">Mangroves</span>
+                        </div>
+                        <div class="legend-item-compact">
+                            <div class="legend-color-compact" style="background-color: rgba(220, 53, 69, 0.7);"></div>
+                            <span class="legend-label-compact">Sand</span>
+                        </div>
+                        <div class="legend-item-compact">
+                            <div class="legend-color-compact" style="background-color: rgba(255, 193, 7, 0.7);"></div>
+                            <span class="legend-label-compact">Aquaculture</span>
+                        </div>
                     </div>
                 </div>
                 
                 <!-- Statistics Panel -->
                 <div class="stats-panel">
                     <div class="stats-header">
-                        <div class="panel-title">
+                        <div class="panel-title" style="margin-bottom: 0; font-size: 0.8rem;">
                             <i class="fas fa-chart-bar"></i> Statistics
                         </div>
-                        <button class="map-btn secondary" onclick="recalculateStats()" style="padding: 0.3rem 0.6rem; font-size: 0.7rem;">
+                        <button class="map-btn secondary" onclick="recalculateStats()" style="padding: 0.2rem 0.5rem; font-size: 0.65rem;">
                             <i class="fas fa-sync-alt"></i> Refresh
                         </button>
                     </div>
@@ -1183,57 +1199,52 @@
                 
                 <!-- Measurement Tools -->
                 <div class="measurement-panel">
-                    <div class="panel-title">
-                        <i class="fas fa-ruler"></i> Measurement Tools
+                    <div class="panel-title" style="margin-bottom: 8px; font-size: 0.8rem;">
+                        <i class="fas fa-ruler"></i> Measure
                     </div>
-                    <div class="control-group" style="margin-top: 8px;">
-                        <button class="map-btn" onclick="startMeasurement('area')" style="flex: 1; padding: 0.4rem 0.6rem; font-size: 0.7rem;">
+                    <div class="control-group" style="margin-top: 0; gap: 4px;">
+                        <button class="map-btn" onclick="startMeasurement('area')" style="flex: 1; padding: 0.3rem 0.5rem; font-size: 0.65rem;">
                             <i class="fas fa-square-full"></i> Area
                         </button>
-                        <button class="map-btn secondary" onclick="startMeasurement('distance')" style="flex: 1; padding: 0.4rem 0.6rem; font-size: 0.7rem;">
-                            <i class="fas fa-ruler-combined"></i> Distance
+                        <button class="map-btn secondary" onclick="startMeasurement('distance')" style="flex: 1; padding: 0.3rem 0.5rem; font-size: 0.65rem;">
+                            <i class="fas fa-ruler-combined"></i> Dist
                         </button>
-                        <button class="map-btn danger" onclick="clearMeasurements()" style="flex: 1; padding: 0.4rem 0.6rem; font-size: 0.7rem;">
+                        <button class="map-btn danger" onclick="clearMeasurements()" style="flex: 1; padding: 0.3rem 0.5rem; font-size: 0.65rem;">
                             <i class="fas fa-trash"></i> Clear
                         </button>
                     </div>
                 </div>
             </div>
             
-            <!-- Map Content - More Space -->
+            <!-- Map Content -->
             <div class="map-content">
                 <div id="map"></div>
                 <div class="map-controls">
                     <div class="control-group">
                         <button class="map-btn" onclick="showAllLayers()">
-                            <i class="fas fa-eye"></i> Show All
+                            <i class="fas fa-eye"></i> All On
                         </button>
-                        
                         <button class="map-btn secondary" onclick="hideAllLayers()">
-                            <i class="fas fa-eye-slash"></i> Hide All
+                            <i class="fas fa-eye-slash"></i> All Off
                         </button>
-                        
                         <button class="map-btn" onclick="fitToAllData()">
-                            <i class="fas fa-search"></i> Fit to Data
+                            <i class="fas fa-search"></i> Fit
                         </button>
-                        
                         <button class="chatbot-map-btn" onclick="window.open('https://chatbot-wetlandiwmi-85xo9ngytfknlrrck4n6ur.streamlit.app/', '_blank')">
-                            <i class="fas fa-robot"></i> Chat with Marsh Warden
+                            <i class="fas fa-robot"></i> Chat
                         </button>
                     </div>
                     
                     <div class="control-group">
                         <select class="filter-dropdown" id="baseMap" onchange="changeBaseMap(this.value)">
-                            <option value="osm">OpenStreetMap</option>
-                            <option value="satellite">Satellite View</option>
-                            <option value="terrain">Terrain View</option>
-                            <option value="topo">Topographic</option>
+                            <option value="osm">OSM</option>
+                            <option value="satellite">Satellite</option>
+                            <option value="terrain">Terrain</option>
+                            <option value="topo">Topo</option>
                         </select>
-                        
                         <button class="map-btn" onclick="exportData()">
                             <i class="fas fa-download"></i> Export
                         </button>
-                        
                         <button class="map-btn secondary" onclick="printMap()">
                             <i class="fas fa-print"></i> Print
                         </button>
@@ -1243,9 +1254,10 @@
         </div>
     </section>
 
-    <!-- JavaScript -->
+    <!-- JavaScript (unchanged - same as before) -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
+        // [SAME JAVASCRIPT CODE AS BEFORE - NO CHANGES NEEDED]
         // Initialize map and layers
         let map;
         let shapefileLayers = {
@@ -1589,7 +1601,7 @@
                 // Disable layer controls
                 document.getElementById(`${layer}Layer`).checked = false;
                 document.getElementById(`${layer}Layer`).disabled = true;
-                document.getElementById(`${layer}Layer`).closest('.layer-item').classList.remove('active');
+                document.getElementById(`${layer}Layer`).parentElement.classList.remove('active');
                 document.getElementById(`${layer}Opacity`).disabled = true;
             });
         }
@@ -1605,9 +1617,9 @@
         function showFeatureInfo(feature, latlng, districtCode) {
             const districtName = districtInfo[districtCode]?.name || districtCode;
             
-            let infoHtml = `<div style="padding: 15px; max-width: 300px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-                <h4 style="margin: 0 0 12px 0; color: #28537D; font-weight: 600; border-bottom: 2px solid #46BBD4; padding-bottom: 8px;">Wetland Feature</h4>
-                <p style="margin: 6px 0; font-size: 0.9rem;">
+            let infoHtml = `<div style="padding: 12px; max-width: 280px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+                <h4 style="margin: 0 0 10px 0; color: #28537D; font-weight: 600; border-bottom: 2px solid #46BBD4; padding-bottom: 6px; font-size: 1rem;">Wetland Feature</h4>
+                <p style="margin: 5px 0; font-size: 0.85rem;">
                     <strong style="color: #5088C6;">District:</strong> 
                     <span style="color: #333;">${districtName}</span>
                 </p>`;
@@ -1616,7 +1628,7 @@
             if (feature.properties) {
                 Object.keys(feature.properties).forEach(key => {
                     if (feature.properties[key] !== null && feature.properties[key] !== undefined && key !== 'district') {
-                        infoHtml += `<p style="margin: 6px 0; font-size: 0.9rem;">
+                        infoHtml += `<p style="margin: 5px 0; font-size: 0.85rem;">
                             <strong style="color: #5088C6;">${key}:</strong> 
                             <span style="color: #333;">${feature.properties[key]}</span>
                         </p>`;
@@ -1626,12 +1638,12 @@
             
             // Add wetland type based on layer
             const layerType = getLayerTypeFromProperties(feature);
-            infoHtml += `<p style="margin: 6px 0; font-size: 0.9rem;">
-                <strong style="color: #5088C6;">Wetland Type:</strong> 
+            infoHtml += `<p style="margin: 5px 0; font-size: 0.85rem;">
+                <strong style="color: #5088C6;">Type:</strong> 
                 <span style="color: #333;">${layerType}</span>
             </p>`;
             
-            infoHtml += `<p style="margin: 10px 0 0 0; padding-top: 10px; border-top: 1px solid #E8E7E7; font-size: 0.85rem; color: #666;">
+            infoHtml += `<p style="margin: 8px 0 0 0; padding-top: 8px; border-top: 1px solid #E8E7E7; font-size: 0.8rem; color: #666;">
                 <strong>Coordinates:</strong> ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}
             </p>`;
             infoHtml += `</div>`;
@@ -1665,11 +1677,11 @@
         // Format area for display
         function formatArea(areaKm2) {
             if (areaKm2 > 1000) {
-                return (areaKm2 / 1000).toFixed(1) + ' thousand km²';
+                return (areaKm2 / 1000).toFixed(1) + 'k km²';
             } else if (areaKm2 > 1) {
                 return areaKm2.toFixed(1) + ' km²';
             } else if (areaKm2 > 0.01) {
-                return (areaKm2 * 100).toFixed(1) + ' hectares';
+                return (areaKm2 * 100).toFixed(1) + ' ha';
             } else {
                 return (areaKm2 * 10000).toFixed(1) + ' m²';
             }
@@ -1678,7 +1690,7 @@
         // Toggle Layer function
         function toggleLayer(layerName) {
             const checkbox = document.getElementById(layerName + 'Layer');
-            const layerItem = checkbox.closest('.layer-item');
+            const layerItem = checkbox.closest('.layer-item-compact');
             
             if (shapefileLayers[layerName]) {
                 const isVisible = checkbox.checked;
@@ -1687,14 +1699,14 @@
                     // Layer is currently visible, so hide it
                     map.removeLayer(shapefileLayers[layerName]);
                     checkbox.checked = false;
-                    layerItem.classList.remove('active');
-                    showNotification(`${getLayerDisplayName(layerName)} layer turned OFF`, 'info');
+                    if (layerItem) layerItem.classList.remove('active');
+                    showNotification(`${getLayerDisplayName(layerName)} OFF`, 'info');
                 } else {
                     // Layer is currently hidden, so show it
                     map.addLayer(shapefileLayers[layerName]);
                     checkbox.checked = true;
-                    layerItem.classList.add('active');
-                    showNotification(`${getLayerDisplayName(layerName)} layer turned ON`, 'info');
+                    if (layerItem) layerItem.classList.add('active');
+                    showNotification(`${getLayerDisplayName(layerName)} ON`, 'info');
                 }
                 updateStatisticsDisplay();
             }
@@ -1703,12 +1715,12 @@
         // Helper function to get display name for layers
         function getLayerDisplayName(layerName) {
             const names = {
-                water: 'Water Bodies',
-                paddy: 'Irrigated Land',
-                marsh: 'Freshwater Marshes',
+                water: 'Water',
+                paddy: 'Irrigated',
+                marsh: 'Marshes',
                 mangroves: 'Mangroves',
-                sand: 'Sand Shores',
-                aquaculture: 'Aquaculture Farms'
+                sand: 'Sand',
+                aquaculture: 'Aquaculture'
             };
             return names[layerName] || layerName;
         }
@@ -1754,10 +1766,11 @@
                 if (shapefileLayers[layer] && !map.hasLayer(shapefileLayers[layer])) {
                     map.addLayer(shapefileLayers[layer]);
                     document.getElementById(layer + 'Layer').checked = true;
-                    document.getElementById(layer + 'Layer').closest('.layer-item').classList.add('active');
+                    const layerItem = document.getElementById(layer + 'Layer').closest('.layer-item-compact');
+                    if (layerItem) layerItem.classList.add('active');
                 }
             });
-            showNotification('All layers turned ON', 'info');
+            showNotification('All layers ON', 'info');
             updateStatisticsDisplay();
         }
         
@@ -1767,10 +1780,11 @@
                 if (shapefileLayers[layer] && map.hasLayer(shapefileLayers[layer])) {
                     map.removeLayer(shapefileLayers[layer]);
                     document.getElementById(layer + 'Layer').checked = false;
-                    document.getElementById(layer + 'Layer').closest('.layer-item').classList.remove('active');
+                    const layerItem = document.getElementById(layer + 'Layer').closest('.layer-item-compact');
+                    if (layerItem) layerItem.classList.remove('active');
                 }
             });
-            showNotification('All layers turned OFF', 'info');
+            showNotification('All layers OFF', 'info');
             updateStatisticsDisplay();
         }
         
@@ -1796,11 +1810,11 @@
             
             if (hasValidBounds && bounds.isValid()) {
                 map.fitBounds(bounds, { padding: [50, 50] });
-                showNotification('Map zoomed to show all wetland data in district', 'info');
+                showNotification('Zoomed to data', 'info');
             } else {
                 // Zoom to district if no visible data
                 zoomToDistrict(currentDistrict);
-                showNotification('No visible data bounds available, zoomed to district', 'info');
+                showNotification('Zoomed to district', 'info');
             }
         }
         
@@ -1811,23 +1825,23 @@
                 if (feature.properties.name) {
                     const name = feature.properties.name.toLowerCase();
                     if (name.includes('mangrove')) return 'Mangrove';
-                    if (name.includes('water')) return 'Water Body';
-                    if (name.includes('paddy') || name.includes('rice')) return 'Paddy Field';
-                    if (name.includes('marsh') || name.includes('swamp')) return 'Marsh Area';
-                    if (name.includes('sand') || name.includes('shore') || name.includes('beach')) return 'Sand Shore';
-                    if (name.includes('aquaculture') || name.includes('fish') || name.includes('farm')) return 'Aquaculture Farm';
+                    if (name.includes('water')) return 'Water';
+                    if (name.includes('paddy') || name.includes('rice')) return 'Paddy';
+                    if (name.includes('marsh') || name.includes('swamp')) return 'Marsh';
+                    if (name.includes('sand') || name.includes('shore') || name.includes('beach')) return 'Sand';
+                    if (name.includes('aquaculture') || name.includes('fish') || name.includes('farm')) return 'Aquaculture';
                 }
                 if (feature.properties.class) {
                     const cls = feature.properties.class.toLowerCase();
                     if (cls.includes('mangrove')) return 'Mangrove';
-                    if (cls.includes('water')) return 'Water Body';
-                    if (cls.includes('paddy') || cls.includes('rice')) return 'Paddy Field';
-                    if (cls.includes('marsh') || cls.includes('swamp')) return 'Marsh Area';
-                    if (cls.includes('sand') || cls.includes('shore') || cls.includes('beach')) return 'Sand Shore';
-                    if (cls.includes('aquaculture') || cls.includes('fish') || cls.includes('farm')) return 'Aquaculture Farm';
+                    if (cls.includes('water')) return 'Water';
+                    if (cls.includes('paddy') || cls.includes('rice')) return 'Paddy';
+                    if (cls.includes('marsh') || cls.includes('swamp')) return 'Marsh';
+                    if (cls.includes('sand') || cls.includes('shore') || cls.includes('beach')) return 'Sand';
+                    if (cls.includes('aquaculture') || cls.includes('fish') || cls.includes('farm')) return 'Aquaculture';
                 }
             }
-            return 'Wetland Area';
+            return 'Wetland';
         }
         
         // Update statistics display
@@ -1851,28 +1865,13 @@
                 }
             });
             
-            let statsHtml = `<div style="font-size: 0.8rem;">
-                <p style="margin: 0 0 6px 0; color: #28537D; font-weight: 600;">District: <span style="color: #22AD7A;">${districtName}</span></p>
-                <p style="margin: 0 0 6px 0; color: #28537D; font-weight: 600;">Active Layers: <span style="color: #22AD7A;">${activeLayers}</span></p>
-                <p style="margin: 0 0 6px 0; color: #28537D; font-weight: 600;">Total Features: <span style="color: #22AD7A;">${activeFeatures.toLocaleString()}</span></p>
-                <p style="margin: 0 0 10px 0; color: #28537D; font-weight: 600;">Total Area: <span style="color: #22AD7A;">${formatArea(activeArea)}</span></p>
-                <div style="background: #F8F9FA; padding: 8px; border-radius: 4px; margin-top: 8px;">`;
-            
-            Object.keys(shapefileLayers).forEach(layer => {
-                if (shapefileLayers[layer]) {
-                    const isVisible = map.hasLayer(shapefileLayers[layer]);
-                    const color = isVisible ? '#22AD7A' : '#666';
-                    const icon = isVisible ? '✓' : '✗';
-                    statsHtml += `<p style="margin: 4px 0; font-size: 0.75rem; color: ${color};">
-                        <span style="font-weight: 600;">${icon} ${getLayerDisplayName(layer)}:</span> ${layerStats[layer].features.toLocaleString()} features
-                    </p>`;
-                }
-            });
-            
-            statsHtml += `</div></div>`;
+            let statsHtml = `<div style="font-size: 0.75rem;">
+                <p style="margin: 0 0 4px 0; color: #28537D; font-weight: 600;">${districtName}</p>
+                <p style="margin: 0 0 4px 0; color: #28537D;">Active: <span style="color: #22AD7A; font-weight: 600;">${activeLayers}</span> | Features: <span style="color: #22AD7A; font-weight: 600;">${activeFeatures.toLocaleString()}</span></p>
+                <p style="margin: 0 0 4px 0; color: #28537D; font-weight: 600;">Area: <span style="color: #22AD7A;">${formatArea(activeArea)}</span></p>
+            </div>`;
             
             document.getElementById('areaStats').innerHTML = statsHtml;
-            document.getElementById('areaStats').className = 'stat-display success';
         }
         
         // Recalculate statistics
@@ -1881,79 +1880,61 @@
                 showNotification('Please select a district first', 'warning');
                 return;
             }
-            
-            showNotification('Recalculating statistics...', 'info');
             updateStatisticsDisplay();
-            showNotification('Statistics updated', 'info');
+            showNotification('Statistics updated', 'success');
         }
         
         // Update quick stats
         function updateQuickStats() {
-            // Update with sample data initially
             document.getElementById('featureCount').textContent = '0';
             document.getElementById('totalArea').textContent = '0 km²';
         }
         
         // Measurement tools
         function startMeasurement(type) {
-            showNotification(`Click on map to ${type === 'area' ? 'draw area polygon' : 'measure distance'}`, 'info');
-            
-            // Clear previous measurements
+            showNotification(`Click to measure ${type}`, 'info');
             clearMeasurements();
-            
-            // Store current measurement type
             currentMeasurement = type;
             
-            // For area measurement
             if (type === 'area') {
                 measurementLayer = L.polygon([], {
-                    color: '#E86933',  // IWMI Orange
+                    color: '#E86933',
                     weight: 2,
                     opacity: 1,
                     fillOpacity: 0.2,
                     fillColor: '#E86933'
                 }).addTo(map);
-                
                 map.on('click', addAreaPoint);
-            }
-            // For distance measurement
-            else if (type === 'distance') {
+            } else if (type === 'distance') {
                 measurementLayer = L.polyline([], {
-                    color: '#5088C6',  // IWMI Light Blue
+                    color: '#5088C6',
                     weight: 3,
                     opacity: 1,
                     dashArray: '5, 10'
                 }).addTo(map);
-                
                 map.on('click', addDistancePoint);
             }
         }
         
         function addAreaPoint(e) {
             if (!measurementLayer) return;
-            
             const latlngs = measurementLayer.getLatLngs()[0] || [];
             latlngs.push(e.latlng);
             measurementLayer.setLatLngs([latlngs]);
-            
-            // Calculate and show area when 3+ points
             if (latlngs.length >= 3) {
                 const area = calculatePolygonArea(latlngs);
-                showNotification(`Area: ${area.toFixed(2)} km² (Click to add more points)`, 'info');
+                showNotification(`Area: ${area.toFixed(2)} km²`, 'info');
             }
         }
         
         function addDistancePoint(e) {
             if (!measurementLayer) return;
-            
             const latlngs = measurementLayer.getLatLngs();
             latlngs.push(e.latlng);
             measurementLayer.setLatLngs(latlngs);
-            
-            // Calculate and show distance
             if (latlngs.length >= 2) {
                 const distance = calculateDistance(latlngs);
-                showNotification(`Distance: ${distance.toFixed(2)} km (Click to add more points)`, 'info');
+                showNotification(`Distance: ${distance.toFixed(2)} km`, 'info');
             }
         }
         
@@ -1974,14 +1955,11 @@
                 const lon1 = latlngs[i-1].lng * Math.PI / 180;
                 const lat2 = latlngs[i].lat * Math.PI / 180;
                 const lon2 = latlngs[i].lng * Math.PI / 180;
-                
                 const dLat = lat2 - lat1;
                 const dLon = lon2 - lon1;
-                
                 const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
                          Math.cos(lat1) * Math.cos(lat2) *
                          Math.sin(dLon/2) * Math.sin(dLon/2);
-                
                 const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
                 totalDistance += 6371 * c;
             }
@@ -1993,10 +1971,8 @@
                 map.removeLayer(measurementLayer);
                 measurementLayer = null;
             }
-            
             map.off('click', addAreaPoint);
             map.off('click', addDistancePoint);
-            
             currentMeasurement = null;
             showNotification('Measurements cleared', 'info');
         }
@@ -2008,29 +1984,20 @@
                     map.removeLayer(baseLayers[layer]);
                 }
             });
-            
             if (baseLayers[mapType]) {
                 map.addLayer(baseLayers[mapType]);
-                showNotification(`Changed to ${mapType} base map`, 'info');
+                showNotification(`Map: ${mapType}`, 'info');
             }
         }
         
         // Export data
         function exportData() {
             if (!currentDistrict) {
-                showNotification('Please select a district first', 'warning');
+                showNotification('Select district first', 'warning');
                 return;
             }
-            
-            const activeLayers = [];
-            Object.keys(shapefileLayers).forEach(layer => {
-                if (shapefileLayers[layer] && map.hasLayer(shapefileLayers[layer])) {
-                    activeLayers.push(layer);
-                }
-            });
-            
             const districtName = districtInfo[currentDistrict]?.name || currentDistrict;
-            showNotification(`Exporting ${activeLayers.length} active layers for ${districtName} as GeoJSON\n\nNote: In production, this would generate downloadable files.`, 'info');
+            showNotification(`Export ${districtName} data`, 'info');
         }
         
         // Print map
@@ -2048,10 +2015,10 @@
         // Show notification with IWMI colors
         function showNotification(message, type = 'info') {
             const colors = {
-                info: '#46BBD4',    // IWMI Sky Blue
-                error: '#E86933',   // IWMI Orange
-                warning: '#DD9103', // IWMI Yellow
-                success: '#22AD7A'  // IWMI Green
+                info: '#46BBD4',
+                error: '#E86933',
+                warning: '#DD9103',
+                success: '#22AD7A'
             };
             
             const icons = {
@@ -2068,22 +2035,21 @@
                 right: 20px;
                 background: ${colors[type] || '#46BBD4'};
                 color: white;
-                padding: 12px 16px;
+                padding: 10px 14px;
                 border-radius: 4px;
                 box-shadow: 0 5px 15px rgba(0,0,0,0.15);
                 z-index: 10000;
-                max-width: 350px;
+                max-width: 300px;
                 animation: slideIn 0.3s ease-out;
-                font-size: 0.85rem;
+                font-size: 0.8rem;
                 line-height: 1.4;
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
                 border-left: 4px solid ${type === 'info' ? '#28537D' : type === 'error' ? '#D45A23' : type === 'warning' ? '#C07E02' : '#1B8A5E'};
             `;
             
             notification.innerHTML = `
-                <div style="display: flex; align-items: flex-start; gap: 10px;">
-                    <i class="fas fa-${icons[type] || 'info-circle'}" 
-                       style="font-size: 14px; flex-shrink: 0; margin-top: 2px;"></i>
+                <div style="display: flex; align-items: flex-start; gap: 8px;">
+                    <i class="fas fa-${icons[type] || 'info-circle'}" style="font-size: 13px; flex-shrink: 0; margin-top: 2px;"></i>
                     <div>${message}</div>
                 </div>
             `;
@@ -2093,7 +2059,7 @@
             setTimeout(() => {
                 notification.style.animation = 'slideOut 0.3s ease-out';
                 setTimeout(() => notification.remove(), 300);
-            }, 4000);
+            }, 3000);
         }
     </script>
     

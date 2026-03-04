@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
    <style>
     /* IWMI Brand Colors from https://branding.iwmi.org/our-colours/ */
     :root {
@@ -417,6 +418,184 @@
         box-shadow: 0 4px 12px rgba(232, 105, 51, 0.2);
     }
     
+    /* Search Bar */
+    .search-panel {
+        margin-bottom: 12px;
+        flex-shrink: 0;
+        background: var(--iwmi-white);
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid var(--iwmi-border);
+        box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    }
+    
+    .search-header {
+        font-weight: 600;
+        color: var(--iwmi-dark-blue);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .search-header i {
+        color: var(--iwmi-sky-blue);
+        font-size: 0.95rem;
+    }
+    
+    .search-input-group {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 8px;
+    }
+    
+    .search-input {
+        flex: 1;
+        padding: 0.5rem 0.6rem;
+        border: 1.5px solid var(--iwmi-light-blue);
+        border-radius: 5px;
+        background: var(--iwmi-white);
+        color: var(--iwmi-dark-blue);
+        font-size: 0.8rem;
+        transition: all 0.3s;
+    }
+    
+    .search-input:focus {
+        outline: none;
+        border-color: var(--iwmi-dark-blue);
+        box-shadow: 0 0 0 2px rgba(40, 83, 125, 0.1);
+    }
+    
+    .search-btn {
+        background: var(--iwmi-green);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.3s;
+    }
+    
+    .search-btn:hover {
+        background: var(--iwmi-teal);
+        transform: translateY(-2px);
+    }
+    
+    .search-results {
+        font-size: 0.75rem;
+        color: var(--iwmi-text-light);
+        max-height: 100px;
+        overflow-y: auto;
+        background: rgba(232, 231, 231, 0.2);
+        border-radius: 4px;
+        padding: 4px;
+    }
+    
+    .search-result-item {
+        padding: 4px 6px;
+        cursor: pointer;
+        border-radius: 3px;
+        transition: all 0.2s;
+    }
+    
+    .search-result-item:hover {
+        background: rgba(70, 187, 212, 0.1);
+        color: var(--iwmi-dark-blue);
+    }
+    
+    /* Drawing Tools Panel */
+    .drawing-panel {
+        background: var(--iwmi-white);
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid var(--iwmi-border);
+        margin-top: 10px;
+        flex-shrink: 0;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    }
+    
+    .drawing-tools {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 4px;
+        margin-top: 8px;
+    }
+    
+    .draw-btn {
+        background: var(--iwmi-light-grey);
+        color: var(--iwmi-dark-blue);
+        border: 1px solid var(--iwmi-border);
+        padding: 0.4rem 0;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.7rem;
+        font-weight: 600;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        transition: all 0.2s;
+    }
+    
+    .draw-btn i {
+        font-size: 0.9rem;
+        color: var(--iwmi-light-blue);
+    }
+    
+    .draw-btn:hover {
+        background: var(--iwmi-light-blue);
+        color: white;
+        border-color: var(--iwmi-dark-blue);
+    }
+    
+    .draw-btn:hover i {
+        color: white;
+    }
+    
+    .draw-btn.active {
+        background: var(--iwmi-green);
+        color: white;
+        border-color: var(--iwmi-dark-blue);
+    }
+    
+    .draw-btn.active i {
+        color: white;
+    }
+    
+    /* Measurements Display */
+    .measurement-display {
+        margin-top: 8px;
+        font-size: 0.75rem;
+        background: rgba(232, 231, 231, 0.2);
+        padding: 6px;
+        border-radius: 4px;
+        border-left: 2px solid var(--iwmi-orange);
+    }
+    
+    .measurement-item {
+        display: flex;
+        justify-content: space-between;
+        margin: 2px 0;
+    }
+    
+    .measurement-label {
+        color: var(--iwmi-text-light);
+        font-weight: 500;
+    }
+    
+    .measurement-value {
+        color: var(--iwmi-dark-blue);
+        font-weight: 600;
+    }
+    
     /* District Selection Panel */
     .district-panel {
         margin-bottom: 12px;
@@ -708,17 +887,6 @@
         border-left: 2px solid var(--iwmi-green);
     }
     
-    /* Measurement Tools */
-    .measurement-panel {
-        background: var(--iwmi-white);
-        padding: 12px;
-        border-radius: 6px;
-        border: 1px solid var(--iwmi-border);
-        margin-top: 10px;
-        flex-shrink: 0;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.03);
-    }
-    
     /* Loading and Status */
     .loading {
         color: var(--iwmi-light-blue);
@@ -990,6 +1158,20 @@
         <div class="map-container">
             <!-- Sidebar with district selection and layer controls -->
             <div class="map-sidebar">
+                <!-- Search Panel -->
+                <div class="search-panel">
+                    <div class="search-header">
+                        <i class="fas fa-search"></i> Search Location
+                    </div>
+                    <div class="search-input-group">
+                        <input type="text" class="search-input" id="searchInput" placeholder="Enter city or place name..." onkeypress="handleSearchKeyPress(event)">
+                        <button class="search-btn" onclick="searchLocation()">
+                            <i class="fas fa-search"></i> Go
+                        </button>
+                    </div>
+                    <div class="search-results" id="searchResults"></div>
+                </div>
+                
                 <!-- District Selection Panel -->
                 <div class="district-panel">
                     <div class="district-header">
@@ -1028,13 +1210,13 @@
                     </div>
                 </div>
                 
-                <!-- Layer Control Panel (Hidden until district is selected) - VERTICAL LIST WITH INTEGRATED TRANSPARENCY -->
+                <!-- Layer Control Panel (Hidden until district is selected) -->
                 <div class="layer-control-panel" id="layerPanel">
                     <div class="panel-title">
                         <i class="fas fa-layer-group"></i> Wetland Layers: <span id="currentDistrict" style="color: var(--iwmi-green);">District</span>
                     </div>
                     
-                    <!-- Vertical Layer List - One column, each class with its own transparency control -->
+                    <!-- Vertical Layer List -->
                     <div class="layer-list">
                         <!-- Water Bodies -->
                         <div class="layer-card" id="layer-card-water">
@@ -1173,7 +1355,7 @@
                     </div>
                 </div>
                 
-                <!-- Protected Areas - Always Visible (Not district-specific) -->
+                <!-- Protected Areas - Always Visible -->
                 <div class="layer-card protected-card" id="layer-card-protected" style="margin-bottom: 12px;">
                     <div class="layer-header" onclick="toggleProtectedAreas()">
                         <input type="checkbox" class="layer-checkbox" id="protectedLayer">
@@ -1188,7 +1370,61 @@
                     </div>
                 </div>
                 
-                <!-- Legend - Vertical List -->
+                <!-- Drawing Tools Panel -->
+                <div class="drawing-panel">
+                    <div class="panel-title" style="margin-bottom: 8px; font-size: 0.8rem;">
+                        <i class="fas fa-draw-polygon"></i> Drawing Tools
+                    </div>
+                    
+                    <div class="drawing-tools">
+                        <button class="draw-btn" onclick="activateDrawTool('marker')" id="draw-marker-btn" title="Place Marker">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Marker</span>
+                        </button>
+                        <button class="draw-btn" onclick="activateDrawTool('polyline')" id="draw-polyline-btn" title="Draw Line">
+                            <i class="fas fa-slash"></i>
+                            <span>Line</span>
+                        </button>
+                        <button class="draw-btn" onclick="activateDrawTool('polygon')" id="draw-polygon-btn" title="Draw Polygon">
+                            <i class="fas fa-draw-polygon"></i>
+                            <span>Polygon</span>
+                        </button>
+                        <button class="draw-btn" onclick="activateDrawTool('rectangle')" id="draw-rectangle-btn" title="Draw Rectangle">
+                            <i class="fas fa-square"></i>
+                            <span>Rectangle</span>
+                        </button>
+                        <button class="draw-btn" onclick="activateDrawTool('circle')" id="draw-circle-btn" title="Draw Circle">
+                            <i class="fas fa-circle"></i>
+                            <span>Circle</span>
+                        </button>
+                        <button class="draw-btn" onclick="editLayers()" id="edit-btn" title="Edit Features">
+                            <i class="fas fa-pencil-alt"></i>
+                            <span>Edit</span>
+                        </button>
+                        <button class="draw-btn" onclick="deleteSelected()" id="delete-btn" title="Delete Selected">
+                            <i class="fas fa-trash"></i>
+                            <span>Delete</span>
+                        </button>
+                        <button class="draw-btn" onclick="clearAllDrawings()" id="clear-btn" title="Clear All">
+                            <i class="fas fa-eraser"></i>
+                            <span>Clear</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Measurements Display -->
+                    <div class="measurement-display" id="measurementDisplay">
+                        <div class="measurement-item">
+                            <span class="measurement-label">Last Distance:</span>
+                            <span class="measurement-value" id="lastDistance">--</span>
+                        </div>
+                        <div class="measurement-item">
+                            <span class="measurement-label">Last Area:</span>
+                            <span class="measurement-value" id="lastArea">--</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Legend -->
                 <div class="legend">
                     <div class="legend-title">
                         <i class="fas fa-palette"></i> Legend
@@ -1251,24 +1487,6 @@
                         <span class="loading">Select a district to view statistics</span>
                     </div>
                 </div>
-                
-                <!-- Measurement Tools -->
-                <div class="measurement-panel">
-                    <div class="panel-title" style="margin-bottom: 8px; font-size: 0.8rem;">
-                        <i class="fas fa-ruler"></i> Measure
-                    </div>
-                    <div class="control-group" style="margin-top: 0; gap: 4px;">
-                        <button class="map-btn" onclick="startMeasurement('area')" style="flex: 1; padding: 0.3rem 0.5rem; font-size: 0.65rem;">
-                            <i class="fas fa-square-full"></i> Area
-                        </button>
-                        <button class="map-btn secondary" onclick="startMeasurement('distance')" style="flex: 1; padding: 0.3rem 0.5rem; font-size: 0.65rem;">
-                            <i class="fas fa-ruler-combined"></i> Distance
-                        </button>
-                        <button class="map-btn danger" onclick="clearMeasurements()" style="flex: 1; padding: 0.3rem 0.5rem; font-size: 0.65rem;">
-                            <i class="fas fa-trash"></i> Clear
-                        </button>
-                    </div>
-                </div>
             </div>
             
             <!-- Map Content -->
@@ -1311,6 +1529,8 @@
 
     <!-- JavaScript -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.js"></script>
     <script>
         // Initialize map and layers
         let map;
@@ -1330,6 +1550,14 @@
         let currentDistrict = null;
         let districtBounds = {};
         let protectedAreasLoaded = false;
+        
+        // Drawing and measurement variables
+        let drawnItems = new L.FeatureGroup();
+        let drawControl = null;
+        let currentDrawTool = null;
+        let lastDistance = 0;
+        let lastArea = 0;
+        let markers = [];
         
         // Updated layer colors as requested
         const layerColors = {
@@ -1427,8 +1655,6 @@
         
         let baseLayers = {};
         let measurementLayer = null;
-        let drawnItems = new L.FeatureGroup();
-        let currentMeasurement = null;
         
         // Statistics
         let layerStats = {
@@ -1473,11 +1699,36 @@
             kegalle: { name: "Kegalle", center: [7.2514, 80.3464], zoom: 11 }
         };
         
+        // Common Sri Lankan locations for search
+        const sriLankanLocations = [
+            { name: "Colombo", coords: [6.9271, 79.8612], zoom: 12 },
+            { name: "Kandy", coords: [7.2906, 80.6337], zoom: 13 },
+            { name: "Galle", coords: [6.0535, 80.2210], zoom: 13 },
+            { name: "Jaffna", coords: [9.6615, 80.0255], zoom: 12 },
+            { name: "Trincomalee", coords: [8.5874, 81.2152], zoom: 12 },
+            { name: "Batticaloa", coords: [7.7102, 81.6924], zoom: 12 },
+            { name: "Anuradhapura", coords: [8.3114, 80.4037], zoom: 12 },
+            { name: "Polonnaruwa", coords: [7.9320, 81.0081], zoom: 12 },
+            { name: "Sigiriya", coords: [7.9570, 80.7603], zoom: 15 },
+            { name: "Yala National Park", coords: [6.3729, 81.5170], zoom: 10 },
+            { name: "Wilpattu National Park", coords: [8.4529, 80.0323], zoom: 10 },
+            { name: "Nuwara Eliya", coords: [6.9497, 80.7891], zoom: 13 },
+            { name: "Ella", coords: [6.8667, 81.0465], zoom: 14 },
+            { name: "Mirissa", coords: [5.9483, 80.4548], zoom: 14 },
+            { name: "Unawatuna", coords: [6.0180, 80.2498], zoom: 15 },
+            { name: "Hikkaduwa", coords: [6.1407, 80.1033], zoom: 14 },
+            { name: "Bentota", coords: [6.4211, 79.9987], zoom: 14 },
+            { name: "Negombo", coords: [7.2083, 79.8358], zoom: 13 },
+            { name: "Dambulla", coords: [7.8606, 80.6527], zoom: 13 },
+            { name: "Mannar", coords: [8.9770, 79.9095], zoom: 12 }
+        ];
+        
         // Initialize map when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            console.log("Initializing Wetland Map with District-Based Data");
+            console.log("Initializing Wetland Map with Enhanced Features");
             initializeMap();
             updateQuickStats();
+            initializeDrawingTools();
             
             // Initialize opacity value displays
             updateOpacityDisplay('water', 70);
@@ -1524,10 +1775,297 @@
             // Add scale control
             L.control.scale({imperial: false}).addTo(map);
             
-            // Add drawn items layer
+            console.log("Map initialized successfully");
+        }
+        
+        // Initialize drawing tools
+        function initializeDrawingTools() {
+            // Add drawn items layer to map
             map.addLayer(drawnItems);
             
-            console.log("Map initialized successfully");
+            // Initialize draw control
+            drawControl = new L.Control.Draw({
+                draw: {
+                    polyline: {
+                        shapeOptions: {
+                            color: '#5088C6',
+                            weight: 3
+                        },
+                        metric: true
+                    },
+                    polygon: {
+                        shapeOptions: {
+                            color: '#E86933',
+                            weight: 2,
+                            fillColor: '#E86933',
+                            fillOpacity: 0.3
+                        },
+                        metric: true,
+                        showArea: true
+                    },
+                    circle: {
+                        shapeOptions: {
+                            color: '#22AD7A',
+                            weight: 2,
+                            fillColor: '#22AD7A',
+                            fillOpacity: 0.3
+                        },
+                        metric: true
+                    },
+                    rectangle: {
+                        shapeOptions: {
+                            color: '#46BBD4',
+                            weight: 2,
+                            fillColor: '#46BBD4',
+                            fillOpacity: 0.3
+                        },
+                        metric: true
+                    },
+                    marker: {
+                        icon: L.divIcon({
+                            className: 'custom-marker',
+                            html: '<i class="fas fa-map-marker-alt" style="color: #DC3545; font-size: 24px;"></i>',
+                            iconSize: [24, 24],
+                            iconAnchor: [12, 24]
+                        })
+                    }
+                },
+                edit: {
+                    featureGroup: drawnItems,
+                    remove: true
+                }
+            });
+            
+            // Add draw control to map
+            map.addControl(drawControl);
+            
+            // Handle draw events
+            map.on(L.Draw.Event.CREATED, function(event) {
+                const layer = event.layer;
+                drawnItems.addLayer(layer);
+                
+                // Calculate measurements
+                if (event.layerType === 'polyline') {
+                    const latlngs = layer.getLatLngs();
+                    const distance = calculateDistance(latlngs);
+                    lastDistance = distance;
+                    document.getElementById('lastDistance').textContent = distance.toFixed(2) + ' km';
+                    showNotification(`Distance: ${distance.toFixed(2)} km`, 'info');
+                } else if (event.layerType === 'polygon' || event.layerType === 'rectangle') {
+                    const area = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
+                    const areaKm2 = area / 1000000;
+                    lastArea = areaKm2;
+                    document.getElementById('lastArea').textContent = areaKm2.toFixed(2) + ' km²';
+                    showNotification(`Area: ${areaKm2.toFixed(2)} km²`, 'info');
+                } else if (event.layerType === 'circle') {
+                    const radius = layer.getRadius();
+                    const area = Math.PI * radius * radius / 1000000;
+                    lastArea = area;
+                    document.getElementById('lastArea').textContent = area.toFixed(2) + ' km²';
+                    showNotification(`Circle Area: ${area.toFixed(2)} km²`, 'info');
+                } else if (event.layerType === 'marker') {
+                    markers.push(layer);
+                    showNotification('Marker placed', 'success');
+                }
+                
+                // Reset active button states
+                resetDrawButtons();
+            });
+            
+            // Handle edit events
+            map.on(L.Draw.Event.EDITED, function(event) {
+                const layers = event.layers;
+                layers.eachLayer(function(layer) {
+                    updateMeasurements(layer);
+                });
+                showNotification('Features updated', 'success');
+            });
+            
+            map.on(L.Draw.Event.DELETED, function(event) {
+                showNotification('Features deleted', 'info');
+            });
+        }
+        
+        // Update measurements for edited layers
+        function updateMeasurements(layer) {
+            if (layer instanceof L.Polyline && !(layer instanceof L.Polygon)) {
+                const latlngs = layer.getLatLngs();
+                if (Array.isArray(latlngs[0])) {
+                    // Handle multi-part lines
+                    let totalDistance = 0;
+                    latlngs.forEach(part => {
+                        totalDistance += calculateDistance(part);
+                    });
+                    lastDistance = totalDistance;
+                    document.getElementById('lastDistance').textContent = totalDistance.toFixed(2) + ' km';
+                } else {
+                    const distance = calculateDistance(latlngs);
+                    lastDistance = distance;
+                    document.getElementById('lastDistance').textContent = distance.toFixed(2) + ' km';
+                }
+            } else if (layer instanceof L.Polygon) {
+                const area = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
+                const areaKm2 = area / 1000000;
+                lastArea = areaKm2;
+                document.getElementById('lastArea').textContent = areaKm2.toFixed(2) + ' km²';
+            } else if (layer instanceof L.Circle) {
+                const radius = layer.getRadius();
+                const area = Math.PI * radius * radius / 1000000;
+                lastArea = area;
+                document.getElementById('lastArea').textContent = area.toFixed(2) + ' km²';
+            }
+        }
+        
+        // Activate specific draw tool
+        function activateDrawTool(tool) {
+            // Reset all buttons
+            resetDrawButtons();
+            
+            // Highlight selected button
+            document.getElementById(`draw-${tool}-btn`).classList.add('active');
+            
+            // Deactivate any current drawing
+            if (currentDrawTool) {
+                map.removeControl(drawControl);
+                map.addControl(drawControl);
+            }
+            
+            currentDrawTool = tool;
+            
+            // Programmatically start drawing
+            switch(tool) {
+                case 'marker':
+                    new L.Draw.Marker(map).enable();
+                    break;
+                case 'polyline':
+                    new L.Draw.Polyline(map, drawControl.options.draw.polyline).enable();
+                    break;
+                case 'polygon':
+                    new L.Draw.Polygon(map, drawControl.options.draw.polygon).enable();
+                    break;
+                case 'rectangle':
+                    new L.Draw.Rectangle(map, drawControl.options.draw.rectangle).enable();
+                    break;
+                case 'circle':
+                    new L.Draw.Circle(map, drawControl.options.draw.circle).enable();
+                    break;
+            }
+            
+            showNotification(`Click on map to draw ${tool}`, 'info');
+        }
+        
+        // Reset draw button states
+        function resetDrawButtons() {
+            const buttons = ['marker', 'polyline', 'polygon', 'rectangle', 'circle', 'edit', 'delete'];
+            buttons.forEach(btn => {
+                const element = document.getElementById(`draw-${btn}-btn`);
+                if (element) {
+                    element.classList.remove('active');
+                }
+            });
+        }
+        
+        // Edit layers
+        function editLayers() {
+            resetDrawButtons();
+            document.getElementById('edit-btn').classList.add('active');
+            
+            // Enable edit mode
+            const edit = new L.EditToolbar.Edit(map, {
+                featureGroup: drawnItems,
+                remove: true
+            });
+            edit.enable();
+            showNotification('Click on features to edit', 'info');
+        }
+        
+        // Delete selected layer
+        function deleteSelected() {
+            resetDrawButtons();
+            document.getElementById('delete-btn').classList.add('active');
+            
+            // Enable delete mode
+            const remove = new L.EditToolbar.Delete(map, {
+                featureGroup: drawnItems
+            });
+            remove.enable();
+            showNotification('Click on features to delete', 'info');
+        }
+        
+        // Clear all drawings
+        function clearAllDrawings() {
+            drawnItems.clearLayers();
+            markers = [];
+            lastDistance = 0;
+            lastArea = 0;
+            document.getElementById('lastDistance').textContent = '--';
+            document.getElementById('lastArea').textContent = '--';
+            resetDrawButtons();
+            showNotification('All drawings cleared', 'info');
+        }
+        
+        // Search location function
+        function searchLocation() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            if (!query) {
+                showNotification('Please enter a location name', 'warning');
+                return;
+            }
+            
+            // Search in predefined locations
+            const results = sriLankanLocations.filter(loc => 
+                loc.name.toLowerCase().includes(query)
+            );
+            
+            // Display results
+            const resultsDiv = document.getElementById('searchResults');
+            if (results.length > 0) {
+                let html = '';
+                results.forEach(loc => {
+                    html += `<div class="search-result-item" onclick="goToLocation(${loc.coords[0]}, ${loc.coords[1]}, ${loc.zoom})">
+                        <i class="fas fa-map-pin" style="color: var(--iwmi-green); margin-right: 5px;"></i> ${loc.name}
+                    </div>`;
+                });
+                resultsDiv.innerHTML = html;
+            } else {
+                resultsDiv.innerHTML = '<div style="padding: 4px; color: var(--iwmi-orange);">No locations found</div>';
+            }
+            
+            // Also try external geocoding (simplified - in production use a geocoding service)
+            if (results.length === 0) {
+                showNotification('Location not found in database', 'warning');
+            }
+        }
+        
+        // Handle search on enter key
+        function handleSearchKeyPress(event) {
+            if (event.key === 'Enter') {
+                searchLocation();
+            }
+        }
+        
+        // Go to selected location
+        function goToLocation(lat, lng, zoom) {
+            map.setView([lat, lng], zoom || 12);
+            
+            // Add a temporary marker
+            const marker = L.marker([lat, lng], {
+                icon: L.divIcon({
+                    className: 'search-marker',
+                    html: '<i class="fas fa-map-marker-alt" style="color: #22AD7A; font-size: 30px;"></i>',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 30]
+                })
+            }).addTo(map);
+            
+            // Remove marker after 3 seconds
+            setTimeout(() => {
+                map.removeLayer(marker);
+            }, 3000);
+            
+            document.getElementById('searchResults').innerHTML = '';
+            document.getElementById('searchInput').value = '';
+            showNotification(`Zoomed to location`, 'success');
         }
         
         // Load district data
@@ -2108,64 +2646,7 @@
             document.getElementById('totalArea').textContent = '0 km²';
         }
         
-        // Measurement tools
-        function startMeasurement(type) {
-            showNotification(`Click to measure ${type}`, 'info');
-            clearMeasurements();
-            currentMeasurement = type;
-            
-            if (type === 'area') {
-                measurementLayer = L.polygon([], {
-                    color: '#E86933',
-                    weight: 2,
-                    opacity: 1,
-                    fillOpacity: 0.2,
-                    fillColor: '#E86933'
-                }).addTo(map);
-                map.on('click', addAreaPoint);
-            } else if (type === 'distance') {
-                measurementLayer = L.polyline([], {
-                    color: '#5088C6',
-                    weight: 3,
-                    opacity: 1,
-                    dashArray: '5, 10'
-                }).addTo(map);
-                map.on('click', addDistancePoint);
-            }
-        }
-        
-        function addAreaPoint(e) {
-            if (!measurementLayer) return;
-            const latlngs = measurementLayer.getLatLngs()[0] || [];
-            latlngs.push(e.latlng);
-            measurementLayer.setLatLngs([latlngs]);
-            if (latlngs.length >= 3) {
-                const area = calculatePolygonArea(latlngs);
-                showNotification(`Area: ${area.toFixed(2)} km²`, 'info');
-            }
-        }
-        
-        function addDistancePoint(e) {
-            if (!measurementLayer) return;
-            const latlngs = measurementLayer.getLatLngs();
-            latlngs.push(e.latlng);
-            measurementLayer.setLatLngs(latlngs);
-            if (latlngs.length >= 2) {
-                const distance = calculateDistance(latlngs);
-                showNotification(`Distance: ${distance.toFixed(2)} km`, 'info');
-            }
-        }
-        
-        function calculatePolygonArea(latlngs) {
-            let area = 0;
-            for (let i = 0; i < latlngs.length; i++) {
-                const j = (i + 1) % latlngs.length;
-                area += latlngs[i].lng * latlngs[j].lat;
-                area -= latlngs[j].lng * latlngs[i].lat;
-            }
-            return Math.abs(area) * 111 * 111 / 2;
-        }
-        
+        // Calculate distance between points (Haversine formula)
         function calculateDistance(latlngs) {
             let totalDistance = 0;
             for (let i = 1; i < latlngs.length; i++) {
@@ -2173,26 +2654,18 @@
                 const lon1 = latlngs[i-1].lng * Math.PI / 180;
                 const lat2 = latlngs[i].lat * Math.PI / 180;
                 const lon2 = latlngs[i].lng * Math.PI / 180;
+                
                 const dLat = lat2 - lat1;
                 const dLon = lon2 - lon1;
+                
                 const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
                          Math.cos(lat1) * Math.cos(lat2) *
                          Math.sin(dLon/2) * Math.sin(dLon/2);
+                
                 const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-                totalDistance += 6371 * c;
+                totalDistance += 6371 * c; // Earth radius in km
             }
             return totalDistance;
-        }
-        
-        function clearMeasurements() {
-            if (measurementLayer) {
-                map.removeLayer(measurementLayer);
-                measurementLayer = null;
-            }
-            map.off('click', addAreaPoint);
-            map.off('click', addDistancePoint);
-            currentMeasurement = null;
-            showNotification('Measurements cleared', 'info');
         }
         
         // Change base map
@@ -2215,7 +2688,24 @@
                 return;
             }
             const districtName = districtInfo[currentDistrict]?.name || currentDistrict;
-            showNotification(`Export ${districtName} data`, 'info');
+            
+            // Export drawn items as GeoJSON
+            if (drawnItems.getLayers().length > 0) {
+                const geojson = drawnItems.toGeoJSON();
+                const dataStr = JSON.stringify(geojson, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                
+                const exportFileDefaultName = `drawings_${districtName}_${new Date().toISOString().slice(0,10)}.geojson`;
+                
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+                
+                showNotification(`Exported drawings for ${districtName}`, 'success');
+            } else {
+                showNotification('No drawings to export', 'info');
+            }
         }
         
         // Print map

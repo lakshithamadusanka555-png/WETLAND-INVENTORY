@@ -306,7 +306,7 @@
         width: 95%;
         margin: 0 auto;
         display: grid;
-        grid-template-columns: 300px 1fr;
+        grid-template-columns: 320px 1fr;
         gap: 20px;
         background: var(--iwmi-white);
         border-radius: 12px;
@@ -633,7 +633,7 @@
     
     .buffer-results {
         margin-top: 10px;
-        max-height: 250px;
+        max-height: 280px;
         overflow-y: auto;
         font-size: 0.75rem;
         background: rgba(232, 231, 231, 0.2);
@@ -1258,7 +1258,7 @@
             height: 75vh;
             min-height: 650px;
             width: 98%;
-            grid-template-columns: 280px 1fr;
+            grid-template-columns: 300px 1fr;
         }
     }
     
@@ -1867,11 +1867,11 @@
         
         // Statistics
         let layerStats = {
-            water: { features: 0, area: 0 }, paddy: { features: 0, area: 0 },
-            marsh: { features: 0, area: 0 }, mangroves: { features: 0, area: 0 },
-            sand: { features: 0, area: 0 }, aquaculture: { features: 0, area: 0 },
-            coral: { features: 0, area: 0 }, streams: { features: 0, area: 0 },
-            seasonal: { features: 0, area: 0 }, protected: { features: 0, area: 0 }
+            water: { features: 0, areaSqm: 0 }, paddy: { features: 0, areaSqm: 0 },
+            marsh: { features: 0, areaSqm: 0 }, mangroves: { features: 0, areaSqm: 0 },
+            sand: { features: 0, areaSqm: 0 }, aquaculture: { features: 0, areaSqm: 0 },
+            coral: { features: 0, areaSqm: 0 }, streams: { features: 0, areaSqm: 0 },
+            seasonal: { features: 0, areaSqm: 0 }, protected: { features: 0, areaSqm: 0 }
         };
         
         // District info
@@ -2048,6 +2048,19 @@
             }
         }
         
+        // ============ AREA FORMATTING FUNCTION (SQUARE METERS TO READABLE) ============
+        function formatAreaFromSqm(areaSqm) {
+            if (areaSqm >= 1000000) {
+                return (areaSqm / 1000000).toFixed(2) + ' km²';
+            } else if (areaSqm >= 10000) {
+                return (areaSqm / 10000).toFixed(2) + ' ha';
+            } else if (areaSqm >= 1) {
+                return areaSqm.toFixed(2) + ' m²';
+            } else {
+                return '0 m²';
+            }
+        }
+        
         // ============ BUFFER ZONE ANALYSIS FUNCTION ============
         async function analyzeBufferZone() {
             const lat = parseFloat(document.getElementById('latitude').value);
@@ -2097,7 +2110,7 @@
             // Analyze each wetland layer
             const analysisResults = {};
             let totalFeatures = 0;
-            let totalArea = 0;
+            let totalAreaSqm = 0;
             
             const wetlandLayers = ['water', 'paddy', 'marsh', 'mangroves', 'sand', 'aquaculture', 'coral', 'streams', 'seasonal', 'protected'];
             
@@ -2107,14 +2120,14 @@
                     if (result && result.featureCount > 0) {
                         analysisResults[layer] = result;
                         totalFeatures += result.featureCount;
-                        totalArea += result.totalArea;
+                        totalAreaSqm += result.totalAreaSqm;
                     }
                 }
             }
             
             // Display results
-            displayBufferResults(analysisResults, lat, lng, bufferKm, totalFeatures, totalArea);
-            showNotification(`Analysis complete! Found ${totalFeatures} wetland features covering ${formatArea(totalArea)}`, 'success');
+            displayBufferResults(analysisResults, lat, lng, bufferKm, totalFeatures, totalAreaSqm);
+            showNotification(`Analysis complete! Found ${totalFeatures} wetland features covering ${formatAreaFromSqm(totalAreaSqm)}`, 'success');
         }
         
         async function analyzeLayerInBuffer(layerName, centerLat, centerLng, bufferMeters) {
@@ -2125,7 +2138,7 @@
                 }
                 
                 let featuresInBuffer = [];
-                let totalAreaInBuffer = 0;
+                let totalAreaSqm = 0;
                 
                 // Iterate through each feature in the layer
                 shapefileLayers[layerName].eachLayer(function(featureLayer) {
@@ -2136,17 +2149,28 @@
                         if (isWithin) {
                             featuresInBuffer.push(featureLayer);
                             
-                            // Calculate area from feature properties or geometry
-                            let area = 0;
-                            if (featureLayer.feature.properties && featureLayer.feature.properties.area) {
-                                area = featureLayer.feature.properties.area;
-                            } else if (featureLayer.feature.properties && featureLayer.feature.properties.area_km2) {
-                                area = featureLayer.feature.properties.area_km2;
+                            // Get area from GeoJSON properties (in square meters)
+                            let areaSqm = 0;
+                            if (featureLayer.feature.properties) {
+                                // Try different possible area field names
+                                if (featureLayer.feature.properties.area_sqm) {
+                                    areaSqm = featureLayer.feature.properties.area_sqm;
+                                } else if (featureLayer.feature.properties.area_m2) {
+                                    areaSqm = featureLayer.feature.properties.area_m2;
+                                } else if (featureLayer.feature.properties.area) {
+                                    areaSqm = featureLayer.feature.properties.area;
+                                } else if (featureLayer.feature.properties.Area) {
+                                    areaSqm = featureLayer.feature.properties.Area;
+                                } else if (featureLayer.feature.properties.AREA) {
+                                    areaSqm = featureLayer.feature.properties.AREA;
+                                } else {
+                                    // If no area property, calculate from geometry
+                                    areaSqm = calculateAreaFromLayerSqm(featureLayer);
+                                }
                             } else {
-                                // Estimate area from geometry
-                                area = calculateAreaFromLayer(featureLayer);
+                                areaSqm = calculateAreaFromLayerSqm(featureLayer);
                             }
-                            totalAreaInBuffer += area;
+                            totalAreaSqm += areaSqm;
                         }
                     }
                 });
@@ -2155,7 +2179,7 @@
                     layerName: layerName,
                     displayName: getLayerDisplayName(layerName),
                     featureCount: featuresInBuffer.length,
-                    totalArea: totalAreaInBuffer,
+                    totalAreaSqm: totalAreaSqm,
                     features: featuresInBuffer,
                     color: layerColors[layerName]
                 });
@@ -2212,7 +2236,7 @@
             }
         }
         
-        function calculateAreaFromLayer(layer) {
+        function calculateAreaFromLayerSqm(layer) {
             if (layer instanceof L.Polygon) {
                 try {
                     const latlngs = layer.getLatLngs()[0];
@@ -2223,7 +2247,9 @@
                         area -= latlngs[j].lng * latlngs[i].lat;
                     }
                     area = Math.abs(area) / 2;
-                    return area * 111 * 111; // Convert to km²
+                    // Convert from square degrees to square meters (approximate)
+                    // 1 degree ≈ 111,000 meters
+                    return area * 111000 * 111000;
                 } catch(e) {
                     return 0;
                 }
@@ -2231,7 +2257,7 @@
             return 0;
         }
         
-        function displayBufferResults(results, lat, lng, bufferKm, totalFeatures, totalArea) {
+        function displayBufferResults(results, lat, lng, bufferKm, totalFeatures, totalAreaSqm) {
             const resultsDiv = document.getElementById('bufferResults');
             
             let html = `
@@ -2239,7 +2265,7 @@
                     <div class="result-title">📍 Location: ${lat.toFixed(4)}, ${lng.toFixed(4)}</div>
                     <div class="result-title">🔄 Buffer Radius: ${bufferKm} km</div>
                     <div class="result-title">📊 Total Wetlands Found: ${totalFeatures}</div>
-                    <div class="result-title">📏 Total Wetland Area: ${formatArea(totalArea)}</div>
+                    <div class="result-title">📏 Total Wetland Area: ${formatAreaFromSqm(totalAreaSqm)}</div>
                 </div>
             `;
             
@@ -2257,7 +2283,7 @@
                                 <span style="display:inline-block; width:12px; height:12px; background:${colorRgb}; border-radius:2px; margin-right:6px;"></span>
                                 ${result.displayName}:
                             </span>
-                            <span class="result-value">${result.featureCount} features (${formatArea(result.totalArea)})</span>
+                            <span class="result-value">${result.featureCount} features (${formatAreaFromSqm(result.totalAreaSqm)})</span>
                         </div>
                     `;
                 }
@@ -2267,12 +2293,12 @@
                 // Add summary chart-like display
                 html += `<div class="result-section"><div class="result-title">📈 Area Distribution:</div>`;
                 
-                const sortedResults = Object.entries(results).sort((a,b) => b[1].totalArea - a[1].totalArea);
-                const maxArea = sortedResults[0]?.[1]?.totalArea || 1;
+                const sortedResults = Object.entries(results).sort((a,b) => b[1].totalAreaSqm - a[1].totalAreaSqm);
+                const maxArea = sortedResults[0]?.[1]?.totalAreaSqm || 1;
                 
                 for (const [key, result] of sortedResults) {
-                    const percentage = totalArea > 0 ? (result.totalArea / totalArea * 100).toFixed(1) : 0;
-                    const barWidth = maxArea > 0 ? (result.totalArea / maxArea * 100).toFixed(0) : 0;
+                    const percentage = totalAreaSqm > 0 ? (result.totalAreaSqm / totalAreaSqm * 100).toFixed(1) : 0;
+                    const barWidth = maxArea > 0 ? (result.totalAreaSqm / maxArea * 100).toFixed(0) : 0;
                     const colorMatch = result.color.match(/rgba\((\d+),\s*(\d+),\s*(\d+)/);
                     const colorRgb = colorMatch ? `rgb(${colorMatch[1]}, ${colorMatch[2]}, ${colorMatch[3]})` : '#22AD7A';
                     
@@ -2482,7 +2508,7 @@
         
         async function loadWetlandDataForDistrict(districtCode) {
             const layers = ['water', 'paddy', 'marsh', 'mangroves', 'sand', 'aquaculture', 'coral', 'streams', 'seasonal'];
-            let loadedCount = 0, totalFeatures = 0, totalArea = 0;
+            let loadedCount = 0, totalFeatures = 0, totalAreaSqm = 0;
             for (const layer of layers) {
                 try {
                     let response = await fetch(`data/${districtCode}/${layer}_areas.geojson`);
@@ -2495,15 +2521,30 @@
                         createLayer(layer, { type: "FeatureCollection", features: districtFeatures }, districtCode);
                         loadedCount++;
                         totalFeatures += districtFeatures.length;
+                        // Sum areas from properties
+                        districtFeatures.forEach(f => {
+                            if (f.properties) {
+                                const area = f.properties.area_sqm || f.properties.area_m2 || f.properties.area || 0;
+                                totalAreaSqm += area;
+                            }
+                        });
                     } else {
                         const geojsonData = await response.json();
                         createLayer(layer, geojsonData, districtCode);
                         loadedCount++;
                         totalFeatures += geojsonData.features.length;
+                        // Sum areas from properties
+                        geojsonData.features.forEach(f => {
+                            if (f.properties) {
+                                const area = f.properties.area_sqm || f.properties.area_m2 || f.properties.area || 0;
+                                totalAreaSqm += area;
+                            }
+                        });
                     }
                 } catch (error) { console.error(`Error loading ${layer}:`, error.message); }
             }
             document.getElementById('featureCount').textContent = totalFeatures.toLocaleString();
+            document.getElementById('totalArea').textContent = formatAreaFromSqm(totalAreaSqm);
             if (loadedCount > 0) showNotification(`Loaded ${loadedCount} wetland layers`, 'info');
             else showNotification(`No wetland data found for ${districtInfo[districtCode]?.name}`, 'warning');
         }
@@ -2547,9 +2588,10 @@
                 style: layerStyles[layerName],
                 onEachFeature: (f, l) => {
                     l.on('click', e => showFeatureInfo(f, e.latlng, districtCode));
-                    if (f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon') {
-                        try { layerStats[layerName].area += calculateArea(f.geometry); }
-                        catch(e) {}
+                    // Store area from properties for statistics
+                    if (f.properties) {
+                        const areaSqm = f.properties.area_sqm || f.properties.area_m2 || f.properties.area || 0;
+                        layerStats[layerName].areaSqm += areaSqm;
                     }
                 }
             });
@@ -2573,34 +2615,34 @@
         }
         
         function resetStatistics() {
-            Object.keys(layerStats).forEach(layer => { if (layer !== 'protected') layerStats[layer] = { features: 0, area: 0 }; });
+            Object.keys(layerStats).forEach(layer => { if (layer !== 'protected') layerStats[layer] = { features: 0, areaSqm: 0 }; });
         }
         
         function showFeatureInfo(feature, latlng, districtCode) {
             const districtName = districtInfo[districtCode]?.name || districtCode;
-            let html = `<div style="padding:12px"><h4 style="margin:0 0 10px 0;color:#28537D;">Wetland Feature</h4><p><strong>District:</strong> ${districtName}</p>`;
-            if (feature.properties) Object.entries(feature.properties).forEach(([k,v]) => { if(v && k !== 'district') html += `<p><strong>${k}:</strong> ${v}</p>`; });
+            let areaText = '';
+            if (feature.properties) {
+                const areaSqm = feature.properties.area_sqm || feature.properties.area_m2 || feature.properties.area || 0;
+                if (areaSqm > 0) {
+                    areaText = `<p><strong>Area:</strong> ${formatAreaFromSqm(areaSqm)}</p>`;
+                }
+            }
+            let html = `<div style="padding:12px"><h4 style="margin:0 0 10px 0;color:#28537D;">Wetland Feature</h4><p><strong>District:</strong> ${districtName}</p>${areaText}`;
+            if (feature.properties) Object.entries(feature.properties).forEach(([k,v]) => { if(v && k !== 'district' && !k.includes('area')) html += `<p><strong>${k}:</strong> ${v}</p>`; });
             html += `<p><strong>Coordinates:</strong> ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}</p></div>`;
             L.popup().setLatLng(latlng).setContent(html).openOn(map);
         }
         
-        function calculateArea(geometry) {
-            if (geometry.type === 'Polygon') {
-                const coords = geometry.coordinates[0];
-                let area = 0;
-                for (let i = 0; i < coords.length - 1; i++) area += coords[i][0] * coords[i+1][1] - coords[i+1][0] * coords[i][1];
-                area = Math.abs(area) / 2;
-                return area * 111 * 111;
+        function formatAreaFromSqm(areaSqm) {
+            if (areaSqm >= 1000000) {
+                return (areaSqm / 1000000).toFixed(2) + ' km²';
+            } else if (areaSqm >= 10000) {
+                return (areaSqm / 10000).toFixed(2) + ' ha';
+            } else if (areaSqm >= 1) {
+                return areaSqm.toFixed(2) + ' m²';
+            } else {
+                return '0 m²';
             }
-            return 0;
-        }
-        
-        function formatArea(areaKm2) {
-            if (areaKm2 > 1000) return (areaKm2/1000).toFixed(1) + 'k km²';
-            if (areaKm2 > 1) return areaKm2.toFixed(1) + ' km²';
-            if (areaKm2 > 0.01) return (areaKm2*100).toFixed(1) + ' ha';
-            if (areaKm2 > 0) return (areaKm2*10000).toFixed(1) + ' m²';
-            return '0 m²';
         }
         
         function toggleLayer(layerName) {
@@ -2672,24 +2714,24 @@
         function updateStatisticsDisplay() {
             if (!currentDistrict) { document.getElementById('areaStats').innerHTML = '<span class="loading">Select a district to view statistics</span>'; return; }
             const districtName = districtInfo[currentDistrict]?.name || currentDistrict;
-            let activeLayers = 0, activeFeatures = 0, activeArea = 0;
+            let activeLayers = 0, activeFeatures = 0, activeAreaSqm = 0;
             Object.keys(shapefileLayers).forEach(layer => {
                 if (shapefileLayers[layer] && map.hasLayer(shapefileLayers[layer])) {
                     activeLayers++;
                     activeFeatures += layerStats[layer].features;
-                    activeArea += layerStats[layer].area;
+                    activeAreaSqm += layerStats[layer].areaSqm;
                 }
             });
             document.getElementById('areaStats').innerHTML = `
                 <div style="font-size:0.75rem;">
                     <p><strong>${districtName}</strong></p>
                     <p>Active: ${activeLayers} | Features: ${activeFeatures.toLocaleString()}</p>
-                    <p><strong>Area: ${formatArea(activeArea)}</strong></p>
+                    <p><strong>Area: ${formatAreaFromSqm(activeAreaSqm)}</strong></p>
                 </div>`;
         }
         
         function recalculateStats() { if (currentDistrict) updateStatisticsDisplay(); else showNotification('Select a district first', 'warning'); }
-        function updateQuickStats() { document.getElementById('featureCount').textContent = '0'; document.getElementById('totalArea').textContent = '0 km²'; }
+        function updateQuickStats() { document.getElementById('featureCount').textContent = '0'; document.getElementById('totalArea').textContent = '0 m²'; }
         function changeBaseMap(mapType) { Object.keys(baseLayers).forEach(l => { if (map.hasLayer(baseLayers[l])) map.removeLayer(baseLayers[l]); }); if (baseLayers[mapType]) map.addLayer(baseLayers[mapType]); }
         function exportData() { if (!currentDistrict) showNotification('Select district first', 'warning'); else showNotification('Export feature - would export data for ' + districtInfo[currentDistrict]?.name, 'info'); }
         function printMap() { window.print(); }

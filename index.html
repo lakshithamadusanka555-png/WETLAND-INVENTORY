@@ -306,7 +306,7 @@
         width: 95%;
         margin: 0 auto;
         display: grid;
-        grid-template-columns: 300px 1fr; /* Slightly wider sidebar for buffer tool */
+        grid-template-columns: 300px 1fr;
         gap: 20px;
         background: var(--iwmi-white);
         border-radius: 12px;
@@ -416,6 +416,101 @@
     .map-btn.danger:hover {
         background: #D45A23;
         box-shadow: 0 4px 12px rgba(232, 105, 51, 0.2);
+    }
+    
+    /* Coordinate Picker Panel */
+    .coord-picker-panel {
+        background: var(--iwmi-white);
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid var(--iwmi-border);
+        margin-bottom: 12px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    }
+    
+    .coord-header {
+        font-weight: 600;
+        color: var(--iwmi-dark-blue);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .coord-header i {
+        color: var(--iwmi-sky-blue);
+        font-size: 0.95rem;
+    }
+    
+    .pick-coord-btn {
+        width: 100%;
+        background: var(--iwmi-light-blue);
+        color: white;
+        border: none;
+        padding: 0.6rem;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.3s;
+        margin-bottom: 10px;
+    }
+    
+    .pick-coord-btn:hover {
+        background: var(--iwmi-dark-blue);
+        transform: translateY(-2px);
+    }
+    
+    .pick-coord-btn.active {
+        background: var(--iwmi-green);
+        box-shadow: 0 0 0 2px rgba(34, 173, 122, 0.3);
+    }
+    
+    .selected-coord {
+        background: rgba(232, 231, 231, 0.2);
+        padding: 8px;
+        border-radius: 5px;
+        margin-top: 8px;
+        border-left: 3px solid var(--iwmi-green);
+    }
+    
+    .coord-label {
+        font-size: 0.7rem;
+        color: var(--iwmi-text-light);
+        margin-bottom: 4px;
+    }
+    
+    .coord-value {
+        font-size: 0.8rem;
+        color: var(--iwmi-dark-blue);
+        font-weight: 600;
+        font-family: monospace;
+    }
+    
+    .use-coord-btn {
+        width: 100%;
+        background: var(--iwmi-green);
+        color: white;
+        border: none;
+        padding: 0.5rem;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-top: 8px;
+        transition: all 0.3s;
+    }
+    
+    .use-coord-btn:hover {
+        background: var(--iwmi-teal);
+        transform: translateY(-2px);
     }
     
     /* Buffer Zone Analysis Panel */
@@ -538,7 +633,7 @@
     
     .buffer-results {
         margin-top: 10px;
-        max-height: 200px;
+        max-height: 250px;
         overflow-y: auto;
         font-size: 0.75rem;
         background: rgba(232, 231, 231, 0.2);
@@ -1111,6 +1206,18 @@
         box-shadow: 0 0 0 2px rgba(40, 83, 125, 0.1);
     }
     
+    /* Coordinate Info Display on Map */
+    .coord-info {
+        background: var(--iwmi-white);
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--iwmi-dark-blue);
+        border-left: 3px solid var(--iwmi-green);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
     /* Animations */
     @keyframes fadeInUp {
         from {
@@ -1165,7 +1272,7 @@
         
         .map-sidebar {
             height: auto;
-            max-height: 500px;
+            max-height: 550px;
             border-right: none;
             border-bottom: 1px solid var(--iwmi-border);
         }
@@ -1243,6 +1350,10 @@
             justify-content: center;
             gap: 0.8rem;
         }
+        
+        .coordinate-group {
+            flex-direction: column;
+        }
     }
     
     @media (max-width: 480px) {
@@ -1257,10 +1368,6 @@
         
         .quick-stats {
             padding: 1rem;
-        }
-        
-        .coordinate-group {
-            flex-direction: column;
         }
     }
 </style>
@@ -1327,6 +1434,24 @@
         <div class="map-container">
             <!-- Sidebar -->
             <div class="map-sidebar">
+                <!-- Coordinate Picker Panel -->
+                <div class="coord-picker-panel">
+                    <div class="coord-header">
+                        <i class="fas fa-map-pin"></i> Pick Coordinates
+                    </div>
+                    <button class="pick-coord-btn" id="pickCoordBtn" onclick="toggleCoordinatePicker()">
+                        <i class="fas fa-mouse-pointer"></i> Pick from Map
+                    </button>
+                    <div class="selected-coord" id="selectedCoordDisplay" style="display: none;">
+                        <div class="coord-label">Selected Coordinates:</div>
+                        <div class="coord-value" id="selectedLat">--</div>
+                        <div class="coord-value" id="selectedLng">--</div>
+                        <button class="use-coord-btn" onclick="useSelectedCoordinates()">
+                            <i class="fas fa-arrow-right"></i> Use for Buffer Analysis
+                        </button>
+                    </div>
+                </div>
+                
                 <!-- Buffer Zone Analysis Panel -->
                 <div class="buffer-panel">
                     <div class="buffer-header">
@@ -1348,7 +1473,7 @@
                     </button>
                     <div class="buffer-results" id="bufferResults">
                         <div class="result-section">
-                            <div class="result-title">📌 Enter coordinates and buffer distance</div>
+                            <div class="result-title">📌 Enter coordinates or pick from map</div>
                             <div style="color: #666; font-size: 0.7rem; padding: 5px;">Example: Colombo (6.9271, 79.8612)</div>
                         </div>
                     </div>
@@ -1697,6 +1822,10 @@
         let protectedAreasLoaded = false;
         let currentBufferCircle = null;
         let currentBufferMarker = null;
+        let isPickingCoordinates = false;
+        let tempPickMarker = null;
+        let selectedLat = null;
+        let selectedLng = null;
         
         // Drawing and measurement variables
         let drawnItems = new L.FeatureGroup();
@@ -1829,6 +1958,96 @@
             L.control.scale({imperial: false}).addTo(map);
         }
         
+        // ============ COORDINATE PICKER FUNCTION ============
+        function toggleCoordinatePicker() {
+            const pickBtn = document.getElementById('pickCoordBtn');
+            
+            if (!isPickingCoordinates) {
+                // Activate picking mode
+                isPickingCoordinates = true;
+                pickBtn.classList.add('active');
+                pickBtn.innerHTML = '<i class="fas fa-times"></i> Cancel Picking';
+                map.getContainer().style.cursor = 'crosshair';
+                
+                // Add click listener to map
+                map.on('click', onMapClickForPick);
+                
+                showNotification('Click on the map to select coordinates', 'info');
+            } else {
+                // Deactivate picking mode
+                deactivateCoordinatePicker();
+            }
+        }
+        
+        function onMapClickForPick(e) {
+            const lat = e.latlng.lat;
+            const lng = e.latlng.lng;
+            
+            // Store selected coordinates
+            selectedLat = lat;
+            selectedLng = lng;
+            
+            // Update display
+            document.getElementById('selectedLat').innerHTML = `<i class="fas fa-arrow-up"></i> ${lat.toFixed(6)}`;
+            document.getElementById('selectedLng').innerHTML = `<i class="fas fa-arrow-right"></i> ${lng.toFixed(6)}`;
+            document.getElementById('selectedCoordDisplay').style.display = 'block';
+            
+            // Show temporary marker
+            if (tempPickMarker) {
+                map.removeLayer(tempPickMarker);
+            }
+            
+            tempPickMarker = L.marker([lat, lng], {
+                icon: L.divIcon({
+                    className: 'temp-pick-marker',
+                    html: '<i class="fas fa-map-marker-alt" style="color: #22AD7A; font-size: 32px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));"></i>',
+                    iconSize: [32, 32],
+                    iconAnchor: [16, 32]
+                })
+            }).addTo(map);
+            
+            // Auto-fill the buffer form
+            document.getElementById('latitude').value = lat.toFixed(6);
+            document.getElementById('longitude').value = lng.toFixed(6);
+            
+            showNotification(`Coordinates selected: ${lat.toFixed(6)}, ${lng.toFixed(6)}`, 'success');
+            
+            // Deactivate picking mode
+            deactivateCoordinatePicker();
+        }
+        
+        function deactivateCoordinatePicker() {
+            isPickingCoordinates = false;
+            const pickBtn = document.getElementById('pickCoordBtn');
+            pickBtn.classList.remove('active');
+            pickBtn.innerHTML = '<i class="fas fa-mouse-pointer"></i> Pick from Map';
+            map.getContainer().style.cursor = '';
+            map.off('click', onMapClickForPick);
+            
+            // Remove temporary marker after 3 seconds
+            if (tempPickMarker) {
+                setTimeout(() => {
+                    if (tempPickMarker && map.hasLayer(tempPickMarker)) {
+                        map.removeLayer(tempPickMarker);
+                        tempPickMarker = null;
+                    }
+                }, 3000);
+            }
+        }
+        
+        function useSelectedCoordinates() {
+            if (selectedLat !== null && selectedLng !== null) {
+                document.getElementById('latitude').value = selectedLat.toFixed(6);
+                document.getElementById('longitude').value = selectedLng.toFixed(6);
+                showNotification('Coordinates copied to buffer analysis', 'success');
+                
+                // Scroll to buffer panel
+                document.querySelector('.buffer-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                showNotification('No coordinates selected. Please pick a location first.', 'warning');
+            }
+        }
+        
         // ============ BUFFER ZONE ANALYSIS FUNCTION ============
         async function analyzeBufferZone() {
             const lat = parseFloat(document.getElementById('latitude').value);
@@ -1855,7 +2074,7 @@
             currentBufferMarker = L.marker([lat, lng], {
                 icon: L.divIcon({
                     className: 'buffer-center-marker',
-                    html: '<i class="fas fa-map-marker-alt" style="color: #DC3545; font-size: 28px;"></i>',
+                    html: '<i class="fas fa-map-marker-alt" style="color: #DC3545; font-size: 28px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));"></i>',
                     iconSize: [28, 28],
                     iconAnchor: [14, 28]
                 })
@@ -1885,7 +2104,7 @@
             for (const layer of wetlandLayers) {
                 if (shapefileLayers[layer] && map.hasLayer(shapefileLayers[layer])) {
                     const result = await analyzeLayerInBuffer(layer, lat, lng, bufferMeters);
-                    if (result) {
+                    if (result && result.featureCount > 0) {
                         analysisResults[layer] = result;
                         totalFeatures += result.featureCount;
                         totalArea += result.totalArea;
@@ -1895,7 +2114,7 @@
             
             // Display results
             displayBufferResults(analysisResults, lat, lng, bufferKm, totalFeatures, totalArea);
-            showNotification(`Analysis complete! Found ${totalFeatures} wetland features`, 'success');
+            showNotification(`Analysis complete! Found ${totalFeatures} wetland features covering ${formatArea(totalArea)}`, 'success');
         }
         
         async function analyzeLayerInBuffer(layerName, centerLat, centerLng, bufferMeters) {
@@ -2052,8 +2271,8 @@
                 const maxArea = sortedResults[0]?.[1]?.totalArea || 1;
                 
                 for (const [key, result] of sortedResults) {
-                    const percentage = (result.totalArea / totalArea * 100).toFixed(1);
-                    const barWidth = (result.totalArea / maxArea * 100).toFixed(0);
+                    const percentage = totalArea > 0 ? (result.totalArea / totalArea * 100).toFixed(1) : 0;
+                    const barWidth = maxArea > 0 ? (result.totalArea / maxArea * 100).toFixed(0) : 0;
                     const colorMatch = result.color.match(/rgba\((\d+),\s*(\d+),\s*(\d+)/);
                     const colorRgb = colorMatch ? `rgb(${colorMatch[1]}, ${colorMatch[2]}, ${colorMatch[3]})` : '#22AD7A';
                     
@@ -2073,6 +2292,7 @@
                 html += `</div>`;
             } else {
                 html += `<div class="result-section"><div class="result-title">⚠️ No wetlands found within the buffer zone</div></div>`;
+                html += `<div class="result-section"><div class="result-title">💡 Tip: Make sure wetland layers are loaded and visible</div></div>`;
             }
             
             resultsDiv.innerHTML = html;
@@ -2090,7 +2310,7 @@
             
             document.getElementById('bufferResults').innerHTML = `
                 <div class="result-section">
-                    <div class="result-title">📌 Enter coordinates and buffer distance</div>
+                    <div class="result-title">📌 Enter coordinates or pick from map</div>
                     <div style="color: #666; font-size: 0.7rem; padding: 5px;">Example: Colombo (6.9271, 79.8612)</div>
                 </div>
             `;
@@ -2379,7 +2599,8 @@
             if (areaKm2 > 1000) return (areaKm2/1000).toFixed(1) + 'k km²';
             if (areaKm2 > 1) return areaKm2.toFixed(1) + ' km²';
             if (areaKm2 > 0.01) return (areaKm2*100).toFixed(1) + ' ha';
-            return (areaKm2*10000).toFixed(1) + ' m²';
+            if (areaKm2 > 0) return (areaKm2*10000).toFixed(1) + ' m²';
+            return '0 m²';
         }
         
         function toggleLayer(layerName) {

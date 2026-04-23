@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
+    <!-- Include Turf.js for advanced geometry operations -->
+    <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
    <style>
     /* IWMI Brand Colors from https://branding.iwmi.org/our-colours/ */
     :root {
@@ -306,7 +308,7 @@
         width: 95%;
         margin: 0 auto;
         display: grid;
-        grid-template-columns: 320px 1fr;
+        grid-template-columns: 340px 1fr;
         gap: 20px;
         background: var(--iwmi-white);
         border-radius: 12px;
@@ -633,7 +635,7 @@
     
     .buffer-results {
         margin-top: 10px;
-        max-height: 280px;
+        max-height: 300px;
         overflow-y: auto;
         font-size: 0.75rem;
         background: rgba(232, 231, 231, 0.2);
@@ -1258,7 +1260,7 @@
             height: 75vh;
             min-height: 650px;
             width: 98%;
-            grid-template-columns: 300px 1fr;
+            grid-template-columns: 320px 1fr;
         }
     }
     
@@ -1876,31 +1878,31 @@
         
         // District info
         const districtInfo = {
-            colombo: { name: "Colombo", center: [6.9271, 79.8612], zoom: 11 },
-            gampaha: { name: "Gampaha", center: [7.0840, 80.0098], zoom: 11 },
-            kalutara: { name: "Kalutara", center: [6.5894, 80.0629], zoom: 11 },
-            kandy: { name: "Kandy", center: [7.2906, 80.6337], zoom: 11 },
-            matale: { name: "Matale", center: [7.4675, 80.6234], zoom: 11 },
-            nuwaraeliya: { name: "Nuwara Eliya", center: [6.9497, 80.7891], zoom: 11 },
-            galle: { name: "Galle", center: [6.0535, 80.2210], zoom: 11 },
-            matara: { name: "Matara", center: [5.9483, 80.5353], zoom: 11 },
-            hambantota: { name: "Hambantota", center: [6.1240, 81.1185], zoom: 11 },
-            jaffna: { name: "Jaffna", center: [9.6615, 80.0255], zoom: 11 },
-            kilinochchi: { name: "Kilinochchi", center: [9.3964, 80.3982], zoom: 11 },
-            mannar: { name: "Mannar", center: [8.9770, 79.9095], zoom: 11 },
-            vavuniya: { name: "Vavuniya", center: [8.7560, 80.4971], zoom: 11 },
-            mullaitivu: { name: "Mullaitivu", center: [9.2671, 80.8142], zoom: 11 },
-            batticaloa: { name: "Batticaloa", center: [7.7102, 81.6924], zoom: 11 },
-            ampara: { name: "Ampara", center: [7.2975, 81.6820], zoom: 11 },
-            trincomalee: { name: "Trincomalee", center: [8.5874, 81.2152], zoom: 11 },
-            kurunegala: { name: "Kurunegala", center: [7.4800, 80.3600], zoom: 11 },
-            puttalam: { name: "Puttalam", center: [8.0362, 79.8283], zoom: 11 },
-            anuradhapura: { name: "Anuradhapura", center: [8.3114, 80.4037], zoom: 11 },
-            polonnaruwa: { name: "Polonnaruwa", center: [7.9320, 81.0081], zoom: 11 },
-            badulla: { name: "Badulla", center: [6.9934, 81.0550], zoom: 11 },
-            monaragala: { name: "Monaragala", center: [6.8728, 81.3508], zoom: 11 },
-            ratnapura: { name: "Ratnapura", center: [6.6828, 80.3992], zoom: 11 },
-            kegalle: { name: "Kegalle", center: [7.2514, 80.3464], zoom: 11 }
+            colombo: { name: "Colombo", center: [6.9271, 79.8612], zoom: 10 },
+            gampaha: { name: "Gampaha", center: [7.0840, 80.0098], zoom: 10 },
+            kalutara: { name: "Kalutara", center: [6.5894, 80.0629], zoom: 10 },
+            kandy: { name: "Kandy", center: [7.2906, 80.6337], zoom: 10 },
+            matale: { name: "Matale", center: [7.4675, 80.6234], zoom: 10 },
+            nuwaraeliya: { name: "Nuwara Eliya", center: [6.9497, 80.7891], zoom: 10 },
+            galle: { name: "Galle", center: [6.0535, 80.2210], zoom: 10 },
+            matara: { name: "Matara", center: [5.9483, 80.5353], zoom: 10 },
+            hambantota: { name: "Hambantota", center: [6.1240, 81.1185], zoom: 10 },
+            jaffna: { name: "Jaffna", center: [9.6615, 80.0255], zoom: 10 },
+            kilinochchi: { name: "Kilinochchi", center: [9.3964, 80.3982], zoom: 10 },
+            mannar: { name: "Mannar", center: [8.9770, 79.9095], zoom: 10 },
+            vavuniya: { name: "Vavuniya", center: [8.7560, 80.4971], zoom: 10 },
+            mullaitivu: { name: "Mullaitivu", center: [9.2671, 80.8142], zoom: 10 },
+            batticaloa: { name: "Batticaloa", center: [7.7102, 81.6924], zoom: 10 },
+            ampara: { name: "Ampara", center: [7.2975, 81.6820], zoom: 10 },
+            trincomalee: { name: "Trincomalee", center: [8.5874, 81.2152], zoom: 10 },
+            kurunegala: { name: "Kurunegala", center: [7.4800, 80.3600], zoom: 10 },
+            puttalam: { name: "Puttalam", center: [8.0362, 79.8283], zoom: 10 },
+            anuradhapura: { name: "Anuradhapura", center: [8.3114, 80.4037], zoom: 10 },
+            polonnaruwa: { name: "Polonnaruwa", center: [7.9320, 81.0081], zoom: 10 },
+            badulla: { name: "Badulla", center: [6.9934, 81.0550], zoom: 10 },
+            monaragala: { name: "Monaragala", center: [6.8728, 81.3508], zoom: 10 },
+            ratnapura: { name: "Ratnapura", center: [6.6828, 80.3992], zoom: 10 },
+            kegalle: { name: "Kegalle", center: [7.2514, 80.3464], zoom: 10 }
         };
         
         // Search locations
@@ -2048,7 +2050,7 @@
             }
         }
         
-        // ============ AREA FORMATTING FUNCTION (SQUARE METERS TO READABLE) ============
+        // ============ AREA FORMATTING FUNCTION ============
         function formatAreaFromSqm(areaSqm) {
             if (areaSqm >= 1000000) {
                 return (areaSqm / 1000000).toFixed(2) + ' km²';
@@ -2061,7 +2063,7 @@
             }
         }
         
-        // ============ BUFFER ZONE ANALYSIS FUNCTION ============
+        // ============ BUFFER ZONE ANALYSIS FUNCTION WITH TRUE INTERSECTION AREA ============
         async function analyzeBufferZone() {
             const lat = parseFloat(document.getElementById('latitude').value);
             const lng = parseFloat(document.getElementById('longitude').value);
@@ -2078,7 +2080,7 @@
                 return;
             }
             
-            showNotification('Analyzing buffer zone...', 'info');
+            showNotification('Analyzing buffer zone with intersection calculation...', 'info');
             
             // Clear previous buffer
             clearBufferAnalysis();
@@ -2107,6 +2109,9 @@
             // Zoom to the buffer area
             map.fitBounds(currentBufferCircle.getBounds(), { padding: [30, 30] });
             
+            // Create buffer polygon for intersection calculation
+            const bufferPolygon = createBufferPolygon(lat, lng, bufferMeters);
+            
             // Analyze each wetland layer
             const analysisResults = {};
             let totalFeatures = 0;
@@ -2116,8 +2121,8 @@
             
             for (const layer of wetlandLayers) {
                 if (shapefileLayers[layer] && map.hasLayer(shapefileLayers[layer])) {
-                    const result = await analyzeLayerInBuffer(layer, lat, lng, bufferMeters);
-                    if (result && result.featureCount > 0) {
+                    const result = await analyzeLayerIntersection(layer, bufferPolygon);
+                    if (result && result.featureCount > 0 && result.totalAreaSqm > 0) {
                         analysisResults[layer] = result;
                         totalFeatures += result.featureCount;
                         totalAreaSqm += result.totalAreaSqm;
@@ -2127,50 +2132,71 @@
             
             // Display results
             displayBufferResults(analysisResults, lat, lng, bufferKm, totalFeatures, totalAreaSqm);
-            showNotification(`Analysis complete! Found ${totalFeatures} wetland features covering ${formatAreaFromSqm(totalAreaSqm)}`, 'success');
+            showNotification(`Analysis complete! Found ${totalFeatures} wetland features with ${formatAreaFromSqm(totalAreaSqm)} within buffer`, 'success');
         }
         
-        async function analyzeLayerInBuffer(layerName, centerLat, centerLng, bufferMeters) {
+        // Create a polygon representation of the buffer circle
+        function createBufferPolygon(centerLat, centerLng, radiusMeters) {
+            const center = [centerLng, centerLat];
+            const options = { steps: 64, units: 'meters' };
+            const circle = turf.circle(center, radiusMeters, options);
+            return circle;
+        }
+        
+        // Analyze intersection between wetland features and buffer polygon
+        async function analyzeLayerIntersection(layerName, bufferPolygon) {
             return new Promise((resolve) => {
                 if (!shapefileLayers[layerName]) {
                     resolve(null);
                     return;
                 }
                 
-                let featuresInBuffer = [];
-                let totalAreaSqm = 0;
+                let intersectingFeatures = [];
+                let totalIntersectionAreaSqm = 0;
                 
                 // Iterate through each feature in the layer
                 shapefileLayers[layerName].eachLayer(function(featureLayer) {
                     if (featureLayer.feature && featureLayer.feature.geometry) {
-                        // Check if feature is within buffer
-                        const isWithin = isFeatureWithinBuffer(featureLayer, centerLat, centerLng, bufferMeters);
-                        
-                        if (isWithin) {
-                            featuresInBuffer.push(featureLayer);
+                        try {
+                            // Convert Leaflet layer to Turf GeoJSON
+                            const featureGeoJSON = featureLayer.toGeoJSON();
                             
-                            // Get area from GeoJSON properties (in square meters)
-                            let areaSqm = 0;
-                            if (featureLayer.feature.properties) {
-                                // Try different possible area field names
-                                if (featureLayer.feature.properties.area_sqm) {
-                                    areaSqm = featureLayer.feature.properties.area_sqm;
-                                } else if (featureLayer.feature.properties.area_m2) {
-                                    areaSqm = featureLayer.feature.properties.area_m2;
-                                } else if (featureLayer.feature.properties.area) {
-                                    areaSqm = featureLayer.feature.properties.area;
-                                } else if (featureLayer.feature.properties.Area) {
-                                    areaSqm = featureLayer.feature.properties.Area;
-                                } else if (featureLayer.feature.properties.AREA) {
-                                    areaSqm = featureLayer.feature.properties.AREA;
-                                } else {
-                                    // If no area property, calculate from geometry
-                                    areaSqm = calculateAreaFromLayerSqm(featureLayer);
+                            // Check if the feature intersects with the buffer
+                            const intersects = turf.intersect(bufferPolygon, featureGeoJSON);
+                            
+                            if (intersects) {
+                                intersectingFeatures.push(featureLayer);
+                                
+                                // Calculate intersection area in square meters
+                                // Turf area returns area in square meters
+                                let intersectionAreaSqm = turf.area(intersects);
+                                
+                                // Also check if the feature is completely within the buffer
+                                const within = turf.within(featureGeoJSON, bufferPolygon);
+                                if (within && within.features && within.features.length > 0) {
+                                    // Feature is completely within, use its full area
+                                    const originalArea = getFeatureAreaSqm(featureLayer.feature);
+                                    if (originalArea > 0 && originalArea < intersectionAreaSqm) {
+                                        intersectionAreaSqm = originalArea;
+                                    }
                                 }
-                            } else {
-                                areaSqm = calculateAreaFromLayerSqm(featureLayer);
+                                
+                                // Validate area (should be reasonable)
+                                if (intersectionAreaSqm < 0 || intersectionAreaSqm > 1000000000) {
+                                    // Fallback to proportional estimation
+                                    intersectionAreaSqm = estimateIntersectionArea(featureLayer, bufferPolygon);
+                                }
+                                
+                                totalIntersectionAreaSqm += intersectionAreaSqm;
                             }
-                            totalAreaSqm += areaSqm;
+                        } catch (error) {
+                            console.log(`Error processing intersection for ${layerName}:`, error);
+                            // Fallback: estimate area using bounding box check
+                            const estimatedArea = estimateIntersectionArea(featureLayer, bufferPolygon);
+                            if (estimatedArea > 0) {
+                                totalIntersectionAreaSqm += estimatedArea;
+                                intersectingFeatures.push(featureLayer);
+                            }
                         }
                     }
                 });
@@ -2178,83 +2204,68 @@
                 resolve({
                     layerName: layerName,
                     displayName: getLayerDisplayName(layerName),
-                    featureCount: featuresInBuffer.length,
-                    totalAreaSqm: totalAreaSqm,
-                    features: featuresInBuffer,
+                    featureCount: intersectingFeatures.length,
+                    totalAreaSqm: totalIntersectionAreaSqm,
+                    features: intersectingFeatures,
                     color: layerColors[layerName]
                 });
             });
         }
         
-        function isFeatureWithinBuffer(featureLayer, centerLat, centerLng, bufferMeters) {
-            const bounds = featureLayer.getBounds();
-            if (!bounds) return false;
-            
-            // Quick check: if feature bounds are far from buffer center, skip
-            const center = L.latLng(centerLat, centerLng);
-            const featureCenter = bounds.getCenter();
-            const distanceToCenter = center.distanceTo(featureCenter);
-            
-            // If feature center is within buffer + feature's approximate radius
-            const featureRadius = Math.max(bounds.getNorth() - bounds.getSouth(), bounds.getEast() - bounds.getWest()) * 111000 / 2;
-            if (distanceToCenter > bufferMeters + featureRadius) {
-                return false;
-            }
-            
-            // More accurate check: sample points from feature
-            const featureLayerLatLngs = getLayerLatLngs(featureLayer);
-            for (const point of featureLayerLatLngs) {
-                const distance = center.distanceTo(point);
-                if (distance <= bufferMeters) {
-                    return true;
-                }
-            }
-            
-            return false;
-        }
-        
-        function getLayerLatLngs(layer) {
-            const latLngs = [];
-            
-            if (layer instanceof L.Polygon || layer instanceof L.Polyline) {
-                const coords = layer.getLatLngs();
-                collectLatLngs(coords, latLngs);
-            } else if (layer instanceof L.Marker) {
-                latLngs.push(layer.getLatLng());
-            }
-            
-            return latLngs;
-        }
-        
-        function collectLatLngs(coords, output) {
-            if (Array.isArray(coords)) {
-                if (coords.length > 0 && coords[0] instanceof L.LatLng) {
-                    coords.forEach(coord => output.push(coord));
-                } else {
-                    coords.forEach(subCoord => collectLatLngs(subCoord, output));
-                }
-            }
-        }
-        
-        function calculateAreaFromLayerSqm(layer) {
-            if (layer instanceof L.Polygon) {
-                try {
-                    const latlngs = layer.getLatLngs()[0];
-                    let area = 0;
-                    for (let i = 0; i < latlngs.length; i++) {
-                        const j = (i + 1) % latlngs.length;
-                        area += latlngs[i].lng * latlngs[j].lat;
-                        area -= latlngs[j].lng * latlngs[i].lat;
-                    }
-                    area = Math.abs(area) / 2;
-                    // Convert from square degrees to square meters (approximate)
-                    // 1 degree ≈ 111,000 meters
-                    return area * 111000 * 111000;
-                } catch(e) {
-                    return 0;
-                }
+        // Get feature area from properties (in square meters)
+        function getFeatureAreaSqm(feature) {
+            if (feature.properties) {
+                if (feature.properties.area_sqm) return feature.properties.area_sqm;
+                if (feature.properties.area_m2) return feature.properties.area_m2;
+                if (feature.properties.area) return feature.properties.area;
+                if (feature.properties.Area) return feature.properties.Area;
+                if (feature.properties.AREA) return feature.properties.AREA;
             }
             return 0;
+        }
+        
+        // Estimate intersection area when precise calculation fails
+        function estimateIntersectionArea(featureLayer, bufferPolygon) {
+            try {
+                const featureBounds = featureLayer.getBounds();
+                const bufferBounds = turf.bbox(bufferPolygon);
+                
+                // Check if bounds overlap
+                if (!boundsOverlap(featureBounds, bufferBounds)) {
+                    return 0;
+                }
+                
+                // Sample points within the feature to estimate overlap percentage
+                const featureGeoJSON = featureLayer.toGeoJSON();
+                const bufferBboxPolygon = turf.bboxPolygon(bufferBounds);
+                const intersects = turf.intersect(featureGeoJSON, bufferBboxPolygon);
+                
+                if (intersects) {
+                    const overlapArea = turf.area(intersects);
+                    const originalArea = getFeatureAreaSqm(featureLayer.feature);
+                    if (originalArea > 0 && overlapArea > 0) {
+                        // Return the smaller of the two (conservative estimate)
+                        return Math.min(overlapArea, originalArea);
+                    }
+                    return overlapArea;
+                }
+                
+                return 0;
+            } catch(e) {
+                return 0;
+            }
+        }
+        
+        // Check if bounds overlap
+        function boundsOverlap(bounds1, bounds2) {
+            const b1 = [bounds1.getWest(), bounds1.getSouth(), bounds1.getEast(), bounds1.getNorth()];
+            const b2 = [bounds2[0], bounds2[1], bounds2[2], bounds2[3]];
+            
+            if (b1[2] < b2[0]) return false; // b1 is left of b2
+            if (b1[0] > b2[2]) return false; // b1 is right of b2
+            if (b1[3] < b2[1]) return false; // b1 is below b2
+            if (b1[1] > b2[3]) return false; // b1 is above b2
+            return true;
         }
         
         function displayBufferResults(results, lat, lng, bufferKm, totalFeatures, totalAreaSqm) {
@@ -2264,14 +2275,15 @@
                 <div class="result-section">
                     <div class="result-title">📍 Location: ${lat.toFixed(4)}, ${lng.toFixed(4)}</div>
                     <div class="result-title">🔄 Buffer Radius: ${bufferKm} km</div>
-                    <div class="result-title">📊 Total Wetlands Found: ${totalFeatures}</div>
-                    <div class="result-title">📏 Total Wetland Area: ${formatAreaFromSqm(totalAreaSqm)}</div>
+                    <div class="result-title">📊 Wetlands in Buffer: ${totalFeatures}</div>
+                    <div class="result-title">📏 Area within Buffer: ${formatAreaFromSqm(totalAreaSqm)}</div>
+                    <div class="result-title" style="font-size: 0.7rem; color: #666;">✓ Only areas inside buffer are counted</div>
                 </div>
             `;
             
             // Add breakdown by wetland type
             if (Object.keys(results).length > 0) {
-                html += `<div class="result-section"><div class="result-title">🌿 Wetland Breakdown by Type:</div>`;
+                html += `<div class="result-section"><div class="result-title">🌿 Wetland Breakdown (area within buffer):</div>`;
                 
                 for (const [key, result] of Object.entries(results)) {
                     const colorMatch = result.color.match(/rgba\((\d+),\s*(\d+),\s*(\d+)/);
@@ -2291,7 +2303,7 @@
                 html += `</div>`;
                 
                 // Add summary chart-like display
-                html += `<div class="result-section"><div class="result-title">📈 Area Distribution:</div>`;
+                html += `<div class="result-section"><div class="result-title">📈 Area Distribution (within buffer):</div>`;
                 
                 const sortedResults = Object.entries(results).sort((a,b) => b[1].totalAreaSqm - a[1].totalAreaSqm);
                 const maxArea = sortedResults[0]?.[1]?.totalAreaSqm || 1;
@@ -2316,9 +2328,10 @@
                 }
                 
                 html += `</div>`;
+                html += `<div class="result-section"><div class="result-title">💡 Note: Area calculations represent only the portion of each wetland that falls inside the buffer zone.</div></div>`;
             } else {
                 html += `<div class="result-section"><div class="result-title">⚠️ No wetlands found within the buffer zone</div></div>`;
-                html += `<div class="result-section"><div class="result-title">💡 Tip: Make sure wetland layers are loaded and visible</div></div>`;
+                html += `<div class="result-section"><div class="result-title">💡 Tip: Make sure wetland layers are loaded and visible, or try a larger buffer distance</div></div>`;
             }
             
             resultsDiv.innerHTML = html;
@@ -2523,10 +2536,8 @@
                         totalFeatures += districtFeatures.length;
                         // Sum areas from properties
                         districtFeatures.forEach(f => {
-                            if (f.properties) {
-                                const area = f.properties.area_sqm || f.properties.area_m2 || f.properties.area || 0;
-                                totalAreaSqm += area;
-                            }
+                            const area = getFeatureAreaSqm(f);
+                            totalAreaSqm += area;
                         });
                     } else {
                         const geojsonData = await response.json();
@@ -2535,10 +2546,8 @@
                         totalFeatures += geojsonData.features.length;
                         // Sum areas from properties
                         geojsonData.features.forEach(f => {
-                            if (f.properties) {
-                                const area = f.properties.area_sqm || f.properties.area_m2 || f.properties.area || 0;
-                                totalAreaSqm += area;
-                            }
+                            const area = getFeatureAreaSqm(f);
+                            totalAreaSqm += area;
                         });
                     }
                 } catch (error) { console.error(`Error loading ${layer}:`, error.message); }
@@ -2559,6 +2568,11 @@
                     onEachFeature: (f, l) => l.on('click', e => showProtectedAreaInfo(f, e.latlng))
                 });
                 layerStats.protected.features = geojsonData.features.length;
+                // Sum protected areas
+                geojsonData.features.forEach(f => {
+                    const area = getFeatureAreaSqm(f);
+                    layerStats.protected.areaSqm += area;
+                });
                 document.getElementById('protectedLayer').disabled = false;
                 document.getElementById('protectedOpacity').disabled = false;
                 protectedAreasLoaded = true;
@@ -2576,8 +2590,13 @@
         }
         
         function showProtectedAreaInfo(feature, latlng) {
-            let html = `<div style="padding:12px"><h4 style="margin:0 0 10px 0;color:#28537D;"><i class="fas fa-shield-alt" style="color:#2ECC71"></i> Protected Area</h4>`;
-            if (feature.properties) Object.entries(feature.properties).forEach(([k,v]) => { if(v) html += `<p style="margin:5px 0;font-size:0.85rem;"><strong>${k}:</strong> ${v}</p>`; });
+            let areaText = '';
+            const areaSqm = getFeatureAreaSqm(feature);
+            if (areaSqm > 0) {
+                areaText = `<p><strong>Area:</strong> ${formatAreaFromSqm(areaSqm)}</p>`;
+            }
+            let html = `<div style="padding:12px"><h4 style="margin:0 0 10px 0;color:#28537D;"><i class="fas fa-shield-alt" style="color:#2ECC71"></i> Protected Area</h4>${areaText}`;
+            if (feature.properties) Object.entries(feature.properties).forEach(([k,v]) => { if(v && !k.includes('area')) html += `<p style="margin:5px 0;font-size:0.85rem;"><strong>${k}:</strong> ${v}</p>`; });
             html += `<p style="margin-top:8px;font-size:0.8rem;color:#666;"><strong>Coordinates:</strong> ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}</p></div>`;
             L.popup().setLatLng(latlng).setContent(html).openOn(map);
         }
@@ -2589,10 +2608,8 @@
                 onEachFeature: (f, l) => {
                     l.on('click', e => showFeatureInfo(f, e.latlng, districtCode));
                     // Store area from properties for statistics
-                    if (f.properties) {
-                        const areaSqm = f.properties.area_sqm || f.properties.area_m2 || f.properties.area || 0;
-                        layerStats[layerName].areaSqm += areaSqm;
-                    }
+                    const areaSqm = getFeatureAreaSqm(f);
+                    layerStats[layerName].areaSqm += areaSqm;
                 }
             });
             layerStats[layerName].features = geojsonData.features.length;
@@ -2620,44 +2637,44 @@
         
         function showFeatureInfo(feature, latlng, districtCode) {
             const districtName = districtInfo[districtCode]?.name || districtCode;
-            let areaText = '';
-            if (feature.properties) {
-                const areaSqm = feature.properties.area_sqm || feature.properties.area_m2 || feature.properties.area || 0;
-                if (areaSqm > 0) {
-                    areaText = `<p><strong>Area:</strong> ${formatAreaFromSqm(areaSqm)}</p>`;
-                }
-            }
+            const areaSqm = getFeatureAreaSqm(feature);
+            let areaText = areaSqm > 0 ? `<p><strong>Area:</strong> ${formatAreaFromSqm(areaSqm)}</p>` : '';
             let html = `<div style="padding:12px"><h4 style="margin:0 0 10px 0;color:#28537D;">Wetland Feature</h4><p><strong>District:</strong> ${districtName}</p>${areaText}`;
             if (feature.properties) Object.entries(feature.properties).forEach(([k,v]) => { if(v && k !== 'district' && !k.includes('area')) html += `<p><strong>${k}:</strong> ${v}</p>`; });
             html += `<p><strong>Coordinates:</strong> ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}</p></div>`;
             L.popup().setLatLng(latlng).setContent(html).openOn(map);
         }
         
-        function formatAreaFromSqm(areaSqm) {
-            if (areaSqm >= 1000000) {
-                return (areaSqm / 1000000).toFixed(2) + ' km²';
-            } else if (areaSqm >= 10000) {
-                return (areaSqm / 10000).toFixed(2) + ' ha';
-            } else if (areaSqm >= 1) {
-                return areaSqm.toFixed(2) + ' m²';
-            } else {
-                return '0 m²';
-            }
-        }
-        
         function toggleLayer(layerName) {
             const checkbox = document.getElementById(layerName + 'Layer');
             if (shapefileLayers[layerName]) {
-                if (checkbox.checked) { map.removeLayer(shapefileLayers[layerName]); checkbox.checked = false; }
-                else { map.addLayer(shapefileLayers[layerName]); checkbox.checked = true; }
+                if (checkbox.checked) { map.removeLayer(shapefileLayers[layerName]); checkbox.checked = false;
+                                                       if (checkbox.checked) { 
+                    map.removeLayer(shapefileLayers[layerName]); 
+                    checkbox.checked = false; 
+                    document.getElementById(`layer-card-${layerName}`)?.classList.remove('active');
+                } else { 
+                    map.addLayer(shapefileLayers[layerName]); 
+                    checkbox.checked = true; 
+                    document.getElementById(`layer-card-${layerName}`)?.classList.add('active');
+                }
                 updateStatisticsDisplay();
             }
         }
         
         function getLayerDisplayName(layerName) {
-            const names = { water:'Water Bodies', paddy:'Irrigated Land', marsh:'Freshwater Marshes', mangroves:'Mangroves',
-                sand:'Sand Shores', aquaculture:'Aquaculture Farms', coral:'Coral Reefs', streams:'Permanent Streams',
-                seasonal:'Seasonal Wetlands', protected:'Protected Areas' };
+            const names = { 
+                water:'Water Bodies', 
+                paddy:'Irrigated Land', 
+                marsh:'Freshwater Marshes', 
+                mangroves:'Mangroves',
+                sand:'Sand Shores', 
+                aquaculture:'Aquaculture Farms', 
+                coral:'Coral Reefs', 
+                streams:'Permanent Streams',
+                seasonal:'Seasonal Wetlands', 
+                protected:'Protected Areas' 
+            };
             return names[layerName] || layerName;
         }
         
@@ -2680,6 +2697,7 @@
                 if (shapefileLayers[layer] && !map.hasLayer(shapefileLayers[layer])) {
                     map.addLayer(shapefileLayers[layer]);
                     document.getElementById(layer + 'Layer').checked = true;
+                    document.getElementById(`layer-card-${layer}`)?.classList.add('active');
                 }
             });
             showNotification('All layers ON', 'info');
@@ -2691,6 +2709,7 @@
                 if (shapefileLayers[layer] && map.hasLayer(shapefileLayers[layer])) {
                     map.removeLayer(shapefileLayers[layer]);
                     document.getElementById(layer + 'Layer').checked = false;
+                    document.getElementById(`layer-card-${layer}`)?.classList.remove('active');
                 }
             });
             showNotification('All layers OFF', 'info');
@@ -2712,7 +2731,10 @@
         }
         
         function updateStatisticsDisplay() {
-            if (!currentDistrict) { document.getElementById('areaStats').innerHTML = '<span class="loading">Select a district to view statistics</span>'; return; }
+            if (!currentDistrict) { 
+                document.getElementById('areaStats').innerHTML = '<span class="loading">Select a district to view statistics</span>'; 
+                return; 
+            }
             const districtName = districtInfo[currentDistrict]?.name || currentDistrict;
             let activeLayers = 0, activeFeatures = 0, activeAreaSqm = 0;
             Object.keys(shapefileLayers).forEach(layer => {
@@ -2730,10 +2752,28 @@
                 </div>`;
         }
         
-        function recalculateStats() { if (currentDistrict) updateStatisticsDisplay(); else showNotification('Select a district first', 'warning'); }
-        function updateQuickStats() { document.getElementById('featureCount').textContent = '0'; document.getElementById('totalArea').textContent = '0 m²'; }
-        function changeBaseMap(mapType) { Object.keys(baseLayers).forEach(l => { if (map.hasLayer(baseLayers[l])) map.removeLayer(baseLayers[l]); }); if (baseLayers[mapType]) map.addLayer(baseLayers[mapType]); }
-        function exportData() { if (!currentDistrict) showNotification('Select district first', 'warning'); else showNotification('Export feature - would export data for ' + districtInfo[currentDistrict]?.name, 'info'); }
+        function recalculateStats() { 
+            if (currentDistrict) updateStatisticsDisplay(); 
+            else showNotification('Select a district first', 'warning'); 
+        }
+        
+        function updateQuickStats() { 
+            document.getElementById('featureCount').textContent = '0'; 
+            document.getElementById('totalArea').textContent = '0 m²'; 
+        }
+        
+        function changeBaseMap(mapType) { 
+            Object.keys(baseLayers).forEach(l => { 
+                if (map.hasLayer(baseLayers[l])) map.removeLayer(baseLayers[l]); 
+            }); 
+            if (baseLayers[mapType]) map.addLayer(baseLayers[mapType]); 
+        }
+        
+        function exportData() { 
+            if (!currentDistrict) showNotification('Select district first', 'warning'); 
+            else showNotification('Export feature - would export data for ' + districtInfo[currentDistrict]?.name, 'info'); 
+        }
+        
         function printMap() { window.print(); }
         function scrollToMap() { document.getElementById('map-section').scrollIntoView({ behavior: 'smooth' }); }
         

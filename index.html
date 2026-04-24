@@ -1965,7 +1965,7 @@
             }
         }
         
-        // ============ FIXED BUFFER ZONE ANALYSIS FUNCTION ============
+        // ============ UPDATED BUFFER ZONE ANALYSIS - NO FEATURE COUNTS ============
         async function analyzeBufferZone() {
             const lat = parseFloat(document.getElementById('latitude').value);
             const lng = parseFloat(document.getElementById('longitude').value);
@@ -2004,12 +2004,10 @@
             }).addTo(map);
             map.fitBounds(currentBufferCircle.getBounds(), { padding: [30, 30] });
             
-            // Create buffer polygon for intersection using Turf.js
             const bufferCenter = [lng, lat];
             const bufferPolygon = turf.circle(bufferCenter, bufferMeters, { steps: 128, units: 'meters' });
             
             const analysisResults = {};
-            let totalFeatures = 0;
             let totalAreaSqm = 0;
             
             const wetlandLayers = ['water', 'paddy', 'marsh', 'mangroves', 'sand', 'aquaculture', 'coral', 'streams', 'seasonal', 'protected'];
@@ -2017,7 +2015,6 @@
             for (const layer of wetlandLayers) {
                 if (shapefileLayers[layer] && map.hasLayer(shapefileLayers[layer])) {
                     let layerArea = 0;
-                    let layerCount = 0;
                     
                     shapefileLayers[layer].eachLayer(function(featureLayer) {
                         if (featureLayer.feature && featureLayer.feature.geometry) {
@@ -2029,11 +2026,9 @@
                                     const intersectionArea = turf.area(intersection);
                                     if (intersectionArea > 0.1) {
                                         layerArea += intersectionArea;
-                                        layerCount++;
                                     }
                                 }
                             } catch(e) {
-                                // If intersection fails, check if feature is completely within buffer using centroid
                                 try {
                                     const centroid = turf.centroid(featureGeoJSON);
                                     const isWithin = turf.booleanPointInPolygon(centroid, bufferPolygon);
@@ -2047,7 +2042,6 @@
                                         if (area === 0) area = turf.area(featureGeoJSON);
                                         if (area > 0) {
                                             layerArea += area;
-                                            layerCount++;
                                         }
                                     }
                                 } catch(e2) {}
@@ -2055,30 +2049,28 @@
                         }
                     });
                     
-                    if (layerCount > 0) {
+                    if (layerArea > 0) {
                         analysisResults[layer] = {
                             displayName: getLayerDisplayName(layer),
-                            featureCount: layerCount,
                             totalAreaSqm: layerArea,
                             color: layerColors[layer]
                         };
-                        totalFeatures += layerCount;
                         totalAreaSqm += layerArea;
                     }
                 }
             }
             
-            displayBufferResults(analysisResults, lat, lng, bufferKm, totalFeatures, totalAreaSqm);
-            showNotification(`Analysis complete! ${totalFeatures} wetland features, ${formatAreaFromSqm(totalAreaSqm)} INSIDE buffer`, 'success');
+            displayBufferResults(analysisResults, lat, lng, bufferKm, totalAreaSqm);
+            showNotification(`Analysis complete! Total area inside buffer: ${formatAreaFromSqm(totalAreaSqm)}`, 'success');
         }
         
-        function displayBufferResults(results, lat, lng, bufferKm, totalFeatures, totalAreaSqm) {
+        function displayBufferResults(results, lat, lng, bufferKm, totalAreaSqm) {
             const resultsDiv = document.getElementById('bufferResults');
             
             let html = `<div class="result-section">
                 <div class="result-title">📍 Location: ${lat.toFixed(4)}, ${lng.toFixed(4)}</div>
                 <div class="result-title">🔄 Buffer Radius: ${bufferKm} km</div>
-                <div class="result-title">📏 Total Area INSIDE Buffer: ${formatAreaFromSqm(totalAreaSqm)}</div>
+                <div class="result-title">📏 Total Wetland Area INSIDE Buffer: ${formatAreaFromSqm(totalAreaSqm)}</div>
                 <div class="result-title" style="color: #2ECC71; font-size: 0.7rem;">✓ Only area within the buffer zone is counted</div>
             </div>`;
             
@@ -2089,7 +2081,7 @@
                     const colorRgb = colorMatch ? `rgb(${colorMatch[1]}, ${colorMatch[2]}, ${colorMatch[3]})` : '#666';
                     html += `<div class="result-item">
                         <span class="result-label"><span style="display:inline-block; width:12px; height:12px; background:${colorRgb}; border-radius:2px; margin-right:6px;"></span> ${result.displayName}:</span>
-                        <span class="result-value">${result.featureCount} features (${formatAreaFromSqm(result.totalAreaSqm)})</span>
+                        <span class="result-value">${formatAreaFromSqm(result.totalAreaSqm)}</span>
                     </div>`;
                 }
                 html += `</div><div class="result-section"><div class="result-title">📈 Area Distribution (inside buffer):</div>`;

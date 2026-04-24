@@ -4,871 +4,2756 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>National Wetland Inventory of Sri Lanka</title>
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
-    <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
-    <style>
-        :root {
-            --iwmi-dark-blue: #28537D;
-            --iwmi-light-blue: #5088C6;
-            --iwmi-sky-blue: #46BBD4;
-            --iwmi-teal: #0297A6;
-            --iwmi-green: #22AD7A;
-            --iwmi-orange: #E86933;
-            --iwmi-yellow: #DD9103;
-            --iwmi-red: #DC3545;
-            --iwmi-coral: #FF6B6B;
-            --iwmi-stream: #4A90E2;
-            --iwmi-seasonal: #9B59B6;
-            --iwmi-protected: #2ECC71;
-            --iwmi-light-grey: #E8E7E7;
-            --iwmi-white: #FFFFFF;
-            --iwmi-text-dark: #333333;
-            --iwmi-text-light: #666666;
-            --iwmi-background: #F8F9FA;
-            --iwmi-border: #E0E7EE;
+   <style>
+    /* IWMI Brand Colors from https://branding.iwmi.org/our-colours/ */
+    :root {
+        --iwmi-dark-blue: #28537D;      /* Dark Blue */
+        --iwmi-light-blue: #5088C6;     /* Light Blue */
+        --iwmi-sky-blue: #46BBD4;       /* Sky Blue */
+        --iwmi-teal: #0297A6;           /* Teal */
+        --iwmi-green: #22AD7A;          /* Green */
+        --iwmi-orange: #E86933;         /* Orange */
+        --iwmi-yellow: #DD9103;         /* Yellow */
+        --iwmi-mangrove: #8B4513;       /* Brown for Mangroves */
+        --iwmi-red: #DC3545;            /* Red for Sand Shores */
+        --iwmi-aqua-yellow: #FFC107;    /* Yellow for Aquaculture Farms */
+        --iwmi-coral: #FF6B6B;           /* Coral for Coral Reefs */
+        --iwmi-stream: #4A90E2;          /* Blue for Permanent Streams */
+        --iwmi-seasonal: #9B59B6;        /* Purple for Seasonal Wetlands */
+        --iwmi-protected: #2ECC71;       /* Green for Protected Areas */
+        --iwmi-light-grey: #E8E7E7;     /* Light Grey */
+        --iwmi-white: #FFFFFF;
+        --iwmi-text-dark: #333333;
+        --iwmi-text-light: #666666;
+        --iwmi-background: #F8F9FA;
+        --iwmi-border: #E0E7EE;
+        
+        /* Updated Layer Colors */
+        --color-water: #5088C6;        /* Blue */
+        --color-paddy: #DD9103;        /* Yellow */
+        --color-marsh: #46BBD4;        /* Cyan */
+        --color-mangroves: #8B4513;    /* Brown */
+        --color-sand: #DC3545;         /* Red for Sand Shores */
+        --color-aquaculture: #FFC107;  /* Yellow for Aquaculture Farms */
+        --color-coral: #FF6B6B;        /* Coral for Coral Reefs */
+        --color-stream: #4A90E2;        /* Blue for Permanent Streams */
+        --color-seasonal: #9B59B6;      /* Purple for Seasonal Wetlands */
+        --color-protected: #2ECC71;     /* Green for Protected Areas */
+    }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        margin: 0;
+        padding: 0;
+        color: var(--iwmi-text-dark);
+        background: var(--iwmi-background);
+        -webkit-font-smoothing: antialiased;
+    }
+    
+    /* Navigation Bar - IWMI Dark Blue */
+    nav {
+        background: var(--iwmi-dark-blue);
+        padding: 0.8rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+    
+    .logo h2 {
+        color: var(--iwmi-white);
+        font-size: 1.4rem;
+        margin: 0;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .logo h2 i {
+        color: var(--iwmi-green);
+        font-size: 1.6rem;
+    }
+    
+    .nav-links {
+        display: flex;
+        list-style: none;
+        gap: 1.5rem;
+        margin: 0;
+        padding: 0;
+        align-items: center;
+    }
+    
+    .nav-links a {
+        color: var(--iwmi-white);
+        text-decoration: none;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        transition: all 0.3s;
+        font-size: 0.95rem;
+        opacity: 0.9;
+    }
+    
+    .nav-links a:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--iwmi-green);
+        opacity: 1;
+    }
+    
+    .nav-links a.active {
+        background: var(--iwmi-sky-blue);
+        color: var(--iwmi-white);
+        opacity: 1;
+    }
+    
+    /* Chatbot Button in Navigation */
+    .chatbot-btn {
+        background: var(--iwmi-green);
+        color: white;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        font-size: 0.95rem;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 8px rgba(34, 173, 122, 0.3);
+        text-decoration: none;
+    }
+    
+    .chatbot-btn:hover {
+        background: var(--iwmi-teal);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(2, 151, 166, 0.4);
+        color: white;
+    }
+    
+    /* Hero Section with Banner - IWMI Gradient Theme */
+    .hero {
+        position: relative;
+        height: 60vh;
+        min-height: 400px;
+        background: linear-gradient(135deg, var(--iwmi-dark-blue) 0%, var(--iwmi-light-blue) 50%, var(--iwmi-sky-blue) 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 0 2rem;
+        overflow: hidden;
+    }
+    
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('https://github.com/lakshithamadusanka555-png/WETLAND-INVENTORY/raw/main/images/banner.jpg');
+        background-size: cover;
+        background-position: center;
+        opacity: 0.3;
+        z-index: 1;
+    }
+    
+    .hero-content {
+        max-width: 800px;
+        animation: fadeInUp 1s ease-out;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .hero h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        color: white;
+        font-weight: 600;
+        line-height: 1.2;
+    }
+    
+    .hero p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+        color: rgba(255, 255, 255, 0.95);
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.6;
+    }
+    
+    .hero-btn {
+        background: var(--iwmi-green);
+        color: white;
+        border: none;
+        padding: 1rem 2.5rem;
+        font-size: 1.1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 12px rgba(34, 173, 122, 0.3);
+    }
+    
+    .hero-btn:hover {
+        background: var(--iwmi-teal);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(2, 151, 166, 0.4);
+    }
+    
+    /* Quick Stats - IWMI White Card with Blue Accent */
+    .quick-stats {
+        display: flex;
+        justify-content: center;
+        gap: 3rem;
+        background: var(--iwmi-white);
+        padding: 2rem;
+        margin: -40px auto 3rem auto;
+        max-width: 1000px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(40, 83, 125, 0.1);
+        position: relative;
+        z-index: 10;
+        border-top: 4px solid var(--iwmi-sky-blue);
+    }
+    
+    .stat-item {
+        text-align: center;
+    }
+    
+    .stat-number {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--iwmi-dark-blue);
+        margin-bottom: 0.5rem;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .stat-label {
+        color: var(--iwmi-text-light);
+        font-weight: 500;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    /* Map Section */
+    .map-section {
+        padding: 3rem 2rem;
+        background: linear-gradient(to bottom, var(--iwmi-background) 0%, #f0f4f8 100%);
+        min-height: 85vh;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .map-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+        flex-shrink: 0;
+    }
+    
+    .map-header h2 {
+        color: var(--iwmi-dark-blue);
+        font-size: 2rem;
+        margin-bottom: 0.8rem;
+        position: relative;
+        display: inline-block;
+        padding-bottom: 10px;
+        font-weight: 600;
+    }
+    
+    .map-header h2::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: var(--iwmi-green);
+    }
+    
+    .map-header p {
+        color: var(--iwmi-text-light);
+        max-width: 600px;
+        margin: 0 auto 2rem auto;
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+    
+    /* Enhanced Map Container - More map space */
+    .map-container {
+        max-width: 2000px;
+        width: 95%;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 20px;
+        background: var(--iwmi-white);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 15px 35px rgba(40, 83, 125, 0.1);
+        height: 80vh;
+        min-height: 700px;
+        flex-grow: 1;
+        border: 1px solid var(--iwmi-border);
+    }
+    
+    .map-sidebar {
+        background: var(--iwmi-white);
+        padding: 15px;
+        border-right: 1px solid var(--iwmi-border);
+        height: 100%;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        scrollbar-width: thin;
+        scrollbar-color: var(--iwmi-light-blue) var(--iwmi-light-grey);
+    }
+    
+    .map-sidebar::-webkit-scrollbar {
+        width: 5px;
+    }
+    
+    .map-sidebar::-webkit-scrollbar-track {
+        background: var(--iwmi-light-grey);
+    }
+    
+    .map-sidebar::-webkit-scrollbar-thumb {
+        background: var(--iwmi-light-blue);
+        border-radius: 10px;
+    }
+    
+    .map-content {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    
+    #map {
+        height: 100%;
+        width: 100%;
+        flex-grow: 1;
+        min-height: 600px;
+        border-radius: 0 8px 0 0;
+    }
+    
+    .map-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.8rem 1.2rem;
+        background: var(--iwmi-white);
+        border-top: 1px solid var(--iwmi-border);
+        flex-wrap: wrap;
+        gap: 10px;
+        flex-shrink: 0;
+        border-radius: 0 0 8px 0;
+    }
+    
+    .control-group {
+        display: flex;
+        gap: 0.6rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    
+    .map-btn {
+        background: var(--iwmi-light-blue);
+        color: var(--iwmi-white);
+        border: none;
+        padding: 0.5rem 0.8rem;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+    
+    .map-btn:hover {
+        background: var(--iwmi-dark-blue);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(40, 83, 125, 0.2);
+    }
+    
+    .map-btn.secondary {
+        background: var(--iwmi-green);
+    }
+    
+    .map-btn.secondary:hover {
+        background: var(--iwmi-teal);
+        box-shadow: 0 4px 12px rgba(2, 151, 166, 0.2);
+    }
+    
+    .map-btn.danger {
+        background: var(--iwmi-orange);
+    }
+    
+    .map-btn.danger:hover {
+        background: #D45A23;
+        box-shadow: 0 4px 12px rgba(232, 105, 51, 0.2);
+    }
+    
+    /* Coordinate Picker Panel */
+    .coord-picker-panel {
+        background: var(--iwmi-white);
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid var(--iwmi-border);
+        margin-bottom: 12px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    }
+    
+    .coord-header {
+        font-weight: 600;
+        color: var(--iwmi-dark-blue);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .coord-header i {
+        color: var(--iwmi-sky-blue);
+        font-size: 0.95rem;
+    }
+    
+    .pick-coord-btn {
+        width: 100%;
+        background: var(--iwmi-light-blue);
+        color: white;
+        border: none;
+        padding: 0.6rem;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.3s;
+        margin-bottom: 10px;
+    }
+    
+    .pick-coord-btn:hover {
+        background: var(--iwmi-dark-blue);
+        transform: translateY(-2px);
+    }
+    
+    .pick-coord-btn.active {
+        background: var(--iwmi-green);
+        box-shadow: 0 0 0 2px rgba(34, 173, 122, 0.3);
+    }
+    
+    .selected-coord {
+        background: rgba(232, 231, 231, 0.2);
+        padding: 8px;
+        border-radius: 5px;
+        margin-top: 8px;
+        border-left: 3px solid var(--iwmi-green);
+    }
+    
+    .coord-label {
+        font-size: 0.7rem;
+        color: var(--iwmi-text-light);
+        margin-bottom: 4px;
+    }
+    
+    .coord-value {
+        font-size: 0.8rem;
+        color: var(--iwmi-dark-blue);
+        font-weight: 600;
+        font-family: monospace;
+    }
+    
+    .use-coord-btn {
+        width: 100%;
+        background: var(--iwmi-green);
+        color: white;
+        border: none;
+        padding: 0.5rem;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-top: 8px;
+        transition: all 0.3s;
+    }
+    
+    .use-coord-btn:hover {
+        background: var(--iwmi-teal);
+        transform: translateY(-2px);
+    }
+    
+    /* Buffer Zone Analysis Panel */
+    .buffer-panel {
+        background: var(--iwmi-white);
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid var(--iwmi-border);
+        margin-bottom: 12px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    }
+    
+    .buffer-header {
+        font-weight: 600;
+        color: var(--iwmi-dark-blue);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .buffer-header i {
+        color: var(--iwmi-orange);
+        font-size: 0.95rem;
+    }
+    
+    .coordinate-group {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+    
+    .coordinate-input {
+        flex: 1;
+        padding: 0.5rem 0.6rem;
+        border: 1.5px solid var(--iwmi-light-blue);
+        border-radius: 5px;
+        background: var(--iwmi-white);
+        color: var(--iwmi-dark-blue);
+        font-size: 0.8rem;
+        transition: all 0.3s;
+    }
+    
+    .coordinate-input:focus {
+        outline: none;
+        border-color: var(--iwmi-dark-blue);
+        box-shadow: 0 0 0 2px rgba(40, 83, 125, 0.1);
+    }
+    
+    .buffer-input-group {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+        align-items: center;
+    }
+    
+    .buffer-input {
+        flex: 1;
+        padding: 0.5rem 0.6rem;
+        border: 1.5px solid var(--iwmi-light-blue);
+        border-radius: 5px;
+        background: var(--iwmi-white);
+        color: var(--iwmi-dark-blue);
+        font-size: 0.8rem;
+    }
+    
+    .buffer-unit {
+        font-size: 0.75rem;
+        color: var(--iwmi-text-light);
+        font-weight: 500;
+    }
+    
+    .analyze-btn {
+        width: 100%;
+        background: var(--iwmi-orange);
+        color: white;
+        border: none;
+        padding: 0.6rem;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.3s;
+        margin-bottom: 10px;
+    }
+    
+    .analyze-btn:hover {
+        background: #D45A23;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(232, 105, 51, 0.2);
+    }
+    
+    .clear-buffer-btn {
+        width: 100%;
+        background: var(--iwmi-light-grey);
+        color: var(--iwmi-dark-blue);
+        border: 1px solid var(--iwmi-border);
+        padding: 0.5rem;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        transition: all 0.3s;
+    }
+    
+    .clear-buffer-btn:hover {
+        background: var(--iwmi-border);
+    }
+    
+    .buffer-results {
+        margin-top: 10px;
+        max-height: 280px;
+        overflow-y: auto;
+        font-size: 0.75rem;
+        background: rgba(232, 231, 231, 0.2);
+        border-radius: 5px;
+        padding: 8px;
+    }
+    
+    .result-section {
+        margin-bottom: 8px;
+        border-bottom: 1px solid var(--iwmi-border);
+        padding-bottom: 6px;
+    }
+    
+    .result-title {
+        font-weight: 700;
+        color: var(--iwmi-dark-blue);
+        margin-bottom: 5px;
+        font-size: 0.8rem;
+    }
+    
+    .result-item {
+        display: flex;
+        justify-content: space-between;
+        margin: 3px 0;
+        padding: 2px 4px;
+    }
+    
+    .result-label {
+        color: var(--iwmi-text-light);
+    }
+    
+    .result-value {
+        color: var(--iwmi-dark-blue);
+        font-weight: 600;
+    }
+    
+    .result-total {
+        margin-top: 5px;
+        padding-top: 5px;
+        border-top: 2px solid var(--iwmi-sky-blue);
+        font-weight: 700;
+        color: var(--iwmi-green);
+    }
+    
+    /* Search Bar */
+    .search-panel {
+        margin-bottom: 12px;
+        flex-shrink: 0;
+        background: var(--iwmi-white);
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid var(--iwmi-border);
+        box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    }
+    
+    .search-header {
+        font-weight: 600;
+        color: var(--iwmi-dark-blue);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .search-header i {
+        color: var(--iwmi-sky-blue);
+        font-size: 0.95rem;
+    }
+    
+    .search-input-group {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 8px;
+    }
+    
+    .search-input {
+        flex: 1;
+        padding: 0.5rem 0.6rem;
+        border: 1.5px solid var(--iwmi-light-blue);
+        border-radius: 5px;
+        background: var(--iwmi-white);
+        color: var(--iwmi-dark-blue);
+        font-size: 0.8rem;
+        transition: all 0.3s;
+    }
+    
+    .search-input:focus {
+        outline: none;
+        border-color: var(--iwmi-dark-blue);
+        box-shadow: 0 0 0 2px rgba(40, 83, 125, 0.1);
+    }
+    
+    .search-btn {
+        background: var(--iwmi-green);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.3s;
+    }
+    
+    .search-btn:hover {
+        background: var(--iwmi-teal);
+        transform: translateY(-2px);
+    }
+    
+    .search-results {
+        font-size: 0.75rem;
+        color: var(--iwmi-text-light);
+        max-height: 100px;
+        overflow-y: auto;
+        background: rgba(232, 231, 231, 0.2);
+        border-radius: 4px;
+        padding: 4px;
+    }
+    
+    .search-result-item {
+        padding: 4px 6px;
+        cursor: pointer;
+        border-radius: 3px;
+        transition: all 0.2s;
+    }
+    
+    .search-result-item:hover {
+        background: rgba(70, 187, 212, 0.1);
+        color: var(--iwmi-dark-blue);
+    }
+    
+    /* Drawing Tools Panel */
+    .drawing-panel {
+        background: var(--iwmi-white);
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid var(--iwmi-border);
+        margin-top: 10px;
+        flex-shrink: 0;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    }
+    
+    .drawing-tools {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 4px;
+        margin-top: 8px;
+    }
+    
+    .draw-btn {
+        background: var(--iwmi-light-grey);
+        color: var(--iwmi-dark-blue);
+        border: 1px solid var(--iwmi-border);
+        padding: 0.4rem 0;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.7rem;
+        font-weight: 600;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        transition: all 0.2s;
+    }
+    
+    .draw-btn i {
+        font-size: 0.9rem;
+        color: var(--iwmi-light-blue);
+    }
+    
+    .draw-btn:hover {
+        background: var(--iwmi-light-blue);
+        color: white;
+        border-color: var(--iwmi-dark-blue);
+    }
+    
+    .draw-btn:hover i {
+        color: white;
+    }
+    
+    .draw-btn.active {
+        background: var(--iwmi-green);
+        color: white;
+        border-color: var(--iwmi-dark-blue);
+    }
+    
+    .draw-btn.active i {
+        color: white;
+    }
+    
+    /* Measurements Display */
+    .measurement-display {
+        margin-top: 8px;
+        font-size: 0.75rem;
+        background: rgba(232, 231, 231, 0.2);
+        padding: 6px;
+        border-radius: 4px;
+        border-left: 2px solid var(--iwmi-orange);
+    }
+    
+    .measurement-item {
+        display: flex;
+        justify-content: space-between;
+        margin: 2px 0;
+    }
+    
+    .measurement-label {
+        color: var(--iwmi-text-light);
+        font-weight: 500;
+    }
+    
+    .measurement-value {
+        color: var(--iwmi-dark-blue);
+        font-weight: 600;
+    }
+    
+    /* District Selection Panel */
+    .district-panel {
+        margin-bottom: 12px;
+        flex-shrink: 0;
+        background: var(--iwmi-white);
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid var(--iwmi-border);
+        box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    }
+    
+    .district-header {
+        font-weight: 600;
+        color: var(--iwmi-dark-blue);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .district-header i {
+        color: var(--iwmi-sky-blue);
+        font-size: 0.95rem;
+    }
+    
+    .district-select {
+        width: 100%;
+        padding: 0.5rem 0.6rem;
+        border: 1.5px solid var(--iwmi-light-blue);
+        border-radius: 5px;
+        background: var(--iwmi-white);
+        color: var(--iwmi-dark-blue);
+        font-size: 0.8rem;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s;
+        margin-bottom: 8px;
+    }
+    
+    .district-select:focus {
+        outline: none;
+        border-color: var(--iwmi-dark-blue);
+        box-shadow: 0 0 0 2px rgba(40, 83, 125, 0.1);
+    }
+    
+    .district-info {
+        font-size: 0.75rem;
+        color: var(--iwmi-text-light);
+        line-height: 1.4;
+        background: rgba(232, 231, 231, 0.2);
+        padding: 8px;
+        border-radius: 5px;
+        margin-top: 6px;
+        border-left: 2px solid var(--iwmi-sky-blue);
+    }
+    
+    /* Layer Control Panel */
+    .layer-control-panel {
+        margin-bottom: 12px;
+        flex-shrink: 0;
+        background: var(--iwmi-white);
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid var(--iwmi-border);
+        box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+        display: none;
+    }
+    
+    .layer-control-panel.active {
+        display: block;
+        animation: fadeIn 0.3s ease-out;
+    }
+    
+    .panel-title {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--iwmi-dark-blue);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .panel-title i {
+        color: var(--iwmi-sky-blue);
+        font-size: 0.95rem;
+    }
+    
+    /* Vertical Layer List */
+    .layer-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 5px;
+    }
+    
+    /* Layer Card */
+    .layer-card {
+        display: flex;
+        flex-direction: column;
+        background: rgba(232, 231, 231, 0.15);
+        border-radius: 6px;
+        border: 1px solid var(--iwmi-border);
+        padding: 8px;
+        transition: all 0.2s;
+    }
+    
+    .layer-card:hover {
+        border-color: var(--iwmi-sky-blue);
+        background: rgba(70, 187, 212, 0.03);
+    }
+    
+    .layer-card.active {
+        border-color: var(--iwmi-light-blue);
+        background: rgba(70, 187, 212, 0.06);
+        border-left: 3px solid var(--iwmi-green);
+    }
+    
+    /* Top row of layer card */
+    .layer-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+        cursor: pointer;
+    }
+    
+    .layer-checkbox {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+        accent-color: var(--iwmi-green);
+        margin: 0;
+    }
+    
+    .layer-label {
+        flex-grow: 1;
+        font-size: 0.8rem;
+        color: var(--iwmi-text-dark);
+        font-weight: 600;
+    }
+    
+    .layer-color-swatch {
+        width: 16px;
+        height: 16px;
+        border-radius: 3px;
+        border: 1.5px solid var(--iwmi-white);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        flex-shrink: 0;
+    }
+    
+    /* Opacity control row */
+    .opacity-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-left: 24px;
+    }
+    
+    .opacity-icon {
+        color: var(--iwmi-text-light);
+        font-size: 0.7rem;
+        width: 14px;
+        text-align: center;
+    }
+    
+    .layer-opacity-slider {
+        flex-grow: 1;
+        height: 4px;
+        border-radius: 2px;
+        accent-color: var(--iwmi-light-blue);
+        cursor: pointer;
+        background: var(--iwmi-light-grey);
+    }
+    
+    .opacity-percent {
+        font-size: 0.65rem;
+        color: var(--iwmi-dark-blue);
+        font-weight: 600;
+        min-width: 35px;
+        text-align: right;
+    }
+    
+    /* Protected Area Card */
+    .protected-card {
+        border-left: 3px solid var(--iwmi-protected);
+        background: rgba(46, 204, 113, 0.05);
+    }
+    
+    .protected-badge {
+        font-size: 0.65rem;
+        background: var(--iwmi-protected);
+        color: white;
+        padding: 2px 6px;
+        border-radius: 10px;
+        margin-left: 8px;
+        font-weight: 600;
+    }
+    
+    /* Legend */
+    .legend {
+        background: var(--iwmi-white);
+        padding: 12px;
+        border-radius: 6px;
+        margin-top: 10px;
+        border: 1px solid var(--iwmi-border);
+        flex-shrink: 0;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    }
+    
+    .legend-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--iwmi-dark-blue);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .legend-title i {
+        color: var(--iwmi-green);
+        font-size: 0.85rem;
+    }
+    
+    .legend-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+    
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 6px;
+        background: rgba(232, 231, 231, 0.2);
+        border-radius: 4px;
+    }
+    
+    .legend-color {
+        width: 14px;
+        height: 14px;
+        border-radius: 3px;
+        border: 1.5px solid var(--iwmi-white);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    .legend-label {
+        font-size: 0.75rem;
+        color: var(--iwmi-text-dark);
+        font-weight: 500;
+    }
+    
+    /* Statistics Panel */
+    .stats-panel {
+        background: var(--iwmi-white);
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid var(--iwmi-border);
+        margin-top: 10px;
+        flex-shrink: 0;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    }
+    
+    .stats-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+    
+    .stat-display {
+        margin-top: 6px;
+        font-size: 0.75rem;
+        color: var(--iwmi-text-dark);
+        line-height: 1.4;
+        background: rgba(232, 231, 231, 0.2);
+        padding: 10px;
+        border-radius: 5px;
+        min-height: 40px;
+        border-left: 2px solid var(--iwmi-green);
+    }
+    
+    /* Loading and Status */
+    .loading {
+        color: var(--iwmi-light-blue);
+        font-style: italic;
+        font-size: 0.75rem;
+    }
+    
+    .success {
+        color: var(--iwmi-green);
+    }
+    
+    .error {
+        color: var(--iwmi-orange);
+    }
+    
+    /* Chatbot Button in Map Controls */
+    .chatbot-map-btn {
+        background: var(--iwmi-teal);
+        color: var(--iwmi-white);
+        border: none;
+        padding: 0.5rem 0.8rem;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+    
+    .chatbot-map-btn:hover {
+        background: var(--iwmi-sky-blue);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(2, 151, 166, 0.2);
+    }
+    
+    /* Dropdown Styles */
+    .filter-dropdown {
+        padding: 0.5rem 0.6rem;
+        border: 1px solid var(--iwmi-light-blue);
+        border-radius: 4px;
+        background: var(--iwmi-white);
+        color: var(--iwmi-dark-blue);
+        font-size: 0.75rem;
+        cursor: pointer;
+        font-weight: 500;
+        min-width: 100px;
+        transition: all 0.3s;
+    }
+    
+    .filter-dropdown:focus {
+        outline: none;
+        border-color: var(--iwmi-dark-blue);
+        box-shadow: 0 0 0 2px rgba(40, 83, 125, 0.1);
+    }
+    
+    /* Coordinate Info Display on Map */
+    .coord-info {
+        background: var(--iwmi-white);
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--iwmi-dark-blue);
+        border-left: 3px solid var(--iwmi-green);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
         }
-        
-        * { box-sizing: border-box; }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            margin: 0;
-            padding: 0;
-            color: var(--iwmi-text-dark);
-            background: var(--iwmi-background);
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
-        
-        nav {
-            background: var(--iwmi-dark-blue);
-            padding: 0.8rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-5px);
         }
-        
-        .logo h2 {
-            color: white;
-            font-size: 1.3rem;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
-        
-        .logo h2 i { color: var(--iwmi-green); }
-        
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 1rem;
-            margin: 0;
-            padding: 0;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            transition: 0.3s;
-        }
-        
-        .nav-links a:hover, .nav-links a.active {
-            background: var(--iwmi-sky-blue);
-            color: white;
-        }
-        
-        .chatbot-btn {
-            background: var(--iwmi-green);
-            color: white;
-            padding: 0.5rem 1.2rem;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        
-        .chatbot-btn:hover {
-            background: var(--iwmi-teal);
-            transform: translateY(-2px);
-        }
-        
-        .hero {
-            position: relative;
-            height: 50vh;
-            min-height: 350px;
-            background: linear-gradient(135deg, var(--iwmi-dark-blue), var(--iwmi-sky-blue));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: white;
-        }
-        
-        .hero-content { max-width: 800px; z-index: 2; }
-        .hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
-        .hero p { font-size: 1.1rem; margin-bottom: 2rem; opacity: 0.9; }
-        
-        .hero-btn {
-            background: var(--iwmi-green);
-            color: white;
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 4px;
-            font-size: 1rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
-        }
-        
-        .quick-stats {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            background: white;
-            padding: 1.5rem;
-            margin: -30px auto 2rem auto;
-            max-width: 900px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            position: relative;
-            z-index: 10;
-            flex-wrap: wrap;
-        }
-        
-        .stat-item { text-align: center; }
-        .stat-number { font-size: 2rem; font-weight: 700; color: var(--iwmi-dark-blue); }
-        .stat-label { font-size: 0.8rem; color: var(--iwmi-text-light); text-transform: uppercase; }
-        
-        .map-section { padding: 2rem; }
-        .map-header { text-align: center; margin-bottom: 2rem; }
-        .map-header h2 { color: var(--iwmi-dark-blue); }
-        .map-header h2::after {
-            content: '';
-            display: block;
-            width: 60px;
-            height: 3px;
-            background: var(--iwmi-green);
-            margin: 0.5rem auto;
-        }
-        
+    }
+    
+    /* Notification Styles */
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 1200px) {
         .map-container {
-            display: grid;
-            grid-template-columns: 340px 1fr;
-            gap: 20px;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
             height: 75vh;
             min-height: 650px;
-            border: 1px solid var(--iwmi-border);
+            width: 98%;
+            grid-template-columns: 300px 1fr;
+        }
+    }
+    
+    @media (max-width: 1024px) {
+        .map-container {
+            grid-template-columns: 1fr;
+            grid-template-rows: auto 1fr;
+            height: auto;
+            min-height: 800px;
         }
         
         .map-sidebar {
-            background: white;
-            padding: 15px;
-            overflow-y: auto;
-            border-right: 1px solid var(--iwmi-border);
+            height: auto;
+            max-height: 550px;
+            border-right: none;
+            border-bottom: 1px solid var(--iwmi-border);
         }
         
-        .map-content { display: flex; flex-direction: column; height: 100%; }
-        #map { flex: 1; min-height: 500px; }
-        
-        .panel {
-            background: white;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid var(--iwmi-border);
-            margin-bottom: 12px;
+        #map {
+            min-height: 500px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .hero {
+            height: 50vh;
+            min-height: 350px;
+            padding: 0 1rem;
         }
         
-        .panel-title {
-            font-weight: 700;
-            color: var(--iwmi-dark-blue);
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.85rem;
-            text-transform: uppercase;
+        .hero h1 {
+            font-size: 2rem;
         }
         
-        .coord-input-group { display: flex; gap: 8px; margin-bottom: 10px; }
-        .coord-input, .buffer-input, .district-select, .search-input {
-            flex: 1;
-            padding: 8px;
-            border: 1.5px solid var(--iwmi-light-blue);
-            border-radius: 6px;
+        .hero p {
+            font-size: 1rem;
+        }
+        
+        .hero-btn {
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+        }
+        
+        .chatbot-btn {
+            padding: 0.5rem 0.8rem;
             font-size: 0.8rem;
         }
         
-        .btn {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.75rem;
-            transition: all 0.2s;
-        }
-        
-        .btn-primary { background: var(--iwmi-light-blue); color: white; }
-        .btn-primary:hover { background: var(--iwmi-dark-blue); transform: translateY(-2px); }
-        .btn-success { background: var(--iwmi-green); color: white; }
-        .btn-warning { background: var(--iwmi-orange); color: white; }
-        .btn-warning:hover { background: #D45A23; }
-        .btn-secondary { background: var(--iwmi-teal); color: white; }
-        
-        .full-width { width: 100%; margin-bottom: 8px; }
-        
-        .layer-list { display: flex; flex-direction: column; gap: 8px; }
-        .layer-card {
-            background: rgba(232,231,231,0.15);
-            border: 1px solid var(--iwmi-border);
-            border-radius: 6px;
-            padding: 8px;
-        }
-        .layer-card.active { border-left: 3px solid var(--iwmi-green); background: rgba(70,187,212,0.05); }
-        .layer-header { display: flex; align-items: center; gap: 8px; cursor: pointer; }
-        .layer-color { width: 16px; height: 16px; border-radius: 3px; border: 1px solid white; }
-        .layer-label { flex: 1; font-size: 0.8rem; font-weight: 600; }
-        .layer-opacity-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; padding-left: 24px; }
-        .opacity-slider { flex: 1; height: 4px; }
-        .opacity-value { font-size: 0.65rem; min-width: 35px; text-align: right; }
-        
-        .protected-badge {
-            background: var(--iwmi-protected);
-            color: white;
-            font-size: 0.6rem;
-            padding: 2px 6px;
-            border-radius: 10px;
-            margin-left: 8px;
-        }
-        
-        .legend-list { display: flex; flex-direction: column; gap: 5px; }
-        .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; }
-        .legend-color { width: 14px; height: 14px; border-radius: 3px; }
-        
-        .buffer-results {
-            margin-top: 10px;
-            max-height: 300px;
-            overflow-y: auto;
-            font-size: 0.75rem;
-            background: rgba(232,231,231,0.2);
-            border-radius: 6px;
-            padding: 8px;
-        }
-        .result-section { margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--iwmi-border); }
-        .result-title { font-weight: 700; color: var(--iwmi-dark-blue); margin-bottom: 4px; }
-        .result-item { display: flex; justify-content: space-between; margin: 3px 0; }
-        
-        .drawing-tools {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 5px;
-            margin-top: 8px;
-        }
-        .draw-btn {
-            background: var(--iwmi-light-grey);
-            border: 1px solid var(--iwmi-border);
-            padding: 6px 0;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.7rem;
-            display: flex;
+        .quick-stats {
             flex-direction: column;
-            align-items: center;
-        }
-        .draw-btn.active { background: var(--iwmi-green); color: white; }
-        
-        .measurement-display {
-            margin-top: 8px;
-            padding: 6px;
-            background: rgba(232,231,231,0.2);
-            border-left: 2px solid var(--iwmi-orange);
-            font-size: 0.7rem;
+            gap: 1.5rem;
+            margin-top: -30px;
+            padding: 1.5rem;
+            max-width: 90%;
         }
         
-        .stat-display {
-            margin-top: 8px;
-            padding: 10px;
-            background: rgba(232,231,231,0.2);
-            border-left: 2px solid var(--iwmi-green);
-            font-size: 0.75rem;
+        .stat-number {
+            font-size: 1.8rem;
+        }
+        
+        .map-section {
+            padding: 2rem 1rem;
+        }
+        
+        .map-container {
+            min-height: 700px;
+            width: 100%;
         }
         
         .map-controls {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px;
-            background: white;
-            border-top: 1px solid var(--iwmi-border);
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .control-group {
+            width: 100%;
+            justify-content: center;
             flex-wrap: wrap;
-            gap: 8px;
         }
         
-        .search-results {
-            margin-top: 8px;
-            max-height: 100px;
-            overflow-y: auto;
-            background: rgba(232,231,231,0.2);
-            border-radius: 4px;
-            padding: 4px;
-        }
-        .search-result-item {
-            padding: 4px 6px;
-            cursor: pointer;
-            border-radius: 3px;
-        }
-        .search-result-item:hover { background: rgba(70,187,212,0.1); }
-        
-        @media (max-width: 800px) {
-            .map-container { grid-template-columns: 1fr; height: auto; }
-            .map-sidebar { max-height: 450px; }
-            .quick-stats { gap: 1rem; }
+        nav {
+            flex-direction: column;
+            gap: 1rem;
+            padding: 1rem;
         }
         
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        .nav-links {
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.8rem;
         }
-    </style>
+        
+        .coordinate-group {
+            flex-direction: column;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .hero {
+            height: 40vh;
+            min-height: 300px;
+        }
+        
+        .hero h1 {
+            font-size: 1.6rem;
+        }
+        
+        .quick-stats {
+            padding: 1rem;
+        }
+    }
+</style>
 </head>
 <body>
+    <!-- Navigation Bar with Chatbot Button -->
     <nav>
-        <div class="logo"><h2><i class="fas fa-water"></i> National Wetland Inventory of Sri Lanka</h2></div>
+        <div class="logo">
+            <h2><i class="fas fa-water"></i> National Wetland Inventory of Sri Lanka</h2>
+        </div>
         <ul class="nav-links">
-            <li><a href="#" class="active">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">News</a></li>
-            <li><a href="#">Downloads</a></li>
-            <li><a href="https://chatbot-wetlandiwmi-85xo9ngytfknlrrck4n6ur.streamlit.app/" target="_blank" class="chatbot-btn"><i class="fas fa-robot"></i> Marsh Warden</a></li>
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="about.html">About Wetlands</a></li>
+            <li><a href="news.html">News</a></li>
+            <li><a href="downloads.html">Downloads</a></li>
+            <li>
+                <a href="https://chatbot-wetlandiwmi-85xo9ngytfknlrrck4n6ur.streamlit.app/" 
+                   target="_blank" 
+                   class="chatbot-btn">
+                    <i class="fas fa-robot"></i> Marsh Warden
+                </a>
+            </li>
         </ul>
     </nav>
 
+    <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
             <h1>Explore Sri Lanka's Wetlands</h1>
-            <p>Discover, understand, and help protect our nation's vital wetland ecosystems.</p>
-            <button class="hero-btn" onclick="scrollToMap()"><i class="fas fa-map-marked-alt"></i> View Wetland Data</button>
+            <p>Discover, understand, and help protect our nation's vital wetland ecosystems through interactive mapping with real shapefile data.</p>
+            <button class="hero-btn" onclick="scrollToMap()">
+                <i class="fas fa-map-marked-alt"></i> View Wetland Data
+            </button>
         </div>
     </section>
 
+    <!-- Quick Stats -->
     <section class="quick-stats">
-        <div class="stat-item"><div class="stat-number" id="totalArea">0 m²</div><div class="stat-label">Total Wetland Area</div></div>
-        <div class="stat-item"><div class="stat-number" id="featureCount">0</div><div class="stat-label">Wetland Features</div></div>
-        <div class="stat-item"><div class="stat-number">10</div><div class="stat-label">Data Layers</div></div>
-        <div class="stat-item"><div class="stat-number">25</div><div class="stat-label">Districts</div></div>
+        <div class="stat-item">
+            <div class="stat-number" id="totalArea">Loading...</div>
+            <div class="stat-label">Total Wetland Area</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" id="featureCount">0</div>
+            <div class="stat-label">Wetland Features</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">10</div>
+            <div class="stat-label">Data Layers</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">25</div>
+            <div class="stat-label">Districts Covered</div>
+        </div>
     </section>
 
+    <!-- Interactive Map Section -->
     <section class="map-section" id="map-section">
-        <div class="map-header"><h2>Sri Lanka Wetland Data Explorer</h2><p>Interactive map with district-based wetland layers</p></div>
+        <div class="map-header">
+            <h2>Sri Lanka Wetland Data Explorer</h2>
+            <p>Explore detailed wetland data overlaid on an interactive Sri Lankan map, showcasing spatial distributions and classifications</p>
+        </div>
+        
         <div class="map-container">
+            <!-- Sidebar -->
             <div class="map-sidebar">
-                <div class="panel">
-                    <div class="panel-title"><i class="fas fa-map-pin"></i> Pick Coordinates</div>
-                    <button class="btn btn-primary full-width" id="pickCoordBtn" onclick="toggleCoordinatePicker()"><i class="fas fa-mouse-pointer"></i> Pick from Map</button>
-                    <div id="selectedCoordDisplay" style="display:none; margin-top:8px; padding:8px; background:#f8f9fa; border-left:3px solid var(--iwmi-green);">
-                        <div style="font-size:0.7rem; color:#666;">Selected:</div>
-                        <div id="selectedLat" style="font-family:monospace; font-weight:600;">--</div>
-                        <div id="selectedLng" style="font-family:monospace; font-weight:600;">--</div>
-                        <button class="btn btn-success full-width" style="margin-top:6px;" onclick="useSelectedCoordinates()"><i class="fas fa-arrow-right"></i> Use for Buffer</button>
+                <!-- Coordinate Picker Panel -->
+                <div class="coord-picker-panel">
+                    <div class="coord-header">
+                        <i class="fas fa-map-pin"></i> Pick Coordinates
+                    </div>
+                    <button class="pick-coord-btn" id="pickCoordBtn" onclick="toggleCoordinatePicker()">
+                        <i class="fas fa-mouse-pointer"></i> Pick from Map
+                    </button>
+                    <div class="selected-coord" id="selectedCoordDisplay" style="display: none;">
+                        <div class="coord-label">Selected Coordinates:</div>
+                        <div class="coord-value" id="selectedLat">--</div>
+                        <div class="coord-value" id="selectedLng">--</div>
+                        <button class="use-coord-btn" onclick="useSelectedCoordinates()">
+                            <i class="fas fa-arrow-right"></i> Use for Buffer Analysis
+                        </button>
                     </div>
                 </div>
-
-                <div class="panel">
-                    <div class="panel-title"><i class="fas fa-draw-polygon"></i> Buffer Zone Analysis</div>
-                    <div class="coord-input-group"><input type="number" id="latitude" class="coord-input" placeholder="Latitude" step="any"><input type="number" id="longitude" class="coord-input" placeholder="Longitude" step="any"></div>
-                    <div style="display:flex; gap:8px; margin-bottom:10px;"><input type="number" id="bufferDistance" class="buffer-input" placeholder="Distance" value="1" step="0.1"><span style="font-size:0.75rem;">km</span></div>
-                    <button class="btn btn-warning full-width" onclick="analyzeBufferZone()"><i class="fas fa-chart-line"></i> Analyze Buffer Zone</button>
-                    <button class="btn full-width" style="background:#e9ecef; color:#333; margin-top:5px;" onclick="clearBufferAnalysis()"><i class="fas fa-trash-alt"></i> Clear Analysis</button>
-                    <div class="buffer-results" id="bufferResults"><div class="result-section"><div class="result-title">📌 Enter coordinates or pick from map</div><div style="color:#666; font-size:0.7rem;">Example: Colombo (6.9271, 79.8612)</div></div></div>
+                
+                <!-- Buffer Zone Analysis Panel -->
+                <div class="buffer-panel">
+                    <div class="buffer-header">
+                        <i class="fas fa-draw-polygon"></i> Buffer Zone Analysis
+                    </div>
+                    <div class="coordinate-group">
+                        <input type="number" class="coordinate-input" id="latitude" placeholder="Latitude (e.g., 6.9271)" step="any">
+                        <input type="number" class="coordinate-input" id="longitude" placeholder="Longitude (e.g., 79.8612)" step="any">
+                    </div>
+                    <div class="buffer-input-group">
+                        <input type="number" class="buffer-input" id="bufferDistance" placeholder="Buffer Distance" value="1" step="0.1" min="0.1">
+                        <span class="buffer-unit">km</span>
+                    </div>
+                    <button class="analyze-btn" onclick="analyzeBufferZone()">
+                        <i class="fas fa-chart-line"></i> Analyze Buffer Zone
+                    </button>
+                    <button class="clear-buffer-btn" onclick="clearBufferAnalysis()">
+                        <i class="fas fa-trash-alt"></i> Clear Analysis
+                    </button>
+                    <div class="buffer-results" id="bufferResults">
+                        <div class="result-section">
+                            <div class="result-title">📌 Enter coordinates or pick from map</div>
+                            <div style="color: #666; font-size: 0.7rem; padding: 5px;">Example: Colombo (6.9271, 79.8612)</div>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="panel">
-                    <div class="panel-title"><i class="fas fa-search"></i> Search Location</div>
-                    <div style="display:flex; gap:6px;"><input type="text" id="searchInput" class="search-input" placeholder="City or place name" onkeypress="handleSearchKeyPress(event)"><button class="btn btn-success" onclick="searchLocation()"><i class="fas fa-search"></i> Go</button></div>
-                    <div id="searchResults" class="search-results"></div>
+                
+                <!-- Search Panel -->
+                <div class="search-panel">
+                    <div class="search-header">
+                        <i class="fas fa-search"></i> Search Location
+                    </div>
+                    <div class="search-input-group">
+                        <input type="text" class="search-input" id="searchInput" placeholder="Enter city or place name..." onkeypress="handleSearchKeyPress(event)">
+                        <button class="search-btn" onclick="searchLocation()">
+                            <i class="fas fa-search"></i> Go
+                        </button>
+                    </div>
+                    <div class="search-results" id="searchResults"></div>
                 </div>
-
-                <div class="panel">
-                    <div class="panel-title"><i class="fas fa-map-marker-alt"></i> Select District</div>
-                    <select id="districtSelect" class="district-select" onchange="loadDistrictData(this.value)"><option value="">-- Select a District --</option><option value="colombo">Colombo</option><option value="gampaha">Gampaha</option><option value="kalutara">Kalutara</option><option value="kandy">Kandy</option><option value="galle">Galle</option><option value="jaffna">Jaffna</option><option value="trincomalee">Trincomalee</option><option value="anuradhapura">Anuradhapura</option><option value="polonnaruwa">Polonnaruwa</option></select>
-                    <div class="stat-display" id="districtInfo" style="margin-top:8px;"><strong>Select a district</strong> to load wetland data</div>
+                
+                <!-- District Selection Panel -->
+                <div class="district-panel">
+                    <div class="district-header">
+                        <i class="fas fa-map-marker-alt"></i> Select District
+                    </div>
+                    <select class="district-select" id="districtSelect" onchange="loadDistrictData(this.value)">
+                        <option value="">-- Select a District --</option>
+                        <option value="colombo">Colombo</option>
+                        <option value="gampaha">Gampaha</option>
+                        <option value="kalutara">Kalutara</option>
+                        <option value="kandy">Kandy</option>
+                        <option value="matale">Matale</option>
+                        <option value="nuwaraeliya">Nuwara Eliya</option>
+                        <option value="galle">Galle</option>
+                        <option value="matara">Matara</option>
+                        <option value="hambantota">Hambantota</option>
+                        <option value="jaffna">Jaffna</option>
+                        <option value="kilinochchi">Kilinochchi</option>
+                        <option value="mannar">Mannar</option>
+                        <option value="vavuniya">Vavuniya</option>
+                        <option value="mullaitivu">Mullaitivu</option>
+                        <option value="batticaloa">Batticaloa</option>
+                        <option value="ampara">Ampara</option>
+                        <option value="trincomalee">Trincomalee</option>
+                        <option value="kurunegala">Kurunegala</option>
+                        <option value="puttalam">Puttalam</option>
+                        <option value="anuradhapura">Anuradhapura</option>
+                        <option value="polonnaruwa">Polonnaruwa</option>
+                        <option value="badulla">Badulla</option>
+                        <option value="monaragala">Monaragala</option>
+                        <option value="ratnapura">Ratnapura</option>
+                        <option value="kegalle">Kegalle</option>
+                    </select>
+                    <div class="district-info" id="districtInfo">
+                        <p><strong>Please select a district</strong> to view wetland data. Wetland layers will appear after district selection.</p>
+                    </div>
                 </div>
-
-                <div class="panel" id="layerPanel" style="display:none;">
-                    <div class="panel-title"><i class="fas fa-layer-group"></i> Wetland Layers: <span id="currentDistrict">District</span></div>
-                    <div class="layer-list" id="layerList"></div>
+                
+                <!-- Layer Control Panel -->
+                <div class="layer-control-panel" id="layerPanel">
+                    <div class="panel-title">
+                        <i class="fas fa-layer-group"></i> Wetland Layers: <span id="currentDistrict" style="color: var(--iwmi-green);">District</span>
+                    </div>
+                    
+                    <!-- Vertical Layer List -->
+                    <div class="layer-list">
+                        <!-- Water Bodies -->
+                        <div class="layer-card" id="layer-card-water">
+                            <div class="layer-header" onclick="toggleLayer('water')">
+                                <input type="checkbox" class="layer-checkbox" id="waterLayer">
+                                <span class="layer-label">Water Bodies</span>
+                                <div class="layer-color-swatch" style="background-color: rgba(80, 136, 198, 0.7);"></div>
+                            </div>
+                            <div class="opacity-row">
+                                <i class="fas fa-adjust opacity-icon"></i>
+                                <input type="range" class="layer-opacity-slider" id="waterOpacity" min="0" max="100" value="70"
+                                       oninput="updateLayerOpacity('water', this.value)">
+                                <span class="opacity-percent" id="waterOpacityValue">70%</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Irrigated Land -->
+                        <div class="layer-card" id="layer-card-paddy">
+                            <div class="layer-header" onclick="toggleLayer('paddy')">
+                                <input type="checkbox" class="layer-checkbox" id="paddyLayer">
+                                <span class="layer-label">Irrigated Land</span>
+                                <div class="layer-color-swatch" style="background-color: rgba(221, 145, 3, 0.7);"></div>
+                            </div>
+                            <div class="opacity-row">
+                                <i class="fas fa-adjust opacity-icon"></i>
+                                <input type="range" class="layer-opacity-slider" id="paddyOpacity" min="0" max="100" value="70"
+                                       oninput="updateLayerOpacity('paddy', this.value)">
+                                <span class="opacity-percent" id="paddyOpacityValue">70%</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Freshwater Marshes -->
+                        <div class="layer-card" id="layer-card-marsh">
+                            <div class="layer-header" onclick="toggleLayer('marsh')">
+                                <input type="checkbox" class="layer-checkbox" id="marshLayer">
+                                <span class="layer-label">Freshwater Marshes</span>
+                                <div class="layer-color-swatch" style="background-color: rgba(70, 187, 212, 0.7);"></div>
+                            </div>
+                            <div class="opacity-row">
+                                <i class="fas fa-adjust opacity-icon"></i>
+                                <input type="range" class="layer-opacity-slider" id="marshOpacity" min="0" max="100" value="70"
+                                       oninput="updateLayerOpacity('marsh', this.value)">
+                                <span class="opacity-percent" id="marshOpacityValue">70%</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Mangroves -->
+                        <div class="layer-card" id="layer-card-mangroves">
+                            <div class="layer-header" onclick="toggleLayer('mangroves')">
+                                <input type="checkbox" class="layer-checkbox" id="mangrovesLayer">
+                                <span class="layer-label">Mangroves</span>
+                                <div class="layer-color-swatch" style="background-color: rgba(139, 69, 19, 0.7);"></div>
+                            </div>
+                            <div class="opacity-row">
+                                <i class="fas fa-adjust opacity-icon"></i>
+                                <input type="range" class="layer-opacity-slider" id="mangrovesOpacity" min="0" max="100" value="70"
+                                       oninput="updateLayerOpacity('mangroves', this.value)">
+                                <span class="opacity-percent" id="mangrovesOpacityValue">70%</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Sand Shores -->
+                        <div class="layer-card" id="layer-card-sand">
+                            <div class="layer-header" onclick="toggleLayer('sand')">
+                                <input type="checkbox" class="layer-checkbox" id="sandLayer">
+                                <span class="layer-label">Sand Shores</span>
+                                <div class="layer-color-swatch" style="background-color: rgba(220, 53, 69, 0.7);"></div>
+                            </div>
+                            <div class="opacity-row">
+                                <i class="fas fa-adjust opacity-icon"></i>
+                                <input type="range" class="layer-opacity-slider" id="sandOpacity" min="0" max="100" value="70"
+                                       oninput="updateLayerOpacity('sand', this.value)">
+                                <span class="opacity-percent" id="sandOpacityValue">70%</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Aquaculture Farms -->
+                        <div class="layer-card" id="layer-card-aquaculture">
+                            <div class="layer-header" onclick="toggleLayer('aquaculture')">
+                                <input type="checkbox" class="layer-checkbox" id="aquacultureLayer">
+                                <span class="layer-label">Aquaculture Farms</span>
+                                <div class="layer-color-swatch" style="background-color: rgba(255, 193, 7, 0.7);"></div>
+                            </div>
+                            <div class="opacity-row">
+                                <i class="fas fa-adjust opacity-icon"></i>
+                                <input type="range" class="layer-opacity-slider" id="aquacultureOpacity" min="0" max="100" value="70"
+                                       oninput="updateLayerOpacity('aquaculture', this.value)">
+                                <span class="opacity-percent" id="aquacultureOpacityValue">70%</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Coral Reefs -->
+                        <div class="layer-card" id="layer-card-coral">
+                            <div class="layer-header" onclick="toggleLayer('coral')">
+                                <input type="checkbox" class="layer-checkbox" id="coralLayer">
+                                <span class="layer-label">Coral Reefs</span>
+                                <div class="layer-color-swatch" style="background-color: rgba(255, 107, 107, 0.7);"></div>
+                            </div>
+                            <div class="opacity-row">
+                                <i class="fas fa-adjust opacity-icon"></i>
+                                <input type="range" class="layer-opacity-slider" id="coralOpacity" min="0" max="100" value="70"
+                                       oninput="updateLayerOpacity('coral', this.value)">
+                                <span class="opacity-percent" id="coralOpacityValue">70%</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Permanent Streams -->
+                        <div class="layer-card" id="layer-card-streams">
+                            <div class="layer-header" onclick="toggleLayer('streams')">
+                                <input type="checkbox" class="layer-checkbox" id="streamsLayer">
+                                <span class="layer-label">Permanent Streams</span>
+                                <div class="layer-color-swatch" style="background-color: rgba(74, 144, 226, 0.7);"></div>
+                            </div>
+                            <div class="opacity-row">
+                                <i class="fas fa-adjust opacity-icon"></i>
+                                <input type="range" class="layer-opacity-slider" id="streamsOpacity" min="0" max="100" value="70"
+                                       oninput="updateLayerOpacity('streams', this.value)">
+                                <span class="opacity-percent" id="streamsOpacityValue">70%</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Seasonal Wetlands -->
+                        <div class="layer-card" id="layer-card-seasonal">
+                            <div class="layer-header" onclick="toggleLayer('seasonal')">
+                                <input type="checkbox" class="layer-checkbox" id="seasonalLayer">
+                                <span class="layer-label">Seasonal Wetlands</span>
+                                <div class="layer-color-swatch" style="background-color: rgba(155, 89, 182, 0.7);"></div>
+                            </div>
+                            <div class="opacity-row">
+                                <i class="fas fa-adjust opacity-icon"></i>
+                                <input type="range" class="layer-opacity-slider" id="seasonalOpacity" min="0" max="100" value="70"
+                                       oninput="updateLayerOpacity('seasonal', this.value)">
+                                <span class="opacity-percent" id="seasonalOpacityValue">70%</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="layer-card" id="protectedCard" style="margin-bottom:12px;">
-                    <div class="layer-header" onclick="toggleProtectedAreas()"><input type="checkbox" id="protectedLayer"><span class="layer-label">Protected Areas <span class="protected-badge">Sri Lanka Wide</span></span><div class="layer-color" style="background:rgba(46,204,113,0.7);"></div></div>
-                    <div class="layer-opacity-row"><i class="fas fa-adjust"></i><input type="range" id="protectedOpacity" class="opacity-slider" min="0" max="100" value="70" oninput="updateLayerOpacity('protected', this.value)"><span id="protectedOpacityValue" class="opacity-value">70%</span></div>
+                
+                <!-- Protected Areas -->
+                <div class="layer-card protected-card" id="layer-card-protected" style="margin-bottom: 12px;">
+                    <div class="layer-header" onclick="toggleProtectedAreas()">
+                        <input type="checkbox" class="layer-checkbox" id="protectedLayer">
+                        <span class="layer-label">Protected Areas <span class="protected-badge">Sri Lanka Wide</span></span>
+                        <div class="layer-color-swatch" style="background-color: rgba(46, 204, 113, 0.7);"></div>
+                    </div>
+                    <div class="opacity-row">
+                        <i class="fas fa-adjust opacity-icon"></i>
+                        <input type="range" class="layer-opacity-slider" id="protectedOpacity" min="0" max="100" value="70"
+                               oninput="updateLayerOpacity('protected', this.value)">
+                        <span class="opacity-percent" id="protectedOpacityValue">70%</span>
+                    </div>
                 </div>
-
-                <div class="panel">
-                    <div class="panel-title"><i class="fas fa-draw-polygon"></i> Drawing Tools</div>
-                    <div class="drawing-tools"><button class="draw-btn" onclick="activateDrawTool('marker')" id="draw-marker-btn"><i class="fas fa-map-marker-alt"></i><span>Marker</span></button><button class="draw-btn" onclick="activateDrawTool('polyline')" id="draw-polyline-btn"><i class="fas fa-slash"></i><span>Line</span></button><button class="draw-btn" onclick="activateDrawTool('polygon')" id="draw-polygon-btn"><i class="fas fa-draw-polygon"></i><span>Polygon</span></button><button class="draw-btn" onclick="activateDrawTool('rectangle')" id="draw-rectangle-btn"><i class="fas fa-square"></i><span>Rect</span></button><button class="draw-btn" onclick="activateDrawTool('circle')" id="draw-circle-btn"><i class="fas fa-circle"></i><span>Circle</span></button><button class="draw-btn" onclick="editLayers()" id="edit-btn"><i class="fas fa-pencil-alt"></i><span>Edit</span></button><button class="draw-btn" onclick="deleteSelected()" id="delete-btn"><i class="fas fa-trash"></i><span>Delete</span></button><button class="draw-btn" onclick="clearAllDrawings()" id="clear-btn"><i class="fas fa-eraser"></i><span>Clear</span></button></div>
-                    <div class="measurement-display"><div style="display:flex; justify-content:space-between;"><span>Last Distance:</span><span id="lastDistance">--</span></div><div style="display:flex; justify-content:space-between;"><span>Last Area:</span><span id="lastArea">--</span></div></div>
+                
+                <!-- Drawing Tools Panel -->
+                <div class="drawing-panel">
+                    <div class="panel-title" style="margin-bottom: 8px; font-size: 0.8rem;">
+                        <i class="fas fa-draw-polygon"></i> Drawing Tools
+                    </div>
+                    
+                    <div class="drawing-tools">
+                        <button class="draw-btn" onclick="activateDrawTool('marker')" id="draw-marker-btn" title="Place Marker">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Marker</span>
+                        </button>
+                        <button class="draw-btn" onclick="activateDrawTool('polyline')" id="draw-polyline-btn" title="Draw Line">
+                            <i class="fas fa-slash"></i>
+                            <span>Line</span>
+                        </button>
+                        <button class="draw-btn" onclick="activateDrawTool('polygon')" id="draw-polygon-btn" title="Draw Polygon">
+                            <i class="fas fa-draw-polygon"></i>
+                            <span>Polygon</span>
+                        </button>
+                        <button class="draw-btn" onclick="activateDrawTool('rectangle')" id="draw-rectangle-btn" title="Draw Rectangle">
+                            <i class="fas fa-square"></i>
+                            <span>Rect</span>
+                        </button>
+                        <button class="draw-btn" onclick="activateDrawTool('circle')" id="draw-circle-btn" title="Draw Circle">
+                            <i class="fas fa-circle"></i>
+                            <span>Circle</span>
+                        </button>
+                        <button class="draw-btn" onclick="editLayers()" id="edit-btn" title="Edit Features">
+                            <i class="fas fa-pencil-alt"></i>
+                            <span>Edit</span>
+                        </button>
+                        <button class="draw-btn" onclick="deleteSelected()" id="delete-btn" title="Delete Selected">
+                            <i class="fas fa-trash"></i>
+                            <span>Delete</span>
+                        </button>
+                        <button class="draw-btn" onclick="clearAllDrawings()" id="clear-btn" title="Clear All">
+                            <i class="fas fa-eraser"></i>
+                            <span>Clear</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Measurements Display -->
+                    <div class="measurement-display" id="measurementDisplay">
+                        <div class="measurement-item">
+                            <span class="measurement-label">Last Distance:</span>
+                            <span class="measurement-value" id="lastDistance">--</span>
+                        </div>
+                        <div class="measurement-item">
+                            <span class="measurement-label">Last Area:</span>
+                            <span class="measurement-value" id="lastArea">--</span>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="panel">
-                    <div class="panel-title"><i class="fas fa-palette"></i> Legend</div>
-                    <div class="legend-list"><div class="legend-item"><div class="legend-color" style="background:#5088C6;"></div><span>Water Bodies</span></div><div class="legend-item"><div class="legend-color" style="background:#DD9103;"></div><span>Irrigated Land</span></div><div class="legend-item"><div class="legend-color" style="background:#46BBD4;"></div><span>Freshwater Marshes</span></div><div class="legend-item"><div class="legend-color" style="background:#8B4513;"></div><span>Mangroves</span></div><div class="legend-item"><div class="legend-color" style="background:#DC3545;"></div><span>Sand Shores</span></div><div class="legend-item"><div class="legend-color" style="background:#FFC107;"></div><span>Aquaculture Farms</span></div><div class="legend-item"><div class="legend-color" style="background:#FF6B6B;"></div><span>Coral Reefs</span></div><div class="legend-item"><div class="legend-color" style="background:#4A90E2;"></div><span>Permanent Streams</span></div><div class="legend-item"><div class="legend-color" style="background:#9B59B6;"></div><span>Seasonal Wetlands</span></div><div class="legend-item"><div class="legend-color" style="background:#2ECC71;"></div><span>Protected Areas</span></div></div>
+                
+                <!-- Legend -->
+                <div class="legend">
+                    <div class="legend-title">
+                        <i class="fas fa-palette"></i> Legend
+                    </div>
+                    <div class="legend-list">
+                        <div class="legend-item"><div class="legend-color" style="background-color: rgba(80, 136, 198, 0.7);"></div><span class="legend-label">Water Bodies</span></div>
+                        <div class="legend-item"><div class="legend-color" style="background-color: rgba(221, 145, 3, 0.7);"></div><span class="legend-label">Irrigated Land</span></div>
+                        <div class="legend-item"><div class="legend-color" style="background-color: rgba(70, 187, 212, 0.7);"></div><span class="legend-label">Freshwater Marshes</span></div>
+                        <div class="legend-item"><div class="legend-color" style="background-color: rgba(139, 69, 19, 0.7);"></div><span class="legend-label">Mangroves</span></div>
+                        <div class="legend-item"><div class="legend-color" style="background-color: rgba(220, 53, 69, 0.7);"></div><span class="legend-label">Sand Shores</span></div>
+                        <div class="legend-item"><div class="legend-color" style="background-color: rgba(255, 193, 7, 0.7);"></div><span class="legend-label">Aquaculture Farms</span></div>
+                        <div class="legend-item"><div class="legend-color" style="background-color: rgba(255, 107, 107, 0.7);"></div><span class="legend-label">Coral Reefs</span></div>
+                        <div class="legend-item"><div class="legend-color" style="background-color: rgba(74, 144, 226, 0.7);"></div><span class="legend-label">Permanent Streams</span></div>
+                        <div class="legend-item"><div class="legend-color" style="background-color: rgba(155, 89, 182, 0.7);"></div><span class="legend-label">Seasonal Wetlands</span></div>
+                        <div class="legend-item"><div class="legend-color" style="background-color: rgba(46, 204, 113, 0.7);"></div><span class="legend-label">Protected Areas</span></div>
+                    </div>
                 </div>
-
-                <div class="panel">
-                    <div class="panel-title"><i class="fas fa-chart-bar"></i> Statistics <button class="btn btn-primary" style="margin-left:auto; padding:2px 8px;" onclick="recalculateStats()"><i class="fas fa-sync-alt"></i></button></div>
-                    <div class="stat-display" id="areaStats">Select a district to view statistics</div>
+                
+                <!-- Statistics Panel -->
+                <div class="stats-panel">
+                    <div class="stats-header">
+                        <div class="panel-title" style="margin-bottom: 0; font-size: 0.8rem;">
+                            <i class="fas fa-chart-bar"></i> Statistics
+                        </div>
+                        <button class="map-btn secondary" onclick="recalculateStats()" style="padding: 0.2rem 0.5rem; font-size: 0.65rem;">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                    <div class="stat-display" id="areaStats">
+                        <span class="loading">Select a district to view statistics</span>
+                    </div>
                 </div>
             </div>
-
+            
+            <!-- Map Content -->
             <div class="map-content">
                 <div id="map"></div>
                 <div class="map-controls">
-                    <div><button class="btn btn-primary" onclick="showAllLayers()"><i class="fas fa-eye"></i> Show All</button><button class="btn btn-success" onclick="hideAllLayers()"><i class="fas fa-eye-slash"></i> Hide All</button><button class="btn" onclick="fitToAllData()"><i class="fas fa-search"></i> Fit to Data</button></div>
-                    <div><select id="baseMap" onchange="changeBaseMap(this.value)"><option value="osm">OpenStreetMap</option><option value="satellite">Satellite</option><option value="terrain">Terrain</option></select><button class="btn btn-secondary" onclick="window.open('https://chatbot-wetlandiwmi-85xo9ngytfknlrrck4n6ur.streamlit.app/', '_blank')"><i class="fas fa-robot"></i> Chat</button><button class="btn" onclick="printMap()"><i class="fas fa-print"></i> Print</button></div>
+                    <div class="control-group">
+                        <button class="map-btn" onclick="showAllLayers()"><i class="fas fa-eye"></i> Show All</button>
+                        <button class="map-btn secondary" onclick="hideAllLayers()"><i class="fas fa-eye-slash"></i> Hide All</button>
+                        <button class="map-btn" onclick="fitToAllData()"><i class="fas fa-search"></i> Fit to Data</button>
+                        <button class="chatbot-map-btn" onclick="window.open('https://chatbot-wetlandiwmi-85xo9ngytfknlrrck4n6ur.streamlit.app/', '_blank')"><i class="fas fa-robot"></i> Chat</button>
+                    </div>
+                    <div class="control-group">
+                        <select class="filter-dropdown" id="baseMap" onchange="changeBaseMap(this.value)">
+                            <option value="osm">OpenStreetMap</option>
+                            <option value="satellite">Satellite</option>
+                            <option value="terrain">Terrain</option>
+                            <option value="topo">Topographic</option>
+                        </select>
+                        <button class="map-btn" onclick="exportData()"><i class="fas fa-download"></i> Export</button>
+                        <button class="map-btn secondary" onclick="printMap()"><i class="fas fa-print"></i> Print</button>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <footer style="background:var(--iwmi-dark-blue); color:white; text-align:center; padding:1.5rem; margin-top:2rem;"><p>&copy; National Wetland Inventory of Sri Lanka 2026 | IWMI Project</p></footer>
-
+    <!-- JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.js"></script>
     <script>
-        let map, shapefileLayers = {}, currentDistrict = null, currentBufferCircle = null, currentBufferMarker = null;
-        let isPickingCoordinates = false, tempPickMarker = null, selectedLat = null, selectedLng = null;
-        let drawnItems = new L.FeatureGroup(), drawControl = null;
-        let lastDistance = 0, lastArea = 0;
+        // Initialize map and layers
+        let map;
+        let shapefileLayers = {
+            water: null, paddy: null, marsh: null, mangroves: null,
+            sand: null, aquaculture: null, coral: null, streams: null,
+            seasonal: null, protected: null
+        };
         
-        const layerColors = { water:'#5088C6', paddy:'#DD9103', marsh:'#46BBD4', mangroves:'#8B4513', sand:'#DC3545', aquaculture:'#FFC107', coral:'#FF6B6B', streams:'#4A90E2', seasonal:'#9B59B6', protected:'#2ECC71' };
-        const layerNames = { water:'Water Bodies', paddy:'Irrigated Land', marsh:'Freshwater Marshes', mangroves:'Mangroves', sand:'Sand Shores', aquaculture:'Aquaculture Farms', coral:'Coral Reefs', streams:'Permanent Streams', seasonal:'Seasonal Wetlands', protected:'Protected Areas' };
-        let layerStats = {};
+        let currentDistrict = null;
+        let protectedAreasLoaded = false;
+        let currentBufferCircle = null;
+        let currentBufferMarker = null;
+        let isPickingCoordinates = false;
+        let tempPickMarker = null;
+        let selectedLat = null;
+        let selectedLng = null;
         
-        const districtCoords = { colombo:[6.9271,79.8612], gampaha:[7.0840,80.0098], kalutara:[6.5894,80.0629], kandy:[7.2906,80.6337], galle:[6.0535,80.2210], jaffna:[9.6615,80.0255], trincomalee:[8.5874,81.2152], anuradhapura:[8.3114,80.4037], polonnaruwa:[7.9320,81.0081] };
-        const locations = [{name:"Colombo",coords:[6.9271,79.8612],zoom:12},{name:"Kandy",coords:[7.2906,80.6337],zoom:13},{name:"Galle",coords:[6.0535,80.2210],zoom:13},{name:"Jaffna",coords:[9.6615,80.0255],zoom:12},{name:"Trincomalee",coords:[8.5874,81.2152],zoom:12},{name:"Sigiriya",coords:[7.9570,80.7603],zoom:15}];
+        // Drawing and measurement variables
+        let drawnItems = new L.FeatureGroup();
+        let drawControl = null;
+        let currentDrawTool = null;
+        let lastDistance = 0;
+        let lastArea = 0;
+        let markers = [];
         
-        function formatArea(areaSqm) {
-            if (areaSqm >= 1e6) return (areaSqm/1e6).toFixed(2)+' km²';
-            if (areaSqm >= 1e4) return (areaSqm/1e4).toFixed(2)+' ha';
-            if (areaSqm >= 1) return areaSqm.toFixed(2)+' m²';
-            return '0 m²';
-        }
+        // Layer colors
+        const layerColors = {
+            water: 'rgba(80, 136, 198, 0.7)',
+            paddy: 'rgba(221, 145, 3, 0.7)',
+            marsh: 'rgba(70, 187, 212, 0.7)',
+            mangroves: 'rgba(139, 69, 19, 0.7)',
+            sand: 'rgba(220, 53, 69, 0.7)',
+            aquaculture: 'rgba(255, 193, 7, 0.7)',
+            coral: 'rgba(255, 107, 107, 0.7)',
+            streams: 'rgba(74, 144, 226, 0.7)',
+            seasonal: 'rgba(155, 89, 182, 0.7)',
+            protected: 'rgba(46, 204, 113, 0.7)'
+        };
         
-        function getFeatureArea(feature) {
-            if (!feature?.properties) return 0;
-            return feature.properties.area_sqm || feature.properties.area_m2 || feature.properties.area || 0;
-        }
+        // Layer styles
+        let layerStyles = {
+            water: { fillColor: layerColors.water, weight: 1.5, opacity: 0.7, color: 'rgba(80, 136, 198, 1)', fillOpacity: 0.7 },
+            paddy: { fillColor: layerColors.paddy, weight: 1.5, opacity: 0.7, color: 'rgba(221, 145, 3, 1)', fillOpacity: 0.7 },
+            marsh: { fillColor: layerColors.marsh, weight: 1.5, opacity: 0.7, color: 'rgba(70, 187, 212, 1)', fillOpacity: 0.7, dashArray: '4, 4' },
+            mangroves: { fillColor: layerColors.mangroves, weight: 1.5, opacity: 0.7, color: 'rgba(139, 69, 19, 1)', fillOpacity: 0.7 },
+            sand: { fillColor: layerColors.sand, weight: 1.5, opacity: 0.7, color: 'rgba(220, 53, 69, 1)', fillOpacity: 0.7, dashArray: '6, 3' },
+            aquaculture: { fillColor: layerColors.aquaculture, weight: 1.5, opacity: 0.7, color: 'rgba(255, 193, 7, 1)', fillOpacity: 0.7, dashArray: '2, 2' },
+            coral: { fillColor: layerColors.coral, weight: 1.5, opacity: 0.7, color: 'rgba(255, 107, 107, 1)', fillOpacity: 0.7, dashArray: '8, 4' },
+            streams: { fillColor: layerColors.streams, weight: 2, opacity: 0.8, color: 'rgba(74, 144, 226, 1)', fillOpacity: 0.6 },
+            seasonal: { fillColor: layerColors.seasonal, weight: 1.5, opacity: 0.7, color: 'rgba(155, 89, 182, 1)', fillOpacity: 0.7, dashArray: '5, 3' },
+            protected: { fillColor: layerColors.protected, weight: 2, opacity: 0.7, color: 'rgba(46, 204, 113, 1)', fillOpacity: 0.5, dashArray: '10, 5' }
+        };
+        
+        let baseLayers = {};
+        
+        // Statistics
+        let layerStats = {
+            water: { features: 0, areaSqm: 0 }, paddy: { features: 0, areaSqm: 0 },
+            marsh: { features: 0, areaSqm: 0 }, mangroves: { features: 0, areaSqm: 0 },
+            sand: { features: 0, areaSqm: 0 }, aquaculture: { features: 0, areaSqm: 0 },
+            coral: { features: 0, areaSqm: 0 }, streams: { features: 0, areaSqm: 0 },
+            seasonal: { features: 0, areaSqm: 0 }, protected: { features: 0, areaSqm: 0 }
+        };
+        
+        // District info
+        const districtInfo = {
+            colombo: { name: "Colombo", center: [6.9271, 79.8612], zoom: 11 },
+            gampaha: { name: "Gampaha", center: [7.0840, 80.0098], zoom: 11 },
+            kalutara: { name: "Kalutara", center: [6.5894, 80.0629], zoom: 11 },
+            kandy: { name: "Kandy", center: [7.2906, 80.6337], zoom: 11 },
+            matale: { name: "Matale", center: [7.4675, 80.6234], zoom: 11 },
+            nuwaraeliya: { name: "Nuwara Eliya", center: [6.9497, 80.7891], zoom: 11 },
+            galle: { name: "Galle", center: [6.0535, 80.2210], zoom: 11 },
+            matara: { name: "Matara", center: [5.9483, 80.5353], zoom: 11 },
+            hambantota: { name: "Hambantota", center: [6.1240, 81.1185], zoom: 11 },
+            jaffna: { name: "Jaffna", center: [9.6615, 80.0255], zoom: 11 },
+            kilinochchi: { name: "Kilinochchi", center: [9.3964, 80.3982], zoom: 11 },
+            mannar: { name: "Mannar", center: [8.9770, 79.9095], zoom: 11 },
+            vavuniya: { name: "Vavuniya", center: [8.7560, 80.4971], zoom: 11 },
+            mullaitivu: { name: "Mullaitivu", center: [9.2671, 80.8142], zoom: 11 },
+            batticaloa: { name: "Batticaloa", center: [7.7102, 81.6924], zoom: 11 },
+            ampara: { name: "Ampara", center: [7.2975, 81.6820], zoom: 11 },
+            trincomalee: { name: "Trincomalee", center: [8.5874, 81.2152], zoom: 11 },
+            kurunegala: { name: "Kurunegala", center: [7.4800, 80.3600], zoom: 11 },
+            puttalam: { name: "Puttalam", center: [8.0362, 79.8283], zoom: 11 },
+            anuradhapura: { name: "Anuradhapura", center: [8.3114, 80.4037], zoom: 11 },
+            polonnaruwa: { name: "Polonnaruwa", center: [7.9320, 81.0081], zoom: 11 },
+            badulla: { name: "Badulla", center: [6.9934, 81.0550], zoom: 11 },
+            monaragala: { name: "Monaragala", center: [6.8728, 81.3508], zoom: 11 },
+            ratnapura: { name: "Ratnapura", center: [6.6828, 80.3992], zoom: 11 },
+            kegalle: { name: "Kegalle", center: [7.2514, 80.3464], zoom: 11 }
+        };
+        
+        // Search locations
+        const sriLankanLocations = [
+            { name: "Colombo", coords: [6.9271, 79.8612], zoom: 12 },
+            { name: "Kandy", coords: [7.2906, 80.6337], zoom: 13 },
+            { name: "Galle", coords: [6.0535, 80.2210], zoom: 13 },
+            { name: "Jaffna", coords: [9.6615, 80.0255], zoom: 12 },
+            { name: "Trincomalee", coords: [8.5874, 81.2152], zoom: 12 },
+            { name: "Batticaloa", coords: [7.7102, 81.6924], zoom: 12 },
+            { name: "Anuradhapura", coords: [8.3114, 80.4037], zoom: 12 },
+            { name: "Polonnaruwa", coords: [7.9320, 81.0081], zoom: 12 },
+            { name: "Sigiriya", coords: [7.9570, 80.7603], zoom: 15 },
+            { name: "Yala National Park", coords: [6.3729, 81.5170], zoom: 10 },
+            { name: "Wilpattu National Park", coords: [8.4529, 80.0323], zoom: 10 },
+            { name: "Nuwara Eliya", coords: [6.9497, 80.7891], zoom: 13 },
+            { name: "Ella", coords: [6.8667, 81.0465], zoom: 14 }
+        ];
+        
+        // Initialize map
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMap();
+            updateQuickStats();
+            initializeDrawingTools();
+            loadProtectedAreas();
+            
+            // Initialize opacity displays
+            const layers = ['water', 'paddy', 'marsh', 'mangroves', 'sand', 'aquaculture', 'coral', 'streams', 'seasonal', 'protected'];
+            layers.forEach(layer => updateOpacityDisplay(layer, 70));
+        });
         
         function initializeMap() {
-            map = L.map('map').setView([7.8731,80.7718],8);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);
-            L.control.scale().addTo(map);
-            map.addLayer(drawnItems);
-            drawControl = new L.Control.Draw({ draw: { polyline:{}, polygon:{}, circle:{}, rectangle:{}, marker:{} }, edit: { featureGroup: drawnItems } });
-            map.addControl(drawControl);
-            map.on(L.Draw.Event.CREATED, e=>{ drawnItems.addLayer(e.layer); updateMeasurements(e.layer); resetDrawButtons(); });
-            loadProtectedAreas();
-        }
-        
-        function updateMeasurements(layer) {
-            if (layer instanceof L.Polyline && !(layer instanceof L.Polygon)) {
-                let d=0, pts=layer.getLatLngs();
-                for(let i=1;i<pts.length;i++) d+=pts[i-1].distanceTo(pts[i])/1000;
-                lastDistance=d; document.getElementById('lastDistance').innerText=d.toFixed(2)+' km';
-            } else if (layer instanceof L.Polygon) {
-                let area = 0;
-                try { area = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0])/1e6; } catch(e){ area=0; }
-                lastArea=area; document.getElementById('lastArea').innerText=area.toFixed(2)+' km²';
-            } else if (layer instanceof L.Circle) {
-                let area = Math.PI*layer.getRadius()*layer.getRadius()/1e6;
-                lastArea=area; document.getElementById('lastArea').innerText=area.toFixed(2)+' km²';
-            }
-        }
-        
-        function activateDrawTool(tool) {
-            resetDrawButtons(); document.getElementById(`draw-${tool}-btn`).classList.add('active');
-            if(tool==='marker') new L.Draw.Marker(map).enable();
-            else if(tool==='polyline') new L.Draw.Polyline(map).enable();
-            else if(tool==='polygon') new L.Draw.Polygon(map).enable();
-            else if(tool==='rectangle') new L.Draw.Rectangle(map).enable();
-            else if(tool==='circle') new L.Draw.Circle(map).enable();
-        }
-        
-        function resetDrawButtons(){ ['marker','polyline','polygon','rectangle','circle','edit','delete'].forEach(b=>{ let el=document.getElementById(`draw-${b}-btn`); if(el) el.classList.remove('active'); }); }
-        function editLayers(){ new L.EditToolbar.Edit(map,{featureGroup:drawnItems}).enable(); document.getElementById('edit-btn').classList.add('active'); }
-        function deleteSelected(){ new L.EditToolbar.Delete(map,{featureGroup:drawnItems}).enable(); document.getElementById('delete-btn').classList.add('active'); }
-        function clearAllDrawings(){ drawnItems.clearLayers(); lastDistance=lastArea=0; document.getElementById('lastDistance').innerText='--'; document.getElementById('lastArea').innerText='--'; resetDrawButtons(); showNotification('All drawings cleared','info'); }
-        
-        async function loadProtectedAreas() {
-            try {
-                const resp = await fetch(`data/protected_areas.geojson`);
-                if (!resp.ok) throw new Error();
-                const data = await resp.json();
-                shapefileLayers.protected = L.geoJSON(data, { style: { color: '#2ECC71', weight: 2, fillOpacity: 0.4, dashArray: '10,5' }, onEachFeature:(f,l)=>l.on('click',e=>showFeatureInfo(f,e.latlng,'Protected')) });
-                layerStats.protected = { features: data.features.length, area: data.features.reduce((s,f)=>s+getFeatureArea(f),0) };
-                document.getElementById('protectedLayer').disabled = false;
-                document.getElementById('protectedOpacity').disabled = false;
-                console.log("Protected areas loaded");
-            } catch(e){ console.log("Protected areas not available"); }
-        }
-        
-        async function loadDistrictData(district) {
-            if(!district){ document.getElementById('layerPanel').style.display='none'; return; }
-            currentDistrict=district;
-            document.getElementById('currentDistrict').innerText=district.toUpperCase();
-            document.getElementById('layerPanel').style.display='block';
-            Object.values(shapefileLayers).forEach(l=>{ if(l&&l!==shapefileLayers.protected) map.removeLayer(l); });
+            map = L.map('map').setView([7.8731, 80.7718], 8);
             
-            const layers = ['water','paddy','marsh','mangroves','sand','aquaculture','coral','streams','seasonal'];
-            let totalArea=0, totalFeatures=0;
+            baseLayers.osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(map);
             
-            for(let layer of layers){
-                try{
-                    let resp = await fetch(`data/${district}/${layer}_areas.geojson`);
-                    if(!resp.ok) resp = await fetch(`data/${layer}_areas.geojson`);
-                    if(!resp.ok) continue;
-                    const data = await resp.json();
-                    shapefileLayers[layer] = L.geoJSON(data, { 
-                        style: { fillColor: layerColors[layer], color: layerColors[layer], weight:1.5, fillOpacity:0.7 },
-                        onEachFeature:(f,l)=>l.on('click',e=>showFeatureInfo(f,e.latlng,district))
-                    });
-                    let areaSum = data.features.reduce((s,f)=>s+getFeatureArea(f),0);
-                    layerStats[layer] = { features: data.features.length, area: areaSum };
-                    totalArea += areaSum;
-                    totalFeatures += data.features.length;
-                } catch(e){ console.log(`${layer} not available`); }
-            }
-            
-            document.getElementById('featureCount').innerText = totalFeatures;
-            document.getElementById('totalArea').innerText = formatArea(totalArea);
-            renderLayerList();
-            updateStatsDisplay();
-            if(districtCoords[district]) map.setView(districtCoords[district],10);
-            showNotification(`Loaded ${totalFeatures} wetland features`,'success');
-        }
-        
-        function renderLayerList(){
-            const container = document.getElementById('layerList');
-            if(!container) return;
-            const layers = ['water','paddy','marsh','mangroves','sand','aquaculture','coral','streams','seasonal'];
-            container.innerHTML = layers.map(l=>`<div class="layer-card" id="layer-card-${l}"><div class="layer-header" onclick="toggleLayer('${l}')"><input type="checkbox" id="${l}Layer" class="layer-checkbox"><span class="layer-label">${layerNames[l]}</span><div class="layer-color" style="background:${layerColors[l]}"></div></div><div class="layer-opacity-row"><i class="fas fa-adjust"></i><input type="range" id="${l}Opacity" class="opacity-slider" min="0" max="100" value="70" oninput="updateLayerOpacity('${l}', this.value)"><span id="${l}OpacityValue" class="opacity-value">70%</span></div></div>`).join('');
-            layers.forEach(l=>{ 
-                if(shapefileLayers[l]){ 
-                    document.getElementById(`${l}Layer`).checked=true; 
-                    document.getElementById(`layer-card-${l}`).classList.add('active'); 
-                } else { 
-                    let cb=document.getElementById(`${l}Layer`); if(cb) cb.disabled=true;
-                    let op=document.getElementById(`${l}Opacity`); if(op) op.disabled=true;
-                }
+            baseLayers.satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: '© Esri, Maxar, Earthstar Geographics',
+                maxZoom: 19
             });
-        }
-        
-        function toggleLayer(layer){
-            let cb = document.getElementById(`${layer}Layer`);
-            if(shapefileLayers[layer]){
-                if(cb.checked){ map.removeLayer(shapefileLayers[layer]); cb.checked=false; document.getElementById(`layer-card-${layer}`).classList.remove('active'); }
-                else{ map.addLayer(shapefileLayers[layer]); cb.checked=true; document.getElementById(`layer-card-${layer}`).classList.add('active'); }
-                updateStatsDisplay();
-            }
-        }
-        
-        function toggleProtectedAreas(){ 
-            let cb=document.getElementById('protectedLayer'); 
-            if(shapefileLayers.protected){ 
-                if(cb.checked){ map.removeLayer(shapefileLayers.protected); cb.checked=false; } 
-                else{ map.addLayer(shapefileLayers.protected); cb.checked=true; } 
-                updateStatsDisplay(); 
-            } 
-        }
-        
-        function updateLayerOpacity(layer,val){ 
-            let op=val/100; 
-            if(shapefileLayers[layer]) shapefileLayers[layer].eachLayer(l=>l.setStyle({fillOpacity:op,opacity:op})); 
-            document.getElementById(`${layer}OpacityValue`).innerText=val+'%'; 
-        }
-        
-        function showAllLayers(){ 
-            Object.keys(shapefileLayers).forEach(l=>{ 
-                if(shapefileLayers[l] && !map.hasLayer(shapefileLayers[l])){ 
-                    map.addLayer(shapefileLayers[l]); 
-                    let cb=document.getElementById(`${l}Layer`); 
-                    if(cb){ cb.checked=true; document.getElementById(`layer-card-${l}`)?.classList.add('active'); } 
-                } 
-            }); 
-            updateStatsDisplay(); 
-        }
-        
-        function hideAllLayers(){ 
-            Object.keys(shapefileLayers).forEach(l=>{ 
-                if(shapefileLayers[l] && map.hasLayer(shapefileLayers[l])){ 
-                    map.removeLayer(shapefileLayers[l]); 
-                    let cb=document.getElementById(`${l}Layer`); 
-                    if(cb){ cb.checked=false; document.getElementById(`layer-card-${l}`)?.classList.remove('active'); } 
-                } 
-            }); 
-            updateStatsDisplay(); 
-        }
-        
-        function fitToAllData(){ 
-            if(currentDistrict && districtCoords[currentDistrict]) map.setView(districtCoords[currentDistrict],10); 
-            else map.setView([7.8731,80.7718],8); 
-        }
-        
-        function updateStatsDisplay(){
-            if(!currentDistrict){ document.getElementById('areaStats').innerHTML='Select a district to view statistics'; return; }
-            let active=0, features=0, area=0;
-            Object.keys(shapefileLayers).forEach(l=>{ 
-                if(shapefileLayers[l] && map.hasLayer(shapefileLayers[l])){ 
-                    active++; 
-                    features+=layerStats[l]?.features||0; 
-                    area+=layerStats[l]?.area||0; 
-                } 
+            
+            baseLayers.terrain = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenTopoMap contributors',
+                maxZoom: 17
             });
-            document.getElementById('areaStats').innerHTML=`<strong>${currentDistrict.toUpperCase()}</strong><br>Active: ${active}<br>Features: ${features.toLocaleString()}<br>Area: ${formatArea(area)}`;
+            
+            baseLayers.topo = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+                attribution: '© Humanitarian OpenStreetMap Team',
+                maxZoom: 19
+            });
+            
+            L.control.scale({imperial: false}).addTo(map);
         }
         
-        function recalculateStats(){ updateStatsDisplay(); showNotification('Statistics updated','success'); }
-        function changeBaseMap(t){ 
-            map.eachLayer(l=>{ if(l._url && l._url.includes('tile')) map.removeLayer(l); });
-            if(t==='osm') L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-            else if(t==='satellite') L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}').addTo(map);
-            else if(t==='terrain') L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png').addTo(map);
-        }
-        
-        function showFeatureInfo(feature,latlng,district){
-            let area = getFeatureArea(feature);
-            let html = `<div style="padding:8px"><b>${district}</b><br>${feature.properties?.name||'Wetland Feature'}<br>Area: ${formatArea(area)}<br>Lat: ${latlng.lat.toFixed(4)}, Lng: ${latlng.lng.toFixed(4)}</div>`;
-            L.popup().setLatLng(latlng).setContent(html).openOn(map);
-        }
-        
-        function scrollToMap(){ document.getElementById('map-section').scrollIntoView({ behavior: 'smooth' }); }
-        
-        // Coordinate Picker
-        function toggleCoordinatePicker(){
-            isPickingCoordinates = !isPickingCoordinates;
-            let btn = document.getElementById('pickCoordBtn');
-            if(isPickingCoordinates){ 
-                btn.innerHTML='<i class="fas fa-times"></i> Cancel'; 
-                btn.classList.add('active'); 
-                map.getContainer().style.cursor='crosshair'; 
-                map.on('click', onMapPick); 
-                showNotification('Click on map to select coordinates','info'); 
-            } else { 
-                btn.innerHTML='<i class="fas fa-mouse-pointer"></i> Pick from Map'; 
-                btn.classList.remove('active'); 
-                map.getContainer().style.cursor=''; 
-                map.off('click', onMapPick); 
-                if(tempPickMarker) map.removeLayer(tempPickMarker); 
+        // ============ COORDINATE PICKER FUNCTION ============
+        function toggleCoordinatePicker() {
+            const pickBtn = document.getElementById('pickCoordBtn');
+            
+            if (!isPickingCoordinates) {
+                // Activate picking mode
+                isPickingCoordinates = true;
+                pickBtn.classList.add('active');
+                pickBtn.innerHTML = '<i class="fas fa-times"></i> Cancel Picking';
+                map.getContainer().style.cursor = 'crosshair';
+                
+                // Add click listener to map
+                map.on('click', onMapClickForPick);
+                
+                showNotification('Click on the map to select coordinates', 'info');
+            } else {
+                // Deactivate picking mode
+                deactivateCoordinatePicker();
             }
         }
         
-        function onMapPick(e){
-            selectedLat = e.latlng.lat; 
-            selectedLng = e.latlng.lng;
-            document.getElementById('selectedLat').innerHTML = `<i class="fas fa-arrow-up"></i> ${selectedLat.toFixed(6)}`;
-            document.getElementById('selectedLng').innerHTML = `<i class="fas fa-arrow-right"></i> ${selectedLng.toFixed(6)}`;
+        function onMapClickForPick(e) {
+            const lat = e.latlng.lat;
+            const lng = e.latlng.lng;
+            
+            // Store selected coordinates
+            selectedLat = lat;
+            selectedLng = lng;
+            
+            // Update display
+            document.getElementById('selectedLat').innerHTML = `<i class="fas fa-arrow-up"></i> ${lat.toFixed(6)}`;
+            document.getElementById('selectedLng').innerHTML = `<i class="fas fa-arrow-right"></i> ${lng.toFixed(6)}`;
             document.getElementById('selectedCoordDisplay').style.display = 'block';
-            if(tempPickMarker) map.removeLayer(tempPickMarker);
-            tempPickMarker = L.marker([selectedLat,selectedLng], { icon: L.divIcon({ html:'<i class="fas fa-map-marker-alt" style="color:#22AD7A; font-size:28px;"></i>', iconSize:[28,28], iconAnchor:[14,28] }) }).addTo(map);
-            document.getElementById('latitude').value = selectedLat.toFixed(6);
-            document.getElementById('longitude').value = selectedLng.toFixed(6);
-            showNotification(`Coordinates selected`,'success');
-            toggleCoordinatePicker();
+            
+            // Show temporary marker
+            if (tempPickMarker) {
+                map.removeLayer(tempPickMarker);
+            }
+            
+            tempPickMarker = L.marker([lat, lng], {
+                icon: L.divIcon({
+                    className: 'temp-pick-marker',
+                    html: '<i class="fas fa-map-marker-alt" style="color: #22AD7A; font-size: 32px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));"></i>',
+                    iconSize: [32, 32],
+                    iconAnchor: [16, 32]
+                })
+            }).addTo(map);
+            
+            // Auto-fill the buffer form
+            document.getElementById('latitude').value = lat.toFixed(6);
+            document.getElementById('longitude').value = lng.toFixed(6);
+            
+            showNotification(`Coordinates selected: ${lat.toFixed(6)}, ${lng.toFixed(6)}`, 'success');
+            
+            // Deactivate picking mode
+            deactivateCoordinatePicker();
         }
         
-        function useSelectedCoordinates(){ 
-            if(selectedLat!==null){ 
-                document.getElementById('latitude').value=selectedLat.toFixed(6); 
-                document.getElementById('longitude').value=selectedLng.toFixed(6); 
-                showNotification('Coordinates copied to buffer','success'); 
-            } else showNotification('No coordinates selected','warning'); 
+        function deactivateCoordinatePicker() {
+            isPickingCoordinates = false;
+            const pickBtn = document.getElementById('pickCoordBtn');
+            pickBtn.classList.remove('active');
+            pickBtn.innerHTML = '<i class="fas fa-mouse-pointer"></i> Pick from Map';
+            map.getContainer().style.cursor = '';
+            map.off('click', onMapClickForPick);
+            
+            // Remove temporary marker after 3 seconds
+            if (tempPickMarker) {
+                setTimeout(() => {
+                    if (tempPickMarker && map.hasLayer(tempPickMarker)) {
+                        map.removeLayer(tempPickMarker);
+                        tempPickMarker = null;
+                    }
+                }, 3000);
+            }
         }
         
-        // Search
-        function searchLocation(){
-            let query = document.getElementById('searchInput').value.toLowerCase().trim();
-            if(!query){ showNotification('Enter a location','warning'); return; }
-            let results = locations.filter(l=>l.name.toLowerCase().includes(query));
-            let div = document.getElementById('searchResults');
-            if(results.length>0){
-                div.innerHTML = results.map(l=>`<div class="search-result-item" onclick="goToLocation(${l.coords[0]},${l.coords[1]},${l.zoom})"><i class="fas fa-map-pin"></i> ${l.name}</div>`).join('');
-            } else { div.innerHTML = '<div style="padding:4px; color:var(--iwmi-orange);">Not found</div>'; }
+        function useSelectedCoordinates() {
+            if (selectedLat !== null && selectedLng !== null) {
+                document.getElementById('latitude').value = selectedLat.toFixed(6);
+                document.getElementById('longitude').value = selectedLng.toFixed(6);
+                showNotification('Coordinates copied to buffer analysis', 'success');
+                
+                // Scroll to buffer panel
+                document.querySelector('.buffer-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                showNotification('No coordinates selected. Please pick a location first.', 'warning');
+            }
         }
         
-        function handleSearchKeyPress(e){ if(e.key==='Enter') searchLocation(); }
-        
-        function goToLocation(lat,lng,zoom){
-            map.setView([lat,lng],zoom||12);
-            let m = L.marker([lat,lng]).addTo(map);
-            setTimeout(()=>map.removeLayer(m),3000);
-            document.getElementById('searchResults').innerHTML='';
-            document.getElementById('searchInput').value='';
+        // ============ AREA FORMATTING FUNCTION (SQUARE METERS TO READABLE) ============
+        function formatAreaFromSqm(areaSqm) {
+            if (areaSqm >= 1000000) {
+                return (areaSqm / 1000000).toFixed(2) + ' km²';
+            } else if (areaSqm >= 10000) {
+                return (areaSqm / 10000).toFixed(2) + ' ha';
+            } else if (areaSqm >= 1) {
+                return areaSqm.toFixed(2) + ' m²';
+            } else {
+                return '0 m²';
+            }
         }
         
-        // ============ BUFFER ZONE ANALYSIS WITH PRECISE INTERSECTION ============
-        async function analyzeBufferZone(){
-            let lat = parseFloat(document.getElementById('latitude').value);
-            let lng = parseFloat(document.getElementById('longitude').value);
-            let bufKm = parseFloat(document.getElementById('bufferDistance').value);
+        // ============ BUFFER ZONE ANALYSIS FUNCTION ============
+        async function analyzeBufferZone() {
+            const lat = parseFloat(document.getElementById('latitude').value);
+            const lng = parseFloat(document.getElementById('longitude').value);
+            const bufferKm = parseFloat(document.getElementById('bufferDistance').value);
             
-            if(isNaN(lat)||isNaN(lng)){ showNotification('Enter valid coordinates','error'); return; }
-            if(isNaN(bufKm)||bufKm<=0){ showNotification('Enter valid buffer distance','error'); return; }
+            // Validate inputs
+            if (isNaN(lat) || isNaN(lng)) {
+                showNotification('Please enter valid latitude and longitude', 'error');
+                return;
+            }
             
-            showNotification('Analyzing buffer zone with precise intersection...','info');
-            if(currentBufferCircle) map.removeLayer(currentBufferCircle);
-            if(currentBufferMarker) map.removeLayer(currentBufferMarker);
+            if (isNaN(bufferKm) || bufferKm <= 0) {
+                showNotification('Please enter a valid buffer distance', 'error');
+                return;
+            }
             
-            currentBufferMarker = L.marker([lat,lng], { icon: L.divIcon({ html:'<i class="fas fa-map-marker-alt" style="color:#DC3545; font-size:28px;"></i>', iconSize:[28,28], iconAnchor:[14,28] }) }).addTo(map);
-            currentBufferCircle = L.circle([lat,lng], { radius: bufKm*1000, color:'#E86933', weight:3, fillOpacity:0.15, dashArray:'5,5' }).addTo(map);
-            map.fitBounds(currentBufferCircle.getBounds(), { padding: [30,30] });
+            showNotification('Analyzing buffer zone...', 'info');
             
-            // Create buffer polygon for intersection using Turf.js
-            const center = [lng, lat];
-            const bufferRadius = bufKm * 1000; // meters
-            const bufferPolygon = turf.circle(center, bufferRadius, { steps: 64, units: 'meters' });
+            // Clear previous buffer
+            clearBufferAnalysis();
             
-            let totalAreaSqm = 0, totalFeatures = 0;
-            let results = {};
-            const layers = ['water','paddy','marsh','mangroves','sand','aquaculture','coral','streams','seasonal','protected'];
+            // Create center marker
+            currentBufferMarker = L.marker([lat, lng], {
+                icon: L.divIcon({
+                    className: 'buffer-center-marker',
+                    html: '<i class="fas fa-map-marker-alt" style="color: #DC3545; font-size: 28px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));"></i>',
+                    iconSize: [28, 28],
+                    iconAnchor: [14, 28]
+                })
+            }).addTo(map);
             
-            for(let layer of layers){
-                if(shapefileLayers[layer] && map.hasLayer(shapefileLayers[layer])){
-                    let layerArea = 0, layerCount = 0;
-                    
-                    shapefileLayers[layer].eachLayer(featureLayer => {
-                        try {
-                            let feature = featureLayer.feature;
-                            if(!feature || !feature.geometry) return;
-                            
-                            // Convert Leaflet layer to GeoJSON
-                            let geojson = featureLayer.toGeoJSON();
-                            
-                            // Calculate intersection between buffer and wetland polygon
-                            let intersection = turf.intersect(bufferPolygon, geojson);
-                            
-                            if(intersection){
-                                // Calculate area of intersection in square meters
-                                let area = turf.area(intersection);
-                                if(area > 0.1){ // Ignore extremely small intersections (<0.1 m²)
-                                    layerArea += area;
-                                    layerCount++;
-                                }
-                            }
-                        } catch(e) {
-                            // If intersection fails, try bounding box approximation
-                            console.log(`Intersection failed for ${layer}, using bounds check`);
-                            try {
-                                let bounds = featureLayer.getBounds();
-                                let centerPoint = L.latLng(lat, lng);
-                                let distance = centerPoint.distanceTo(bounds.getCenter());
-                                if(distance <= bufKm * 1000 + 500){
-                                    // Approximate area proportion
-                                    let originalArea = getFeatureArea(featureLayer.feature);
-                                    if(originalArea > 0){
-                                        layerArea += originalArea * 0.5; // Conservative estimate
-                                        layerCount++;
-                                    }
-                                }
-                            } catch(e2) {}
-                        }
-                    });
-                    
-                    if(layerCount > 0){
-                        results[layer] = {
-                            name: layerNames[layer],
-                            count: layerCount,
-                            area: layerArea,
-                            color: layerColors[layer]
-                        };
-                        totalAreaSqm += layerArea;
-                        totalFeatures += layerCount;
+            // Create buffer circle (convert km to meters)
+            const bufferMeters = bufferKm * 1000;
+            currentBufferCircle = L.circle([lat, lng], {
+                radius: bufferMeters,
+                color: '#E86933',
+                weight: 3,
+                fillColor: '#E86933',
+                fillOpacity: 0.15,
+                dashArray: '5, 5'
+            }).addTo(map);
+            
+            // Zoom to the buffer area
+            map.fitBounds(currentBufferCircle.getBounds(), { padding: [30, 30] });
+            
+            // Analyze each wetland layer
+            const analysisResults = {};
+            let totalFeatures = 0;
+            let totalAreaSqm = 0;
+            
+            const wetlandLayers = ['water', 'paddy', 'marsh', 'mangroves', 'sand', 'aquaculture', 'coral', 'streams', 'seasonal', 'protected'];
+            
+            for (const layer of wetlandLayers) {
+                if (shapefileLayers[layer] && map.hasLayer(shapefileLayers[layer])) {
+                    const result = await analyzeLayerInBuffer(layer, lat, lng, bufferMeters);
+                    if (result && result.featureCount > 0) {
+                        analysisResults[layer] = result;
+                        totalFeatures += result.featureCount;
+                        totalAreaSqm += result.totalAreaSqm;
                     }
                 }
             }
             
             // Display results
-            let resultsDiv = document.getElementById('bufferResults');
-            let html = `<div class="result-section">
-                <div class="result-title">📍 Location: ${lat.toFixed(6)}, ${lng.toFixed(6)}</div>
-                <div class="result-title">🔄 Buffer Radius: ${bufKm} km</div>
-                <div class="result-title">📊 Wetlands in Buffer: ${totalFeatures}</div>
-                <div class="result-title">📏 Area INSIDE Buffer: ${formatArea(totalAreaSqm)}</div>
-                <div style="font-size:0.7rem; color:#2ECC71; margin-top:4px;">✓ Only area within buffer zone is counted</div>
-            </div>`;
-            
-            if(Object.keys(results).length > 0){
-                html += `<div class="result-section"><div class="result-title">🌿 Breakdown by Type (area within buffer):</div>`;
-                for(let [key, res] of Object.entries(results)){
-                    html += `<div class="result-item">
-                        <span><span style="display:inline-block; width:10px; height:10px; background:${res.color}; border-radius:2px; margin-right:6px;"></span>${res.name}:</span>
-                        <span>${res.count} features (${formatArea(res.area)})</span>
-                    </div>`;
+            displayBufferResults(analysisResults, lat, lng, bufferKm, totalFeatures, totalAreaSqm);
+            showNotification(`Analysis complete! Found ${totalFeatures} wetland features covering ${formatAreaFromSqm(totalAreaSqm)}`, 'success');
+        }
+        
+        async function analyzeLayerInBuffer(layerName, centerLat, centerLng, bufferMeters) {
+            return new Promise((resolve) => {
+                if (!shapefileLayers[layerName]) {
+                    resolve(null);
+                    return;
                 }
+                
+                let featuresInBuffer = [];
+                let totalAreaSqm = 0;
+                
+                // Iterate through each feature in the layer
+                shapefileLayers[layerName].eachLayer(function(featureLayer) {
+                    if (featureLayer.feature && featureLayer.feature.geometry) {
+                        // Check if feature is within buffer
+                        const isWithin = isFeatureWithinBuffer(featureLayer, centerLat, centerLng, bufferMeters);
+                        
+                        if (isWithin) {
+                            featuresInBuffer.push(featureLayer);
+                            
+                            // Get area from GeoJSON properties (in square meters)
+                            let areaSqm = 0;
+                            if (featureLayer.feature.properties) {
+                                // Try different possible area field names
+                                if (featureLayer.feature.properties.area_sqm) {
+                                    areaSqm = featureLayer.feature.properties.area_sqm;
+                                } else if (featureLayer.feature.properties.area_m2) {
+                                    areaSqm = featureLayer.feature.properties.area_m2;
+                                } else if (featureLayer.feature.properties.area) {
+                                    areaSqm = featureLayer.feature.properties.area;
+                                } else if (featureLayer.feature.properties.Area) {
+                                    areaSqm = featureLayer.feature.properties.Area;
+                                } else if (featureLayer.feature.properties.AREA) {
+                                    areaSqm = featureLayer.feature.properties.AREA;
+                                } else {
+                                    // If no area property, calculate from geometry
+                                    areaSqm = calculateAreaFromLayerSqm(featureLayer);
+                                }
+                            } else {
+                                areaSqm = calculateAreaFromLayerSqm(featureLayer);
+                            }
+                            totalAreaSqm += areaSqm;
+                        }
+                    }
+                });
+                
+                resolve({
+                    layerName: layerName,
+                    displayName: getLayerDisplayName(layerName),
+                    featureCount: featuresInBuffer.length,
+                    totalAreaSqm: totalAreaSqm,
+                    features: featuresInBuffer,
+                    color: layerColors[layerName]
+                });
+            });
+        }
+        
+        function isFeatureWithinBuffer(featureLayer, centerLat, centerLng, bufferMeters) {
+            const bounds = featureLayer.getBounds();
+            if (!bounds) return false;
+            
+            // Quick check: if feature bounds are far from buffer center, skip
+            const center = L.latLng(centerLat, centerLng);
+            const featureCenter = bounds.getCenter();
+            const distanceToCenter = center.distanceTo(featureCenter);
+            
+            // If feature center is within buffer + feature's approximate radius
+            const featureRadius = Math.max(bounds.getNorth() - bounds.getSouth(), bounds.getEast() - bounds.getWest()) * 111000 / 2;
+            if (distanceToCenter > bufferMeters + featureRadius) {
+                return false;
+            }
+            
+            // More accurate check: sample points from feature
+            const featureLayerLatLngs = getLayerLatLngs(featureLayer);
+            for (const point of featureLayerLatLngs) {
+                const distance = center.distanceTo(point);
+                if (distance <= bufferMeters) {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+        
+        function getLayerLatLngs(layer) {
+            const latLngs = [];
+            
+            if (layer instanceof L.Polygon || layer instanceof L.Polyline) {
+                const coords = layer.getLatLngs();
+                collectLatLngs(coords, latLngs);
+            } else if (layer instanceof L.Marker) {
+                latLngs.push(layer.getLatLng());
+            }
+            
+            return latLngs;
+        }
+        
+        function collectLatLngs(coords, output) {
+            if (Array.isArray(coords)) {
+                if (coords.length > 0 && coords[0] instanceof L.LatLng) {
+                    coords.forEach(coord => output.push(coord));
+                } else {
+                    coords.forEach(subCoord => collectLatLngs(subCoord, output));
+                }
+            }
+        }
+        
+        function calculateAreaFromLayerSqm(layer) {
+            if (layer instanceof L.Polygon) {
+                try {
+                    const latlngs = layer.getLatLngs()[0];
+                    let area = 0;
+                    for (let i = 0; i < latlngs.length; i++) {
+                        const j = (i + 1) % latlngs.length;
+                        area += latlngs[i].lng * latlngs[j].lat;
+                        area -= latlngs[j].lng * latlngs[i].lat;
+                    }
+                    area = Math.abs(area) / 2;
+                    // Convert from square degrees to square meters (approximate)
+                    // 1 degree ≈ 111,000 meters
+                    return area * 111000 * 111000;
+                } catch(e) {
+                    return 0;
+                }
+            }
+            return 0;
+        }
+        
+        function displayBufferResults(results, lat, lng, bufferKm, totalFeatures, totalAreaSqm) {
+            const resultsDiv = document.getElementById('bufferResults');
+            
+            let html = `
+                <div class="result-section">
+                    <div class="result-title">📍 Location: ${lat.toFixed(4)}, ${lng.toFixed(4)}</div>
+                    <div class="result-title">🔄 Buffer Radius: ${bufferKm} km</div>
+                    <div class="result-title">📊 Total Wetlands Found: ${totalFeatures}</div>
+                    <div class="result-title">📏 Total Wetland Area: ${formatAreaFromSqm(totalAreaSqm)}</div>
+                </div>
+            `;
+            
+            // Add breakdown by wetland type
+            if (Object.keys(results).length > 0) {
+                html += `<div class="result-section"><div class="result-title">🌿 Wetland Breakdown by Type:</div>`;
+                
+                for (const [key, result] of Object.entries(results)) {
+                    const colorMatch = result.color.match(/rgba\((\d+),\s*(\d+),\s*(\d+)/);
+                    const colorRgb = colorMatch ? `rgb(${colorMatch[1]}, ${colorMatch[2]}, ${colorMatch[3]})` : '#666';
+                    
+                    html += `
+                        <div class="result-item">
+                            <span class="result-label">
+                                <span style="display:inline-block; width:12px; height:12px; background:${colorRgb}; border-radius:2px; margin-right:6px;"></span>
+                                ${result.displayName}:
+                            </span>
+                            <span class="result-value">${result.featureCount} features (${formatAreaFromSqm(result.totalAreaSqm)})</span>
+                        </div>
+                    `;
+                }
+                
                 html += `</div>`;
                 
-                // Add bar chart
-                html += `<div class="result-section"><div class="result-title">📈 Area Distribution (within buffer):</div>`;
-                let sorted = Object.entries(results).sort((a,b) => b[1].area - a[1].area);
-                let maxArea = sorted[0]?.[1]?.area || 1;
-                for(let [key, res] of sorted){
-                    let pct = totalAreaSqm > 0 ? (res.area / totalAreaSqm * 100).toFixed(1) : 0;
-                    let barWidth = maxArea > 0 ? (res.area / maxArea * 100).toFixed(0) : 0;
-                    html += `<div style="margin:5px 0;">
-                        <div style="display:flex; justify-content:space-between; font-size:0.7rem;"><span>${res.name}</span><span>${pct}%</span></div>
-                        <div style="background:#eee; height:6px; border-radius:3px; overflow:hidden;"><div style="background:${res.color}; width:${barWidth}%; height:6px;"></div></div>
-                    </div>`;
+                // Add summary chart-like display
+                html += `<div class="result-section"><div class="result-title">📈 Area Distribution:</div>`;
+                
+                const sortedResults = Object.entries(results).sort((a,b) => b[1].totalAreaSqm - a[1].totalAreaSqm);
+                const maxArea = sortedResults[0]?.[1]?.totalAreaSqm || 1;
+                
+                for (const [key, result] of sortedResults) {
+                    const percentage = totalAreaSqm > 0 ? (result.totalAreaSqm / totalAreaSqm * 100).toFixed(1) : 0;
+                    const barWidth = maxArea > 0 ? (result.totalAreaSqm / maxArea * 100).toFixed(0) : 0;
+                    const colorMatch = result.color.match(/rgba\((\d+),\s*(\d+),\s*(\d+)/);
+                    const colorRgb = colorMatch ? `rgb(${colorMatch[1]}, ${colorMatch[2]}, ${colorMatch[3]})` : '#22AD7A';
+                    
+                    html += `
+                        <div style="margin: 6px 0;">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.7rem;">
+                                <span>${result.displayName}</span>
+                                <span>${percentage}%</span>
+                            </div>
+                            <div style="background: #E8E7E7; height: 6px; border-radius: 3px; overflow: hidden;">
+                                <div style="background: ${colorRgb}; width: ${barWidth}%; height: 100%;"></div>
+                            </div>
+                        </div>
+                    `;
                 }
+                
                 html += `</div>`;
             } else {
-                html += `<div class="result-section"><div class="result-title">⚠️ No wetlands found within the buffer zone</div>
-                <div class="result-title">💡 Make sure wetland layers are loaded and visible</div></div>`;
+                html += `<div class="result-section"><div class="result-title">⚠️ No wetlands found within the buffer zone</div></div>`;
+                html += `<div class="result-section"><div class="result-title">💡 Tip: Make sure wetland layers are loaded and visible</div></div>`;
             }
             
             resultsDiv.innerHTML = html;
-            showNotification(`Analysis complete! ${totalFeatures} wetlands, ${formatArea(totalAreaSqm)} inside buffer`, 'success');
         }
         
-        function clearBufferAnalysis(){
-            if(currentBufferCircle) map.removeLayer(currentBufferCircle);
-            if(currentBufferMarker) map.removeLayer(currentBufferMarker);
-            currentBufferCircle = null; currentBufferMarker = null;
-            document.getElementById('bufferResults').innerHTML = `<div class="result-section"><div class="result-title">📌 Enter coordinates or pick from map</div><div style="color:#666; font-size:0.7rem;">Example: Colombo (6.9271, 79.8612)</div></div>`;
-            showNotification('Buffer analysis cleared','info');
+        function clearBufferAnalysis() {
+            if (currentBufferCircle) {
+                map.removeLayer(currentBufferCircle);
+                currentBufferCircle = null;
+            }
+            if (currentBufferMarker) {
+                map.removeLayer(currentBufferMarker);
+                currentBufferMarker = null;
+            }
+            
+            document.getElementById('bufferResults').innerHTML = `
+                <div class="result-section">
+                    <div class="result-title">📌 Enter coordinates or pick from map</div>
+                    <div style="color: #666; font-size: 0.7rem; padding: 5px;">Example: Colombo (6.9271, 79.8612)</div>
+                </div>
+            `;
+            
+            showNotification('Buffer analysis cleared', 'info');
         }
         
-        function showNotification(message, type='info'){
-            let colors = { info:'#46BBD4', error:'#E86933', warning:'#DD9103', success:'#22AD7A' };
-            let icons = { info:'info-circle', error:'exclamation-triangle', warning:'exclamation-circle', success:'check-circle' };
-            let div = document.createElement('div');
-            div.style.cssText = `position:fixed; top:20px; right:20px; background:${colors[type]}; color:white; padding:10px 14px; border-radius:6px; z-index:10000; animation:slideIn 0.3s; font-size:0.8rem; border-left:4px solid ${type==='info'?'#28537D':'#fff'}`;
-            div.innerHTML = `<i class="fas fa-${icons[type]}"></i> ${message}`;
-            document.body.appendChild(div);
-            setTimeout(()=>{ div.remove(); },3000);
+        // ============ EXISTING FUNCTIONS (preserved) ============
+        
+        function initializeDrawingTools() {
+            map.addLayer(drawnItems);
+            
+            drawControl = new L.Control.Draw({
+                draw: {
+                    polyline: { shapeOptions: { color: '#5088C6', weight: 3 }, metric: true },
+                    polygon: { shapeOptions: { color: '#E86933', weight: 2, fillColor: '#E86933', fillOpacity: 0.3 }, metric: true, showArea: true },
+                    circle: { shapeOptions: { color: '#22AD7A', weight: 2, fillColor: '#22AD7A', fillOpacity: 0.3 }, metric: true },
+                    rectangle: { shapeOptions: { color: '#46BBD4', weight: 2, fillColor: '#46BBD4', fillOpacity: 0.3 }, metric: true },
+                    marker: { icon: L.divIcon({ className: 'custom-marker', html: '<i class="fas fa-map-marker-alt" style="color: #DC3545; font-size: 24px;"></i>', iconSize: [24, 24], iconAnchor: [12, 24] }) }
+                },
+                edit: { featureGroup: drawnItems, remove: true }
+            });
+            
+            map.addControl(drawControl);
+            
+            map.on(L.Draw.Event.CREATED, function(event) {
+                const layer = event.layer;
+                drawnItems.addLayer(layer);
+                
+                if (event.layerType === 'polyline') {
+                    const distance = calculateDistance(layer.getLatLngs());
+                    lastDistance = distance;
+                    document.getElementById('lastDistance').textContent = distance.toFixed(2) + ' km';
+                } else if (event.layerType === 'polygon' || event.layerType === 'rectangle') {
+                    const area = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
+                    const areaKm2 = area / 1000000;
+                    lastArea = areaKm2;
+                    document.getElementById('lastArea').textContent = areaKm2.toFixed(2) + ' km²';
+                } else if (event.layerType === 'circle') {
+                    const area = Math.PI * Math.pow(layer.getRadius(), 2) / 1000000;
+                    lastArea = area;
+                    document.getElementById('lastArea').textContent = area.toFixed(2) + ' km²';
+                } else if (event.layerType === 'marker') {
+                    markers.push(layer);
+                }
+                resetDrawButtons();
+            });
+            
+            map.on(L.Draw.Event.EDITED, function(event) {
+                event.layers.eachLayer(function(layer) { updateMeasurements(layer); });
+                showNotification('Features updated', 'success');
+            });
+            
+            map.on(L.Draw.Event.DELETED, function() { showNotification('Features deleted', 'info'); });
         }
         
-        function printMap(){ window.print(); }
+        function updateMeasurements(layer) {
+            if (layer instanceof L.Polyline && !(layer instanceof L.Polygon)) {
+                const distance = calculateDistance(layer.getLatLngs());
+                lastDistance = distance;
+                document.getElementById('lastDistance').textContent = distance.toFixed(2) + ' km';
+            } else if (layer instanceof L.Polygon) {
+                const area = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]) / 1000000;
+                lastArea = area;
+                document.getElementById('lastArea').textContent = area.toFixed(2) + ' km²';
+            } else if (layer instanceof L.Circle) {
+                const area = Math.PI * Math.pow(layer.getRadius(), 2) / 1000000;
+                lastArea = area;
+                document.getElementById('lastArea').textContent = area.toFixed(2) + ' km²';
+            }
+        }
         
-        initializeMap();
+        function calculateDistance(latlngs) {
+            let total = 0;
+            for (let i = 1; i < latlngs.length; i++) {
+                total += latlngs[i-1].distanceTo(latlngs[i]) / 1000;
+            }
+            return total;
+        }
+        
+        function activateDrawTool(tool) {
+            resetDrawButtons();
+            document.getElementById(`draw-${tool}-btn`).classList.add('active');
+            if (currentDrawTool) { map.removeControl(drawControl); map.addControl(drawControl); }
+            currentDrawTool = tool;
+            switch(tool) {
+                case 'marker': new L.Draw.Marker(map).enable(); break;
+                case 'polyline': new L.Draw.Polyline(map, drawControl.options.draw.polyline).enable(); break;
+                case 'polygon': new L.Draw.Polygon(map, drawControl.options.draw.polygon).enable(); break;
+                case 'rectangle': new L.Draw.Rectangle(map, drawControl.options.draw.rectangle).enable(); break;
+                case 'circle': new L.Draw.Circle(map, drawControl.options.draw.circle).enable(); break;
+            }
+        }
+        
+        function resetDrawButtons() {
+            ['marker', 'polyline', 'polygon', 'rectangle', 'circle', 'edit', 'delete'].forEach(btn => {
+                const el = document.getElementById(`draw-${btn}-btn`);
+                if (el) el.classList.remove('active');
+            });
+        }
+        
+        function editLayers() {
+            resetDrawButtons();
+            document.getElementById('edit-btn').classList.add('active');
+            new L.EditToolbar.Edit(map, { featureGroup: drawnItems, remove: true }).enable();
+        }
+        
+        function deleteSelected() {
+            resetDrawButtons();
+            document.getElementById('delete-btn').classList.add('active');
+            new L.EditToolbar.Delete(map, { featureGroup: drawnItems }).enable();
+        }
+        
+        function clearAllDrawings() {
+            drawnItems.clearLayers();
+            markers = [];
+            lastDistance = lastArea = 0;
+            document.getElementById('lastDistance').textContent = document.getElementById('lastArea').textContent = '--';
+            resetDrawButtons();
+            showNotification('All drawings cleared', 'info');
+        }
+        
+        function searchLocation() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            if (!query) { showNotification('Enter a location name', 'warning'); return; }
+            const results = sriLankanLocations.filter(loc => loc.name.toLowerCase().includes(query));
+            const resultsDiv = document.getElementById('searchResults');
+            if (results.length > 0) {
+                resultsDiv.innerHTML = results.map(loc => `<div class="search-result-item" onclick="goToLocation(${loc.coords[0]}, ${loc.coords[1]}, ${loc.zoom})"><i class="fas fa-map-pin" style="color: var(--iwmi-green); margin-right: 5px;"></i> ${loc.name}</div>`).join('');
+            } else {
+                resultsDiv.innerHTML = '<div style="padding: 4px; color: var(--iwmi-orange);">No locations found</div>';
+            }
+        }
+        
+        function handleSearchKeyPress(event) { if (event.key === 'Enter') searchLocation(); }
+        
+        function goToLocation(lat, lng, zoom) {
+            map.setView([lat, lng], zoom || 12);
+            const marker = L.marker([lat, lng], { icon: L.divIcon({ className: 'search-marker', html: '<i class="fas fa-map-marker-alt" style="color: #22AD7A; font-size: 30px;"></i>', iconSize: [30, 30], iconAnchor: [15, 30] }) }).addTo(map);
+            setTimeout(() => map.removeLayer(marker), 3000);
+            document.getElementById('searchResults').innerHTML = '';
+            document.getElementById('searchInput').value = '';
+        }
+        
+        async function loadDistrictData(districtCode) {
+            if (!districtCode) {
+                document.getElementById('layerPanel').classList.remove('active');
+                document.getElementById('districtInfo').innerHTML = '<p><strong>Please select a district</strong> to view wetland data.</p>';
+                return;
+            }
+            currentDistrict = districtCode;
+            const districtName = districtInfo[districtCode]?.name || districtCode;
+            document.getElementById('currentDistrict').textContent = districtName;
+            document.getElementById('districtInfo').innerHTML = `<p><strong>Loading wetland data for ${districtName} district...</strong></p>`;
+            document.getElementById('layerPanel').classList.add('active');
+            clearAllLayers();
+            resetStatistics();
+            zoomToDistrict(districtCode);
+            await loadWetlandDataForDistrict(districtCode);
+            document.getElementById('districtInfo').innerHTML = `<p><strong>${districtName} District</strong><br>Wetland data loaded. Select layers to display.</p>`;
+            updateStatisticsDisplay();
+            showNotification(`Loaded wetland data for ${districtName} district`, 'info');
+        }
+        
+        function zoomToDistrict(districtCode) {
+            const district = districtInfo[districtCode];
+            if (district && district.center) map.setView(district.center, district.zoom || 11);
+        }
+        
+        async function loadWetlandDataForDistrict(districtCode) {
+            const layers = ['water', 'paddy', 'marsh', 'mangroves', 'sand', 'aquaculture', 'coral', 'streams', 'seasonal'];
+            let loadedCount = 0, totalFeatures = 0, totalAreaSqm = 0;
+            for (const layer of layers) {
+                try {
+                    let response = await fetch(`data/${districtCode}/${layer}_areas.geojson`);
+                    if (!response.ok) {
+                        response = await fetch(`data/${layer}_areas.geojson`);
+                        if (!response.ok) throw new Error(`No data for ${layer}`);
+                        const geojsonData = await response.json();
+                        const districtFeatures = geojsonData.features.filter(f => f.properties?.district?.toLowerCase() === districtCode.toLowerCase());
+                        if (districtFeatures.length === 0) continue;
+                        createLayer(layer, { type: "FeatureCollection", features: districtFeatures }, districtCode);
+                        loadedCount++;
+                        totalFeatures += districtFeatures.length;
+                        // Sum areas from properties
+                        districtFeatures.forEach(f => {
+                            if (f.properties) {
+                                const area = f.properties.area_sqm || f.properties.area_m2 || f.properties.area || 0;
+                                totalAreaSqm += area;
+                            }
+                        });
+                    } else {
+                        const geojsonData = await response.json();
+                        createLayer(layer, geojsonData, districtCode);
+                        loadedCount++;
+                        totalFeatures += geojsonData.features.length;
+                        // Sum areas from properties
+                        geojsonData.features.forEach(f => {
+                            if (f.properties) {
+                                const area = f.properties.area_sqm || f.properties.area_m2 || f.properties.area || 0;
+                                totalAreaSqm += area;
+                            }
+                        });
+                    }
+                } catch (error) { console.error(`Error loading ${layer}:`, error.message); }
+            }
+            document.getElementById('featureCount').textContent = totalFeatures.toLocaleString();
+            document.getElementById('totalArea').textContent = formatAreaFromSqm(totalAreaSqm);
+            if (loadedCount > 0) showNotification(`Loaded ${loadedCount} wetland layers`, 'info');
+            else showNotification(`No wetland data found for ${districtInfo[districtCode]?.name}`, 'warning');
+        }
+        
+        async function loadProtectedAreas() {
+            try {
+                const response = await fetch(`data/protected_areas.geojson`);
+                if (!response.ok) throw new Error("No protected areas data");
+                const geojsonData = await response.json();
+                shapefileLayers.protected = L.geoJSON(geojsonData, {
+                    style: layerStyles.protected,
+                    onEachFeature: (f, l) => l.on('click', e => showProtectedAreaInfo(f, e.latlng))
+                });
+                layerStats.protected.features = geojsonData.features.length;
+                document.getElementById('protectedLayer').disabled = false;
+                document.getElementById('protectedOpacity').disabled = false;
+                protectedAreasLoaded = true;
+                console.log(`✓ Protected areas loaded: ${geojsonData.features.length} features`);
+            } catch (error) { console.error("Error loading protected areas:", error); }
+        }
+        
+        function toggleProtectedAreas() {
+            const checkbox = document.getElementById('protectedLayer');
+            if (shapefileLayers.protected) {
+                if (checkbox.checked) { map.removeLayer(shapefileLayers.protected); checkbox.checked = false; showNotification('Protected Areas OFF', 'info'); }
+                else { map.addLayer(shapefileLayers.protected); checkbox.checked = true; showNotification('Protected Areas ON', 'info'); }
+                updateStatisticsDisplay();
+            }
+        }
+        
+        function showProtectedAreaInfo(feature, latlng) {
+            let html = `<div style="padding:12px"><h4 style="margin:0 0 10px 0;color:#28537D;"><i class="fas fa-shield-alt" style="color:#2ECC71"></i> Protected Area</h4>`;
+            if (feature.properties) Object.entries(feature.properties).forEach(([k,v]) => { if(v) html += `<p style="margin:5px 0;font-size:0.85rem;"><strong>${k}:</strong> ${v}</p>`; });
+            html += `<p style="margin-top:8px;font-size:0.8rem;color:#666;"><strong>Coordinates:</strong> ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}</p></div>`;
+            L.popup().setLatLng(latlng).setContent(html).openOn(map);
+        }
+        
+        function createLayer(layerName, geojsonData, districtCode) {
+            if (shapefileLayers[layerName]) map.removeLayer(shapefileLayers[layerName]);
+            shapefileLayers[layerName] = L.geoJSON(geojsonData, {
+                style: layerStyles[layerName],
+                onEachFeature: (f, l) => {
+                    l.on('click', e => showFeatureInfo(f, e.latlng, districtCode));
+                    // Store area from properties for statistics
+                    if (f.properties) {
+                        const areaSqm = f.properties.area_sqm || f.properties.area_m2 || f.properties.area || 0;
+                        layerStats[layerName].areaSqm += areaSqm;
+                    }
+                }
+            });
+            layerStats[layerName].features = geojsonData.features.length;
+            document.getElementById(`${layerName}Layer`).disabled = false;
+            document.getElementById(`${layerName}Opacity`).disabled = false;
+        }
+        
+        function clearAllLayers() {
+            Object.keys(shapefileLayers).forEach(layer => {
+                if (layer !== 'protected' && shapefileLayers[layer]) {
+                    map.removeLayer(shapefileLayers[layer]);
+                    shapefileLayers[layer] = null;
+                }
+                if (layer !== 'protected') {
+                    document.getElementById(`${layer}Layer`).checked = false;
+                    document.getElementById(`${layer}Layer`).disabled = true;
+                    document.getElementById(`${layer}Opacity`).disabled = true;
+                }
+            });
+        }
+        
+        function resetStatistics() {
+            Object.keys(layerStats).forEach(layer => { if (layer !== 'protected') layerStats[layer] = { features: 0, areaSqm: 0 }; });
+        }
+        
+        function showFeatureInfo(feature, latlng, districtCode) {
+            const districtName = districtInfo[districtCode]?.name || districtCode;
+            let areaText = '';
+            if (feature.properties) {
+                const areaSqm = feature.properties.area_sqm || feature.properties.area_m2 || feature.properties.area || 0;
+                if (areaSqm > 0) {
+                    areaText = `<p><strong>Area:</strong> ${formatAreaFromSqm(areaSqm)}</p>`;
+                }
+            }
+            let html = `<div style="padding:12px"><h4 style="margin:0 0 10px 0;color:#28537D;">Wetland Feature</h4><p><strong>District:</strong> ${districtName}</p>${areaText}`;
+            if (feature.properties) Object.entries(feature.properties).forEach(([k,v]) => { if(v && k !== 'district' && !k.includes('area')) html += `<p><strong>${k}:</strong> ${v}</p>`; });
+            html += `<p><strong>Coordinates:</strong> ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}</p></div>`;
+            L.popup().setLatLng(latlng).setContent(html).openOn(map);
+        }
+        
+        function formatAreaFromSqm(areaSqm) {
+            if (areaSqm >= 1000000) {
+                return (areaSqm / 1000000).toFixed(2) + ' km²';
+            } else if (areaSqm >= 10000) {
+                return (areaSqm / 10000).toFixed(2) + ' ha';
+            } else if (areaSqm >= 1) {
+                return areaSqm.toFixed(2) + ' m²';
+            } else {
+                return '0 m²';
+            }
+        }
+        
+        function toggleLayer(layerName) {
+            const checkbox = document.getElementById(layerName + 'Layer');
+            if (shapefileLayers[layerName]) {
+                if (checkbox.checked) { map.removeLayer(shapefileLayers[layerName]); checkbox.checked = false; }
+                else { map.addLayer(shapefileLayers[layerName]); checkbox.checked = true; }
+                updateStatisticsDisplay();
+            }
+        }
+        
+        function getLayerDisplayName(layerName) {
+            const names = { water:'Water Bodies', paddy:'Irrigated Land', marsh:'Freshwater Marshes', mangroves:'Mangroves',
+                sand:'Sand Shores', aquaculture:'Aquaculture Farms', coral:'Coral Reefs', streams:'Permanent Streams',
+                seasonal:'Seasonal Wetlands', protected:'Protected Areas' };
+            return names[layerName] || layerName;
+        }
+        
+        function updateLayerOpacity(layerName, opacityValue) {
+            const opacity = opacityValue / 100;
+            updateOpacityDisplay(layerName, opacityValue);
+            if (shapefileLayers[layerName]) {
+                shapefileLayers[layerName].eachLayer(l => l.setStyle({ fillOpacity: opacity, opacity: opacity }));
+            }
+        }
+        
+        function updateOpacityDisplay(layerName, value) {
+            const el = document.getElementById(layerName + 'OpacityValue');
+            if (el) el.textContent = value + '%';
+        }
+        
+        function showAllLayers() {
+            if (!currentDistrict) { showNotification('Select a district first', 'warning'); return; }
+            Object.keys(shapefileLayers).forEach(layer => {
+                if (shapefileLayers[layer] && !map.hasLayer(shapefileLayers[layer])) {
+                    map.addLayer(shapefileLayers[layer]);
+                    document.getElementById(layer + 'Layer').checked = true;
+                }
+            });
+            showNotification('All layers ON', 'info');
+            updateStatisticsDisplay();
+        }
+        
+        function hideAllLayers() {
+            Object.keys(shapefileLayers).forEach(layer => {
+                if (shapefileLayers[layer] && map.hasLayer(shapefileLayers[layer])) {
+                    map.removeLayer(shapefileLayers[layer]);
+                    document.getElementById(layer + 'Layer').checked = false;
+                }
+            });
+            showNotification('All layers OFF', 'info');
+            updateStatisticsDisplay();
+        }
+        
+        function fitToAllData() {
+            if (!currentDistrict) { showNotification('Select a district first', 'warning'); return; }
+            const bounds = new L.LatLngBounds();
+            let hasBounds = false;
+            Object.keys(shapefileLayers).forEach(layer => {
+                if (shapefileLayers[layer] && map.hasLayer(shapefileLayers[layer]) && shapefileLayers[layer].getBounds) {
+                    const b = shapefileLayers[layer].getBounds();
+                    if (b.isValid()) { bounds.extend(b); hasBounds = true; }
+                }
+            });
+            if (hasBounds) map.fitBounds(bounds, { padding: [50,50] });
+            else zoomToDistrict(currentDistrict);
+        }
+        
+        function updateStatisticsDisplay() {
+            if (!currentDistrict) { document.getElementById('areaStats').innerHTML = '<span class="loading">Select a district to view statistics</span>'; return; }
+            const districtName = districtInfo[currentDistrict]?.name || currentDistrict;
+            let activeLayers = 0, activeFeatures = 0, activeAreaSqm = 0;
+            Object.keys(shapefileLayers).forEach(layer => {
+                if (shapefileLayers[layer] && map.hasLayer(shapefileLayers[layer])) {
+                    activeLayers++;
+                    activeFeatures += layerStats[layer].features;
+                    activeAreaSqm += layerStats[layer].areaSqm;
+                }
+            });
+            document.getElementById('areaStats').innerHTML = `
+                <div style="font-size:0.75rem;">
+                    <p><strong>${districtName}</strong></p>
+                    <p>Active: ${activeLayers} | Features: ${activeFeatures.toLocaleString()}</p>
+                    <p><strong>Area: ${formatAreaFromSqm(activeAreaSqm)}</strong></p>
+                </div>`;
+        }
+        
+        function recalculateStats() { if (currentDistrict) updateStatisticsDisplay(); else showNotification('Select a district first', 'warning'); }
+        function updateQuickStats() { document.getElementById('featureCount').textContent = '0'; document.getElementById('totalArea').textContent = '0 m²'; }
+        function changeBaseMap(mapType) { Object.keys(baseLayers).forEach(l => { if (map.hasLayer(baseLayers[l])) map.removeLayer(baseLayers[l]); }); if (baseLayers[mapType]) map.addLayer(baseLayers[mapType]); }
+        function exportData() { if (!currentDistrict) showNotification('Select district first', 'warning'); else showNotification('Export feature - would export data for ' + districtInfo[currentDistrict]?.name, 'info'); }
+        function printMap() { window.print(); }
+        function scrollToMap() { document.getElementById('map-section').scrollIntoView({ behavior: 'smooth' }); }
+        
+        function showNotification(message, type = 'info') {
+            const colors = { info: '#46BBD4', error: '#E86933', warning: '#DD9103', success: '#22AD7A' };
+            const icons = { info: 'info-circle', error: 'exclamation-triangle', warning: 'exclamation-circle', success: 'check-circle' };
+            const notification = document.createElement('div');
+            notification.style.cssText = `position:fixed; top:20px; right:20px; background:${colors[type]}; color:white; padding:10px 14px; border-radius:4px; box-shadow:0 5px 15px rgba(0,0,0,0.15); z-index:10000; max-width:300px; animation:slideIn 0.3s ease-out; font-size:0.8rem; border-left:4px solid ${type === 'info' ? '#28537D' : type === 'error' ? '#D45A23' : type === 'warning' ? '#C07E02' : '#1B8A5E'}`;
+            notification.innerHTML = `<div style="display:flex; align-items:center; gap:8px;"><i class="fas fa-${icons[type]}"></i><div>${message}</div></div>`;
+            document.body.appendChild(notification);
+            setTimeout(() => { notification.style.animation = 'slideOut 0.3s ease-out'; setTimeout(() => notification.remove(), 300); }, 3000);
+        }
     </script>
+    
+    <!-- Footer -->
+    <footer>
+        <div style="max-width:1200px; margin:0 auto; padding:0 1rem;">
+            <p>&copy; National Wetland Inventory of Sri Lanka 2026</p>
+            <p style="font-size:0.9rem; opacity:0.8; margin-top:0.5rem;">Project of International Water Management Institute Sri Lanka</p>
+        </div>
+    </footer>
 </body>
 </html>

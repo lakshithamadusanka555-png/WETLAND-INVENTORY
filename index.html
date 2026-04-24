@@ -514,7 +514,7 @@
         }
         
         /* 2.12: Button Variants */
-        .pick-coord-btn, .analyze-btn, .search-btn, .use-coord-btn, .clear-buffer-btn {
+        .pick-coord-btn, .analyze-btn, .search-btn, .use-coord-btn, .clear-buffer-btn, .download-buffer-btn {
             width: 100%;
             padding: 0.6rem;
             border-radius: 5px;
@@ -560,6 +560,19 @@
         
         .clear-buffer-btn:hover {
             background: var(--iwmi-border);
+        }
+        
+        .download-buffer-btn {
+            background: var(--iwmi-green);
+            color: white;
+            border: none;
+            margin-top: 10px;
+        }
+        
+        .download-buffer-btn:hover {
+            background: var(--iwmi-teal);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(34, 173, 122, 0.3);
         }
         
         .use-coord-btn {
@@ -1214,6 +1227,9 @@
                     <button class="clear-buffer-btn" onclick="clearBufferAnalysis()">
                         <i class="fas fa-trash-alt"></i> Clear Analysis
                     </button>
+                    <button class="download-buffer-btn" id="downloadBufferBtn" onclick="downloadBufferGeoJSON()" style="display: none;">
+                        <i class="fas fa-download"></i> Download Buffer Wetlands (GeoJSON)
+                    </button>
                     <div class="buffer-results" id="bufferResults">
                         <div class="result-section">
                             <div class="result-title">📌 Enter coordinates or pick from map</div>
@@ -1589,6 +1605,12 @@
         let tempPickMarker = null;
         let selectedLat = null;
         let selectedLng = null;
+        
+        // Buffer Analysis Storage for Download
+        let lastBufferAnalysis = {
+            lat: null, lng: null, bufferKm: null,
+            features: []  // Array to store clipped features for download
+        };
         
         // Drawing and Measurement Variables
         let drawnItems = new L.FeatureGroup();
@@ -2187,8 +2209,11 @@
         }
         
         // ============================================
-        // 9.15: BUFFER ZONE ANALYSIS FUNCTIONS
+        // 9.15: BUFFER ZONE ANALYSIS FUNCTIONS WITH DOWNLOAD SUPPORT
         // ============================================
+        
+        // Store clipped features for download
+        let currentBufferFeatures = [];
         
         async function analyzeBufferZone() {
             const lat = parseFloat(document.getElementById('latitude').value);
@@ -2234,6 +2259,9 @@
             const analysisResults = {};
             let totalAreaSqm = 0;
             
+            // Reset features for download
+            currentBufferFeatures = [];
+            
             const wetlandLayers = ['water', 'paddy', 'marsh', 'mangroves', 'sand', 'aquaculture', 'coral', 'streams', 'seasonal', 'protected'];
             
             for (const layer of wetlandLayers) {
@@ -2250,9 +2278,25 @@
                                     const intersectionArea = turf.area(intersection);
                                     if (intersectionArea > 0.1) {
                                         layerArea += intersectionArea;
+                                        // Add clipped feature for download with layer type info
+                                        const clippedFeature = {
+                                            type: "Feature",
+                                            geometry: intersection.geometry,
+                                            properties: {
+                                                ...featureLayer.feature.properties,
+                                                wetland_type: getLayerDisplayName(layer),
+                                                original_layer: layer,
+                                                area_within_buffer_sqm: intersectionArea,
+                                                buffer_center_lat: lat,
+                                                buffer_center_lng: lng,
+                                                buffer_radius_km: bufferKm
+                                            }
+                                        };
+                                        currentBufferFeatures.push(clippedFeature);
                                     }
                                 }
                             } catch(e) {
+                                // Fallback: check if centroid is within buffer
                                 try {
                                     const centroid = turf.centroid(featureGeoJSON);
                                     const isWithin = turf.booleanPointInPolygon(centroid, bufferPolygon);
@@ -2266,6 +2310,16 @@
                                         if (area === 0) area = turf.area(featureGeoJSON);
                                         if (area > 0) {
                                             layerArea += area;
+                                            // Add original feature for download
+                                            const downloadFeature = JSON.parse(JSON.stringify(featureLayer.feature));
+                                            downloadFeature.properties = downloadFeature.properties || {};
+                                            downloadFeature.properties.wetland_type = getLayerDisplayName(layer);
+                                            downloadFeature.properties.original_layer = layer;
+                                            downloadFeature.properties.estimated_area_sqm = area;
+                                            downloadFeature.properties.buffer_center_lat = lat;
+                                            downloadFeature.properties.buffer_center_lng = lng;
+                                            downloadFeature.properties.buffer_radius_km = bufferKm;
+                                            currentBufferFeatures.push(downloadFeature);
                                         }
                                     }
                                 } catch(e2) {}
@@ -2284,8 +2338,62 @@
                 }
             }
             
+            // Store buffer info for download
+            lastBufferAnalysis = {
+                lat: lat, lng: lng, bufferKm: bufferKm,
+                totalAreaSqm: totalAreaSqm,
+                timestamp: new Date().toISOString()
+            };
+            
             displayBufferResults(analysisResults, lat, lng, bufferKm, totalAreaSqm);
-            showNotification(`Analysis complete! Total area inside buffer: ${formatAreaFromSqm(totalAreaSqm)}`, 'success');
+            
+            // Show download button if there are features to download
+            const downloadBtn = document.getElementById('downloadBufferBtn');
+            if (currentBufferFeatures.length > 0) {
+                downloadBtn.style.display = 'flex';
+                showNotification(`Analysis complete! ${currentBufferFeatures.length} wetland features found inside buffer. Click Download to save GeoJSON.`, 'success');
+            } else {
+                downloadBtn.style.display = 'none';
+                showNotification(`Analysis complete! No wetlands found inside buffer.`, 'info');
+            }
+        }
+        
+        function downloadBufferGeoJSON() {
+            if (currentBufferFeatures.length === 0) {
+                showNotification('No buffer data available. Please run buffer analysis first.', 'warning');
+                return;
+            }
+            
+            // Create GeoJSON FeatureCollection
+            const featureCollection = {
+                type: "FeatureCollection",
+                features: currentBufferFeatures,
+                metadata: {
+                    analysis_date: lastBufferAnalysis.timestamp || new Date().toISOString(),
+                    center_latitude: lastBufferAnalysis.lat,
+                    center_longitude: lastBufferAnalysis.lng,
+                    buffer_radius_km: lastBufferAnalysis.bufferKm,
+                    total_wetland_area_sqm: lastBufferAnalysis.totalAreaSqm,
+                    total_wetland_area_formatted: formatAreaFromSqm(lastBufferAnalysis.totalAreaSqm),
+                    feature_count: currentBufferFeatures.length,
+                    data_source: "National Wetland Inventory of Sri Lanka",
+                    district: currentDistrict ? districtInfo[currentDistrict]?.name : "Unknown",
+                    description: "Wetland features within buffer zone extracted from NWI Sri Lanka dataset"
+                }
+            };
+            
+            // Create download link
+            const geojsonStr = JSON.stringify(featureCollection, null, 2);
+            const blob = new Blob([geojsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+            a.download = `wetland_buffer_${lastBufferAnalysis.lat.toFixed(4)}_${lastBufferAnalysis.lng.toFixed(4)}_${lastBufferAnalysis.bufferKm}km_${timestamp}.geojson`;
+            a.href = url;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showNotification(`Downloaded ${currentBufferFeatures.length} wetland features as GeoJSON`, 'success');
         }
         
         function displayBufferResults(results, lat, lng, bufferKm, totalAreaSqm) {
@@ -2296,6 +2404,7 @@
                 <div class="result-title">🔄 Buffer Radius: ${bufferKm} km</div>
                 <div class="result-title">📏 Total Wetland Area INSIDE Buffer: ${formatAreaFromSqm(totalAreaSqm)}</div>
                 <div class="result-title" style="color: #2ECC71; font-size: 0.7rem;">✓ Only area within the buffer zone is counted</div>
+                <div class="result-title" style="color: #5088C6; font-size: 0.7rem; margin-top: 5px;">📊 Features inside buffer: ${currentBufferFeatures.length}</div>
             </div>`;
             
             if (Object.keys(results).length > 0) {
@@ -2337,7 +2446,10 @@
                 map.removeLayer(currentBufferMarker);
                 currentBufferMarker = null;
             }
+            currentBufferFeatures = [];
+            lastBufferAnalysis = { lat: null, lng: null, bufferKm: null, totalAreaSqm: 0, timestamp: null };
             document.getElementById('bufferResults').innerHTML = `<div class="result-section"><div class="result-title">📌 Enter coordinates or pick from map</div><div style="color: #666; font-size: 0.7rem; padding: 5px;">Example: Colombo (6.9271, 79.8612)</div></div>`;
+            document.getElementById('downloadBufferBtn').style.display = 'none';
             showNotification('Buffer analysis cleared', 'info');
         }
         

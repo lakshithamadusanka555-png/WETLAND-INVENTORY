@@ -2597,7 +2597,7 @@
             titleDiv.innerText = mapTitle;
             overlayDiv.appendChild(titleDiv);
             
-            // North arrow (top right)
+            // North arrow (top right) - using custom North.png image
             const northDiv = document.createElement('div');
             northDiv.style.position = 'absolute';
             northDiv.style.top = '20px';
@@ -2607,42 +2607,23 @@
             northDiv.style.borderRadius = '4px';
             northDiv.style.border = '1px solid #ccc';
             northDiv.style.textAlign = 'center';
-            northDiv.style.fontSize = '24px';
             northDiv.style.boxShadow = '0 1px 3px rgba(0,0,0,0.2)';
-            northDiv.innerHTML = '<i class="fas fa-arrow-up" style="display:block; font-size:32px; color:#E86933; margin-bottom:4px;"></i><span style="font-size:12px; font-weight:bold; color:#28537D;">N</span>';
+            northDiv.style.zIndex = '10001';
+            northDiv.style.width = '50px';
+            northDiv.style.height = '50px';
+            northDiv.style.display = 'flex';
+            northDiv.style.alignItems = 'center';
+            northDiv.style.justifyContent = 'center';
+            
+            const northImg = document.createElement('img');
+            northImg.src = 'https://raw.githubusercontent.com/lakshithamadusanka555-png/WETLAND-INVENTORY/main/images/North.png';
+            northImg.style.width = '40px';
+            northImg.style.height = '40px';
+            northImg.style.objectFit = 'contain';
+            northImg.style.display = 'block';
+            northImg.crossOrigin = 'Anonymous';
+            northDiv.appendChild(northImg);
             overlayDiv.appendChild(northDiv);
-            
-            // Scale bar (bottom left)
-            const zoomLevel = map.getZoom();
-            let scaleText = '';
-            if (zoomLevel >= 18) scaleText = '~ 10 m';
-            else if (zoomLevel >= 17) scaleText = '~ 20 m';
-            else if (zoomLevel >= 16) scaleText = '~ 50 m';
-            else if (zoomLevel >= 15) scaleText = '~ 100 m';
-            else if (zoomLevel >= 14) scaleText = '~ 200 m';
-            else if (zoomLevel >= 13) scaleText = '~ 500 m';
-            else if (zoomLevel >= 12) scaleText = '~ 1 km';
-            else if (zoomLevel >= 11) scaleText = '~ 2 km';
-            else if (zoomLevel >= 10) scaleText = '~ 5 km';
-            else if (zoomLevel >= 9) scaleText = '~ 10 km';
-            else if (zoomLevel >= 8) scaleText = '~ 20 km';
-            else if (zoomLevel >= 7) scaleText = '~ 50 km';
-            else if (zoomLevel >= 6) scaleText = '~ 100 km';
-            else scaleText = '~ 200 km';
-            
-            const scaleDiv = document.createElement('div');
-            scaleDiv.style.position = 'absolute';
-            scaleDiv.style.bottom = '20px';
-            scaleDiv.style.left = '20px';
-            scaleDiv.style.backgroundColor = 'rgba(255,255,255,0.9)';
-            scaleDiv.style.padding = '8px 12px';
-            scaleDiv.style.borderRadius = '4px';
-            scaleDiv.style.border = '1px solid #ccc';
-            scaleDiv.style.fontFamily = 'monospace';
-            scaleDiv.style.fontSize = '14px';
-            scaleDiv.style.boxShadow = '0 1px 3px rgba(0,0,0,0.2)';
-            scaleDiv.innerHTML = `<span style="display:inline-block; width:100px; height:4px; background:#333; margin-right:8px; vertical-align:middle;"></span> ${scaleText}`;
-            overlayDiv.appendChild(scaleDiv);
             
             // Legend image (bottom right)
             const legendImg = document.createElement('img');
@@ -2656,15 +2637,21 @@
             legendImg.style.padding = '5px';
             legendImg.style.borderRadius = '4px';
             legendImg.style.boxShadow = '0 1px 3px rgba(0,0,0,0.2)';
+            legendImg.crossOrigin = 'Anonymous';
             overlayDiv.appendChild(legendImg);
             
             mapContainer.appendChild(overlayDiv);
             
-            // Wait for legend to load
+            // Wait for images to load
             await new Promise((resolve) => {
-                if (legendImg.complete) resolve();
-                else legendImg.onload = resolve;
-                setTimeout(resolve, 1500);
+                let loaded = 0;
+                const checkLoaded = () => {
+                    loaded++;
+                    if (loaded >= 2) resolve();
+                };
+                if (legendImg.complete) checkLoaded(); else legendImg.onload = checkLoaded;
+                if (northImg.complete) checkLoaded(); else northImg.onload = checkLoaded;
+                setTimeout(resolve, 2000);
             });
             
             await new Promise(r => setTimeout(r, 500));

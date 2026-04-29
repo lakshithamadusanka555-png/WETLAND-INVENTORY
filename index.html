@@ -1118,104 +1118,6 @@
                 padding: 1rem;
             }
         }
-        
-        /* 2.27: Print/Export Styles */
-        #printContainer {
-            position: fixed;
-            top: -9999px;
-            left: -9999px;
-            width: 1200px;
-            background: white;
-            z-index: -1;
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        #printMap {
-            width: 100%;
-            height: 600px;
-            background: #f0f0f0;
-        }
-        
-        .print-title {
-            text-align: center;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            font-size: 28px;
-            font-weight: bold;
-            color: #28537D;
-            margin: 20px 0;
-            padding: 0 20px;
-        }
-        
-        .print-layout {
-            display: flex;
-            gap: 20px;
-            padding: 20px;
-            background: white;
-        }
-        
-        .print-map-container {
-            flex: 3;
-            position: relative;
-        }
-        
-        .print-legend-container {
-            flex: 1;
-            border-left: 2px solid #e0e0e0;
-            padding-left: 20px;
-        }
-        
-        .print-legend-container h4 {
-            margin-top: 0;
-            color: #28537D;
-            font-size: 18px;
-        }
-        
-        .print-legend-container img {
-            width: 100%;
-            max-width: 250px;
-            border: 1px solid #ddd;
-            background: white;
-        }
-        
-        .print-scale-bar {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(255,255,255,0.9);
-            padding: 8px 12px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            font-family: monospace;
-            font-size: 14px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-        }
-        
-        .print-north-arrow {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255,255,255,0.9);
-            padding: 8px 12px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            font-size: 24px;
-            text-align: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-        }
-        
-        .print-north-arrow i {
-            display: block;
-            font-size: 32px;
-            color: #E86933;
-            margin-bottom: 4px;
-        }
-        
-        .print-north-arrow span {
-            font-size: 12px;
-            font-weight: bold;
-            color: #28537D;
-        }
     </style>
 </head>
 <body>
@@ -2619,7 +2521,7 @@
         function scrollToMap() { document.getElementById('map-section').scrollIntoView({ behavior: 'smooth' }); }
         
         // ============================================
-        // 9.18: MAP DOWNLOAD/EXPORT FUNCTION
+        // 9.18: MAP DOWNLOAD/EXPORT FUNCTION (FIXED)
         // ============================================
         
         function promptForMapDownload() {
@@ -2631,82 +2533,70 @@
             if (title !== null && title.trim() !== "") {
                 downloadMapAsImage(title);
             } else if (title !== null) {
-                showNotification('Map title cannot be empty. Using default title.', 'info');
                 downloadMapAsImage(`Wetland Map of ${districtInfo[currentDistrict]?.name || currentDistrict} District`);
             }
-            // If user cancels, do nothing
         }
         
         async function downloadMapAsImage(mapTitle) {
             showNotification('Generating map image, please wait...', 'info');
             
-            // Temporarily hide map controls for cleaner capture
-            const controlContainer = document.querySelector('.leaflet-control-container');
-            const originalDisplay = controlContainer ? controlContainer.style.display : null;
-            if (controlContainer) controlContainer.style.display = 'none';
+            // Temporarily hide sidebar and map controls for cleaner capture
+            const sidebar = document.querySelector('.map-sidebar');
+            const controls = document.querySelector('.map-controls');
+            const originalSidebarDisplay = sidebar ? sidebar.style.display : null;
+            const originalControlsDisplay = controls ? controls.style.display : null;
+            if (sidebar) sidebar.style.display = 'none';
+            if (controls) controls.style.display = 'none';
             
-            // Create a print container dynamically
-            const printContainer = document.createElement('div');
-            printContainer.id = 'dynamicPrintContainer';
-            printContainer.style.position = 'absolute';
-            printContainer.style.top = '-9999px';
-            printContainer.style.left = '-9999px';
-            printContainer.style.width = '1200px';
-            printContainer.style.backgroundColor = 'white';
-            printContainer.style.padding = '20px';
-            printContainer.style.fontFamily = 'Arial, sans-serif';
-            printContainer.style.boxSizing = 'border-box';
+            // Add custom overlays: north arrow, scale bar, legend, and title
+            const mapContainer = document.getElementById('map');
+            const mapRect = mapContainer.getBoundingClientRect();
             
-            // Clone the map container
-            const originalMapContainer = document.getElementById('map');
-            const mapClone = originalMapContainer.cloneNode(true);
-            mapClone.id = 'printMapClone';
-            mapClone.style.width = '100%';
-            mapClone.style.height = '600px';
-            mapClone.style.position = 'relative';
-            mapClone.style.backgroundColor = '#f0f0f0';
+            // Create overlay container
+            const overlayDiv = document.createElement('div');
+            overlayDiv.style.position = 'absolute';
+            overlayDiv.style.top = '0';
+            overlayDiv.style.left = '0';
+            overlayDiv.style.width = '100%';
+            overlayDiv.style.height = '100%';
+            overlayDiv.style.pointerEvents = 'none';
+            overlayDiv.style.zIndex = '10000';
+            overlayDiv.style.backgroundColor = 'transparent';
             
-            // Create title element
+            // Title overlay
             const titleDiv = document.createElement('div');
-            titleDiv.className = 'print-title';
+            titleDiv.style.position = 'absolute';
+            titleDiv.style.top = '20px';
+            titleDiv.style.left = '0';
+            titleDiv.style.width = '100%';
             titleDiv.style.textAlign = 'center';
-            titleDiv.style.fontSize = '28px';
+            titleDiv.style.fontSize = '24px';
             titleDiv.style.fontWeight = 'bold';
             titleDiv.style.color = '#28537D';
-            titleDiv.style.margin = '20px 0';
-            titleDiv.style.padding = '0 20px';
+            titleDiv.style.textShadow = '1px 1px 2px white';
+            titleDiv.style.backgroundColor = 'rgba(255,255,255,0.7)';
+            titleDiv.style.padding = '10px';
+            titleDiv.style.zIndex = '10001';
             titleDiv.innerText = mapTitle;
+            overlayDiv.appendChild(titleDiv);
             
-            // Create layout container
-            const layoutDiv = document.createElement('div');
-            layoutDiv.style.display = 'flex';
-            layoutDiv.style.gap = '20px';
-            layoutDiv.style.padding = '20px';
-            layoutDiv.style.backgroundColor = 'white';
+            // North arrow
+            const northDiv = document.createElement('div');
+            northDiv.style.position = 'absolute';
+            northDiv.style.top = '20px';
+            northDiv.style.right = '20px';
+            northDiv.style.backgroundColor = 'rgba(255,255,255,0.9)';
+            northDiv.style.padding = '8px 12px';
+            northDiv.style.borderRadius = '4px';
+            northDiv.style.border = '1px solid #ccc';
+            northDiv.style.fontSize = '24px';
+            northDiv.style.textAlign = 'center';
+            northDiv.style.boxShadow = '0 1px 3px rgba(0,0,0,0.2)';
+            northDiv.style.zIndex = '10001';
+            northDiv.innerHTML = '<i class="fas fa-arrow-up" style="display:block; font-size:32px; color:#E86933; margin-bottom:4px;"></i><span style="font-size:12px; font-weight:bold; color:#28537D;">N</span>';
+            overlayDiv.appendChild(northDiv);
             
-            const mapContainerDiv = document.createElement('div');
-            mapContainerDiv.style.flex = '3';
-            mapContainerDiv.style.position = 'relative';
-            mapContainerDiv.appendChild(mapClone);
-            
-            // Add north arrow
-            const northArrow = document.createElement('div');
-            northArrow.className = 'print-north-arrow';
-            northArrow.style.position = 'absolute';
-            northArrow.style.top = '20px';
-            northArrow.style.right = '20px';
-            northArrow.style.backgroundColor = 'rgba(255,255,255,0.9)';
-            northArrow.style.padding = '8px 12px';
-            northArrow.style.borderRadius = '4px';
-            northArrow.style.border = '1px solid #ccc';
-            northArrow.style.fontSize = '24px';
-            northArrow.style.textAlign = 'center';
-            northArrow.style.boxShadow = '0 1px 3px rgba(0,0,0,0.2)';
-            northArrow.style.zIndex = '1000';
-            northArrow.innerHTML = '<i class="fas fa-arrow-up" style="display:block; font-size:32px; color:#E86933; margin-bottom:4px;"></i><span style="font-size:12px; font-weight:bold; color:#28537D;">N</span>';
-            mapContainerDiv.appendChild(northArrow);
-            
-            // Add scale bar
+            // Scale bar
             const zoomLevel = map.getZoom();
             let scaleText = '';
             if (zoomLevel >= 18) scaleText = '~ 10 m';
@@ -2724,58 +2614,53 @@
             else if (zoomLevel >= 6) scaleText = '~ 100 km';
             else scaleText = '~ 200 km';
             
-            const scaleBar = document.createElement('div');
-            scaleBar.className = 'print-scale-bar';
-            scaleBar.style.position = 'absolute';
-            scaleBar.style.bottom = '20px';
-            scaleBar.style.left = '20px';
-            scaleBar.style.backgroundColor = 'rgba(255,255,255,0.9)';
-            scaleBar.style.padding = '8px 12px';
-            scaleBar.style.borderRadius = '4px';
-            scaleBar.style.border = '1px solid #ccc';
-            scaleBar.style.fontFamily = 'monospace';
-            scaleBar.style.fontSize = '14px';
-            scaleBar.style.boxShadow = '0 1px 3px rgba(0,0,0,0.2)';
-            scaleBar.style.zIndex = '1000';
-            scaleBar.innerHTML = `<span style="display:inline-block; width:100px; height:4px; background:#333; margin-right:8px; vertical-align:middle;"></span> ${scaleText}`;
-            mapContainerDiv.appendChild(scaleBar);
+            const scaleDiv = document.createElement('div');
+            scaleDiv.style.position = 'absolute';
+            scaleDiv.style.bottom = '20px';
+            scaleDiv.style.left = '20px';
+            scaleDiv.style.backgroundColor = 'rgba(255,255,255,0.9)';
+            scaleDiv.style.padding = '8px 12px';
+            scaleDiv.style.borderRadius = '4px';
+            scaleDiv.style.border = '1px solid #ccc';
+            scaleDiv.style.fontFamily = 'monospace';
+            scaleDiv.style.fontSize = '14px';
+            scaleDiv.style.boxShadow = '0 1px 3px rgba(0,0,0,0.2)';
+            scaleDiv.style.zIndex = '10001';
+            scaleDiv.innerHTML = `<span style="display:inline-block; width:100px; height:4px; background:#333; margin-right:8px; vertical-align:middle;"></span> ${scaleText}`;
+            overlayDiv.appendChild(scaleDiv);
             
-            // Create legend container
-            const legendContainer = document.createElement('div');
-            legendContainer.style.flex = '1';
-            legendContainer.style.borderLeft = '2px solid #e0e0e0';
-            legendContainer.style.paddingLeft = '20px';
-            
-            const legendTitle = document.createElement('h4');
-            legendTitle.style.marginTop = '0';
-            legendTitle.style.color = '#28537D';
-            legendTitle.style.fontSize = '18px';
-            legendTitle.innerText = 'Legend';
-            legendContainer.appendChild(legendTitle);
-            
+            // Legend image - using raw GitHub URL
             const legendImg = document.createElement('img');
-            legendImg.src = 'https://github.com/lakshithamadusanka555-png/WETLAND-INVENTORY/blob/main/images/Legend.png';
-            legendImg.style.width = '100%';
-            legendImg.style.maxWidth = '250px';
-            legendImg.style.border = '1px solid #ddd';
+            legendImg.src = 'https://raw.githubusercontent.com/lakshithamadusanka555-png/WETLAND-INVENTORY/main/images/Legend.png';
+            legendImg.style.position = 'absolute';
+            legendImg.style.bottom = '20px';
+            legendImg.style.right = '20px';
+            legendImg.style.maxWidth = '180px';
             legendImg.style.backgroundColor = 'white';
-            legendImg.crossOrigin = 'Anonymous';
-            legendContainer.appendChild(legendImg);
+            legendImg.style.border = '1px solid #ccc';
+            legendImg.style.padding = '5px';
+            legendImg.style.borderRadius = '4px';
+            legendImg.style.boxShadow = '0 1px 3px rgba(0,0,0,0.2)';
+            legendImg.style.zIndex = '10001';
+            legendImg.style.width = 'auto';
+            legendImg.style.height = 'auto';
+            overlayDiv.appendChild(legendImg);
             
-            layoutDiv.appendChild(mapContainerDiv);
-            layoutDiv.appendChild(legendContainer);
+            mapContainer.style.position = 'relative';
+            mapContainer.appendChild(overlayDiv);
             
-            printContainer.appendChild(titleDiv);
-            printContainer.appendChild(layoutDiv);
+            // Wait for legend image to load
+            await new Promise((resolve) => {
+                if (legendImg.complete) resolve();
+                else legendImg.onload = resolve;
+                setTimeout(resolve, 1000);
+            });
             
-            document.body.appendChild(printContainer);
+            // Small delay to ensure everything renders
+            await new Promise(r => setTimeout(r, 200));
             
-            // Wait for images to load and map to render
-            await new Promise(resolve => setTimeout(resolve, 500));
-            
-            // Use html2canvas to capture the print container
             try {
-                const canvas = await html2canvas(printContainer, {
+                const canvas = await html2canvas(mapContainer, {
                     scale: 3,
                     useCORS: true,
                     backgroundColor: '#ffffff',
@@ -2795,9 +2680,11 @@
                 console.error('html2canvas error:', err);
                 showNotification('Failed to generate map image. Please try again.', 'error');
             } finally {
-                // Clean up
-                document.body.removeChild(printContainer);
-                if (controlContainer) controlContainer.style.display = originalDisplay;
+                // Clean up overlays and restore UI
+                mapContainer.removeChild(overlayDiv);
+                mapContainer.style.position = '';
+                if (sidebar) sidebar.style.display = originalSidebarDisplay;
+                if (controls) controls.style.display = originalControlsDisplay;
             }
         }
         

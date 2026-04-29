@@ -2521,26 +2521,40 @@
         function scrollToMap() { document.getElementById('map-section').scrollIntoView({ behavior: 'smooth' }); }
         
         // ============================================
-        // 9.18: MAP DOWNLOAD/EXPORT FUNCTION (FULLY FIXED)
+        // 9.18: IMPROVED MAP DOWNLOAD FUNCTION (FULL LANDSCAPE)
         // ============================================
         
-        function promptForMapDownload() {
-            if (!currentDistrict) {
-                showNotification('Please select a district first to load wetland data.', 'warning');
-                return;
-            }
-            const title = prompt("Enter map title:", `Wetland Map of ${districtInfo[currentDistrict]?.name || currentDistrict} District`);
-            if (title !== null && title.trim() !== "") {
-                downloadMapAsImage(title);
-            } else if (title !== null) {
-                downloadMapAsImage(`Wetland Map of ${districtInfo[currentDistrict]?.name || currentDistrict} District`);
-            }
+        async function waitForTiles() {
+            return new Promise((resolve) => {
+                let tileLoadCount = 0;
+                const checkTiles = () => {
+                    const tiles = document.querySelectorAll('.leaflet-tile-loaded');
+                    if (tiles.length > 0 || tileLoadCount > 50) {
+                        resolve();
+                    } else {
+                        tileLoadCount++;
+                        setTimeout(checkTiles, 100);
+                    }
+                };
+                setTimeout(checkTiles, 500);
+            });
         }
         
         async function downloadMapAsImage(mapTitle) {
-            showNotification('Generating map image, please wait...', 'info');
+            showNotification('Preparing map for export, please wait...', 'info');
             
-            // Temporarily hide sidebar and map controls for a clean capture
+            // Store original styles
+            const mapContainer = document.getElementById('map');
+            const originalOverflow = mapContainer.style.overflow;
+            const originalPosition = mapContainer.style.position;
+            const originalWidth = mapContainer.style.width;
+            const originalHeight = mapContainer.style.height;
+            
+            // Force a full repaint of all layers
+            map.invalidateSize();
+            await waitForTiles();
+            
+            // Temporarily hide sidebar and controls
             const sidebar = document.querySelector('.map-sidebar');
             const controls = document.querySelector('.map-controls');
             const originalSidebarDisplay = sidebar ? sidebar.style.display : null;
@@ -2548,10 +2562,15 @@
             if (sidebar) sidebar.style.display = 'none';
             if (controls) controls.style.display = 'none';
             
-            // Get the map container
-            const mapContainer = document.getElementById('map');
+            // Set map container to a fixed landscape size for capture
+            mapContainer.style.width = '1200px';
+            mapContainer.style.height = '800px';
+            mapContainer.style.position = 'relative';
+            mapContainer.style.overflow = 'visible';
+            map.invalidateSize();
+            await new Promise(r => setTimeout(r, 300));
             
-            // Create overlay container for title, north arrow, scale bar, and legend
+            // Create overlay elements
             const overlayDiv = document.createElement('div');
             overlayDiv.style.position = 'absolute';
             overlayDiv.style.top = '0';
@@ -2571,10 +2590,9 @@
             titleDiv.style.fontSize = '24px';
             titleDiv.style.fontWeight = 'bold';
             titleDiv.style.color = '#28537D';
-            titleDiv.style.backgroundColor = 'rgba(255,255,255,0.8)';
+            titleDiv.style.backgroundColor = 'rgba(255,255,255,0.85)';
             titleDiv.style.padding = '10px';
             titleDiv.style.borderRadius = '4px';
-            titleDiv.style.boxShadow = '0 1px 3px rgba(0,0,0,0.2)';
             titleDiv.style.fontFamily = 'Arial, sans-serif';
             titleDiv.innerText = mapTitle;
             overlayDiv.appendChild(titleDiv);
@@ -2591,7 +2609,6 @@
             northDiv.style.textAlign = 'center';
             northDiv.style.fontSize = '24px';
             northDiv.style.boxShadow = '0 1px 3px rgba(0,0,0,0.2)';
-            northDiv.style.fontFamily = 'Arial, sans-serif';
             northDiv.innerHTML = '<i class="fas fa-arrow-up" style="display:block; font-size:32px; color:#E86933; margin-bottom:4px;"></i><span style="font-size:12px; font-weight:bold; color:#28537D;">N</span>';
             overlayDiv.appendChild(northDiv);
             
@@ -2627,7 +2644,7 @@
             scaleDiv.innerHTML = `<span style="display:inline-block; width:100px; height:4px; background:#333; margin-right:8px; vertical-align:middle;"></span> ${scaleText}`;
             overlayDiv.appendChild(scaleDiv);
             
-            // Legend image (bottom right) - using raw GitHub URL
+            // Legend image (bottom right)
             const legendImg = document.createElement('img');
             legendImg.src = 'https://raw.githubusercontent.com/lakshithamadusanka555-png/WETLAND-INVENTORY/main/images/Legend.png';
             legendImg.style.position = 'absolute';
@@ -2639,23 +2656,18 @@
             legendImg.style.padding = '5px';
             legendImg.style.borderRadius = '4px';
             legendImg.style.boxShadow = '0 1px 3px rgba(0,0,0,0.2)';
-            legendImg.style.width = 'auto';
-            legendImg.style.height = 'auto';
             overlayDiv.appendChild(legendImg);
             
-            // Append overlay to map container
-            mapContainer.style.position = 'relative';
             mapContainer.appendChild(overlayDiv);
             
-            // Wait for legend image to load
+            // Wait for legend to load
             await new Promise((resolve) => {
                 if (legendImg.complete) resolve();
                 else legendImg.onload = resolve;
-                setTimeout(resolve, 1500); // fallback
+                setTimeout(resolve, 1500);
             });
             
-            // Small delay to ensure rendering
-            await new Promise(r => setTimeout(r, 300));
+            await new Promise(r => setTimeout(r, 500));
             
             try {
                 const canvas = await html2canvas(mapContainer, {
@@ -2663,16 +2675,16 @@
                     useCORS: true,
                     backgroundColor: '#ffffff',
                     logging: false,
-                    allowTaint: false
+                    allowTaint: false,
+                    windowWidth: mapContainer.scrollWidth,
+                    windowHeight: mapContainer.scrollHeight
                 });
                 
-                // Trigger download
                 const link = document.createElement('a');
                 const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
                 link.download = `wetland_map_${timestamp}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
-                
                 showNotification('Map image downloaded successfully!', 'success');
             } catch (err) {
                 console.error('html2canvas error:', err);
@@ -2680,9 +2692,26 @@
             } finally {
                 // Clean up
                 mapContainer.removeChild(overlayDiv);
-                mapContainer.style.position = '';
+                mapContainer.style.width = originalWidth;
+                mapContainer.style.height = originalHeight;
+                mapContainer.style.position = originalPosition;
+                mapContainer.style.overflow = originalOverflow;
+                map.invalidateSize();
                 if (sidebar) sidebar.style.display = originalSidebarDisplay;
                 if (controls) controls.style.display = originalControlsDisplay;
+            }
+        }
+        
+        function promptForMapDownload() {
+            if (!currentDistrict) {
+                showNotification('Please select a district first to load wetland data.', 'warning');
+                return;
+            }
+            const title = prompt("Enter map title:", `Wetland Map of ${districtInfo[currentDistrict]?.name || currentDistrict} District`);
+            if (title !== null && title.trim() !== "") {
+                downloadMapAsImage(title);
+            } else if (title !== null) {
+                downloadMapAsImage(`Wetland Map of ${districtInfo[currentDistrict]?.name || currentDistrict} District`);
             }
         }
         

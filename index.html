@@ -1568,8 +1568,6 @@
                             <option value="terrain">Terrain</option>
                             <option value="topo">Topographic</option>
                         </select>
-                        <button class="map-btn" onclick="exportData()"><i class="fas fa-download"></i> Export</button>
-                        <button class="map-btn secondary" onclick="printMap()"><i class="fas fa-print"></i> Print</button>
                     </div>
                 </div>
             </div>
@@ -1782,12 +1780,13 @@
         // ============================================
         
         function initializeMap() {
-            // Use canvas renderer for better compatibility with html2canvas
+            // Disable default zoom control to remove zoom buttons from top left
             map = L.map('map', {
                 preferCanvas: true,
                 zoomAnimation: false,
                 fadeAnimation: false,
-                markerZoomAnimation: false
+                markerZoomAnimation: false,
+                zoomControl: false
             }).setView([7.8731, 80.7718], 8);
             
             baseLayers.osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -1820,6 +1819,7 @@
         function initializeDrawingTools() {
             map.addLayer(drawnItems);
             
+            // Draw control is defined but NOT added to the map – we only use the sidebar buttons.
             drawControl = new L.Control.Draw({
                 draw: {
                     polyline: { shapeOptions: { color: '#5088C6', weight: 3 }, metric: true },
@@ -1830,8 +1830,7 @@
                 },
                 edit: { featureGroup: drawnItems, remove: true }
             });
-            
-            map.addControl(drawControl);
+            // NOT adding drawControl: no toolbar on map
             
             map.on(L.Draw.Event.CREATED, function(event) {
                 const layer = event.layer;
@@ -1887,7 +1886,7 @@
         function activateDrawTool(tool) {
             resetDrawButtons();
             document.getElementById(`draw-${tool}-btn`).classList.add('active');
-            if (currentDrawTool) { map.removeControl(drawControl); map.addControl(drawControl); }
+            // Recreate control if needed? Not necessary.
             currentDrawTool = tool;
             switch(tool) {
                 case 'marker': new L.Draw.Marker(map).enable(); break;
@@ -2523,12 +2522,6 @@
             else zoomToDistrict(currentDistrict);
         }
         
-        function exportData() { 
-            if (!currentDistrict) showNotification('Select district first', 'warning'); 
-            else showNotification('Export feature - would export data for ' + districtInfo[currentDistrict]?.name, 'info'); 
-        }
-        
-        function printMap() { window.print(); }
         function scrollToMap() { document.getElementById('map-section').scrollIntoView({ behavior: 'smooth' }); }
         
         // ============================================

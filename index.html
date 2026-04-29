@@ -15,76 +15,86 @@
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     
     <!-- ============================================ -->
-    <!-- SECTION 2: CSS VARIABLES AND CUSTOM STYLES -->
+    <!-- SECTION 2: MODERN CSS VARIABLES AND STYLES -->
     <!-- ============================================ -->
     <style>
-        /* 2.1: IWMI Brand Color Variables */
+        /* Modern color palette - IWMI inspired with fresh tones */
         :root {
-            --iwmi-dark-blue: #28537D;
-            --iwmi-light-blue: #5088C6;
-            --iwmi-sky-blue: #46BBD4;
-            --iwmi-teal: #0297A6;
-            --iwmi-green: #22AD7A;
-            --iwmi-orange: #E86933;
-            --iwmi-yellow: #DD9103;
-            --iwmi-mangrove: #8B4513;
-            --iwmi-red: #DC3545;
-            --iwmi-aqua-yellow: #FFC107;
+            --iwmi-dark-blue: #1E3A5F;
+            --iwmi-light-blue: #3A7CA5;
+            --iwmi-sky-blue: #5DADE2;
+            --iwmi-teal: #2C9A8B;
+            --iwmi-green: #2E8B57;
+            --iwmi-orange: #E67E22;
+            --iwmi-gold: #F39C12;
+            --iwmi-mangrove: #8B5A2B;
+            --iwmi-red: #E74C3C;
             --iwmi-coral: #FF6B6B;
-            --iwmi-stream: #4A90E2;
+            --iwmi-stream: #3498DB;
             --iwmi-seasonal: #9B59B6;
-            --iwmi-protected: #2ECC71;
-            --iwmi-light-grey: #E8E7E7;
+            --iwmi-protected: #27AE60;
+            --iwmi-light-grey: #F0F4F8;
             --iwmi-white: #FFFFFF;
-            --iwmi-text-dark: #333333;
-            --iwmi-text-light: #666666;
-            --iwmi-background: #F8F9FA;
-            --iwmi-border: #E0E7EE;
+            --iwmi-text-dark: #2C3E50;
+            --iwmi-text-light: #7F8C8D;
+            --iwmi-background: #F8FAFC;
+            --iwmi-border: #E2E8F0;
+            --iwmi-card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+            --iwmi-hover-shadow: 0 20px 25px -12px rgba(0, 0, 0, 0.1);
             
             /* Layer Colors */
-            --color-water: #5088C6;
-            --color-paddy: #DD9103;
-            --color-marsh: #46BBD4;
-            --color-mangroves: #8B4513;
-            --color-sand: #DC3545;
-            --color-aquaculture: #FFC107;
+            --color-water: #3A7CA5;
+            --color-paddy: #F39C12;
+            --color-marsh: #5DADE2;
+            --color-mangroves: #8B5A2B;
+            --color-sand: #E74C3C;
+            --color-aquaculture: #F1C40F;
             --color-coral: #FF6B6B;
-            --color-stream: #4A90E2;
+            --color-stream: #3498DB;
             --color-seasonal: #9B59B6;
-            --color-protected: #2ECC71;
+            --color-protected: #27AE60;
         }
         
-        /* 2.2: Global Styles */
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        * {
             margin: 0;
             padding: 0;
-            color: var(--iwmi-text-dark);
-            background: var(--iwmi-background);
-            -webkit-font-smoothing: antialiased;
+            box-sizing: border-box;
         }
         
-        /* 2.3: Navigation Bar Styles */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--iwmi-background);
+            color: var(--iwmi-text-dark);
+            line-height: 1.5;
+        }
+        
+        /* Import Inter font */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap');
+        
+        /* Navigation Bar - Modern */
         nav {
-            background: var(--iwmi-dark-blue);
+            background: var(--iwmi-white);
+            backdrop-filter: blur(8px);
             padding: 0.8rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
             position: sticky;
             top: 0;
             z-index: 1000;
+            border-bottom: 1px solid var(--iwmi-border);
         }
         
         .logo h2 {
-            color: var(--iwmi-white);
-            font-size: 1.4rem;
+            color: var(--iwmi-dark-blue);
+            font-size: 1.35rem;
+            font-weight: 700;
             margin: 0;
-            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 10px;
+            letter-spacing: -0.3px;
         }
         
         .logo h2 i {
@@ -102,59 +112,55 @@
         }
         
         .nav-links a {
-            color: var(--iwmi-white);
+            color: var(--iwmi-text-dark);
             text-decoration: none;
             font-weight: 500;
             padding: 0.5rem 1rem;
-            border-radius: 4px;
-            transition: all 0.3s;
-            font-size: 0.95rem;
-            opacity: 0.9;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
         }
         
         .nav-links a:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--iwmi-green);
-            opacity: 1;
+            background: var(--iwmi-light-grey);
+            color: var(--iwmi-dark-blue);
         }
         
         .nav-links a.active {
-            background: var(--iwmi-sky-blue);
-            color: var(--iwmi-white);
-            opacity: 1;
+            background: var(--iwmi-dark-blue);
+            color: white;
         }
         
         .chatbot-btn {
             background: var(--iwmi-green);
             color: white;
             border: none;
-            padding: 0.6rem 1.2rem;
-            font-size: 0.95rem;
-            border-radius: 4px;
+            padding: 0.5rem 1.2rem;
+            font-size: 0.9rem;
+            border-radius: 40px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
             gap: 8px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            box-shadow: 0 2px 8px rgba(34, 173, 122, 0.3);
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(46, 139, 86, 0.2);
             text-decoration: none;
         }
         
         .chatbot-btn:hover {
             background: var(--iwmi-teal);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(2, 151, 166, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(46, 139, 86, 0.3);
             color: white;
         }
         
-        /* 2.4: Hero Section Styles */
+        /* Hero Section */
         .hero {
             position: relative;
-            height: 60vh;
-            min-height: 400px;
-            background: linear-gradient(135deg, var(--iwmi-dark-blue) 0%, var(--iwmi-light-blue) 50%, var(--iwmi-sky-blue) 100%);
+            height: 50vh;
+            min-height: 320px;
+            background: linear-gradient(120deg, var(--iwmi-dark-blue) 0%, var(--iwmi-light-blue) 100%);
             color: white;
             display: flex;
             align-items: center;
@@ -174,804 +180,283 @@
             background: url('https://github.com/lakshithamadusanka555-png/WETLAND-INVENTORY/raw/main/images/banner.jpg');
             background-size: cover;
             background-position: center;
-            opacity: 0.3;
+            opacity: 0.2;
             z-index: 1;
         }
         
         .hero-content {
-            max-width: 800px;
-            animation: fadeInUp 1s ease-out;
+            max-width: 700px;
+            animation: fadeInUp 0.8s ease-out;
             position: relative;
             z-index: 2;
         }
         
         .hero h1 {
-            font-size: 3rem;
+            font-size: 2.8rem;
             margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            color: white;
-            font-weight: 600;
-            line-height: 1.2;
+            font-weight: 700;
+            letter-spacing: -0.5px;
         }
         
         .hero p {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             margin-bottom: 2rem;
             opacity: 0.9;
-            color: rgba(255, 255, 255, 0.95);
-            max-width: 600px;
+            max-width: 550px;
             margin-left: auto;
             margin-right: auto;
-            line-height: 1.6;
         }
         
         .hero-btn {
-            background: var(--iwmi-green);
-            color: white;
+            background: var(--iwmi-white);
+            color: var(--iwmi-dark-blue);
             border: none;
-            padding: 1rem 2.5rem;
-            font-size: 1.1rem;
-            border-radius: 4px;
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+            border-radius: 40px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
             display: inline-flex;
             align-items: center;
             gap: 10px;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 12px rgba(34, 173, 122, 0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         
         .hero-btn:hover {
             background: var(--iwmi-teal);
+            color: white;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(2, 151, 166, 0.4);
         }
         
-        /* 2.5: Quick Stats Styles */
+        /* Quick Stats Cards */
         .quick-stats {
             display: flex;
             justify-content: center;
-            gap: 3rem;
+            gap: 2rem;
             background: var(--iwmi-white);
-            padding: 2rem;
-            margin: -40px auto 3rem auto;
-            max-width: 1000px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(40, 83, 125, 0.1);
+            padding: 1.5rem 2rem;
+            margin: -30px auto 2rem auto;
+            max-width: 950px;
+            border-radius: 20px;
+            box-shadow: var(--iwmi-card-shadow);
             position: relative;
             z-index: 10;
-            border-top: 4px solid var(--iwmi-sky-blue);
+            border: 1px solid var(--iwmi-border);
+            backdrop-filter: blur(4px);
         }
         
         .stat-item {
             text-align: center;
+            flex: 1;
         }
         
         .stat-number {
-            font-size: 2.2rem;
-            font-weight: 700;
+            font-size: 2rem;
+            font-weight: 800;
             color: var(--iwmi-dark-blue);
-            margin-bottom: 0.5rem;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin-bottom: 0.3rem;
         }
         
         .stat-label {
             color: var(--iwmi-text-light);
             font-weight: 500;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        /* 2.6: Map Section Styles */
-        .map-section {
-            padding: 3rem 2rem;
-            background: linear-gradient(to bottom, var(--iwmi-background) 0%, #f0f4f8 100%);
-            min-height: 85vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .map-header {
-            text-align: center;
-            margin-bottom: 2.5rem;
-            flex-shrink: 0;
-        }
-        
-        .map-header h2 {
-            color: var(--iwmi-dark-blue);
-            font-size: 2rem;
-            margin-bottom: 0.8rem;
-            position: relative;
-            display: inline-block;
-            padding-bottom: 10px;
-            font-weight: 600;
-        }
-        
-        .map-header h2::after {
-            content: '';
-            display: block;
-            width: 60px;
-            height: 3px;
-            background: var(--iwmi-green);
-            margin: 0.5rem auto;
-        }
-        
-        .map-header p {
-            color: var(--iwmi-text-light);
-            max-width: 600px;
-            margin: 0 auto 2rem auto;
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-        
-        /* 2.7: Map Container Layout */
-        .map-container {
-            max-width: 2000px;
-            width: 95%;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 320px 1fr;
-            gap: 20px;
-            background: var(--iwmi-white);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 15px 35px rgba(40, 83, 125, 0.1);
-            height: 80vh;
-            min-height: 700px;
-            flex-grow: 1;
-            border: 1px solid var(--iwmi-border);
-        }
-        
-        .map-sidebar {
-            background: var(--iwmi-white);
-            padding: 15px;
-            border-right: 1px solid var(--iwmi-border);
-            height: 100%;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            scrollbar-width: thin;
-            scrollbar-color: var(--iwmi-light-blue) var(--iwmi-light-grey);
-        }
-        
-        .map-sidebar::-webkit-scrollbar {
-            width: 5px;
-        }
-        
-        .map-sidebar::-webkit-scrollbar-track {
-            background: var(--iwmi-light-grey);
-        }
-        
-        .map-sidebar::-webkit-scrollbar-thumb {
-            background: var(--iwmi-light-blue);
-            border-radius: 10px;
-        }
-        
-        .map-content {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-        
-        #map {
-            height: 100%;
-            width: 100%;
-            flex-grow: 1;
-            min-height: 600px;
-            border-radius: 0 8px 0 0;
-        }
-        
-        /* 2.8: Map Controls Styles */
-        .map-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.8rem 1.2rem;
-            background: var(--iwmi-white);
-            border-top: 1px solid var(--iwmi-border);
-            flex-wrap: wrap;
-            gap: 10px;
-            flex-shrink: 0;
-            border-radius: 0 0 8px 0;
-        }
-        
-        .control-group {
-            display: flex;
-            gap: 0.6rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        
-        /* 2.9: Button Styles */
-        .map-btn {
-            background: var(--iwmi-light-blue);
-            color: var(--iwmi-white);
-            border: none;
-            padding: 0.5rem 0.8rem;
-            border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.3s;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-        
-        .map-btn:hover {
-            background: var(--iwmi-dark-blue);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(40, 83, 125, 0.2);
-        }
-        
-        .map-btn.secondary {
-            background: var(--iwmi-green);
-        }
-        
-        .map-btn.secondary:hover {
-            background: var(--iwmi-teal);
-            box-shadow: 0 4px 12px rgba(2, 151, 166, 0.2);
-        }
-        
-        .map-btn.danger {
-            background: var(--iwmi-orange);
-        }
-        
-        .map-btn.danger:hover {
-            background: #D45A23;
-            box-shadow: 0 4px 12px rgba(232, 105, 51, 0.2);
-        }
-        
-        .chatbot-map-btn {
-            background: var(--iwmi-teal);
-            color: var(--iwmi-white);
-            border: none;
-            padding: 0.5rem 0.8rem;
-            border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.3s;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-        
-        .chatbot-map-btn:hover {
-            background: var(--iwmi-sky-blue);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(2, 151, 166, 0.2);
-        }
-        
-        /* 2.10: Panel Styles */
-        .coord-picker-panel, .buffer-panel, .search-panel, .district-panel, .layer-control-panel, .drawing-panel, .legend, .stats-panel {
-            background: var(--iwmi-white);
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid var(--iwmi-border);
-            margin-bottom: 12px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.03);
-        }
-        
-        .coord-header, .buffer-header, .search-header, .district-header, .panel-title, .legend-title {
-            font-weight: 600;
-            color: var(--iwmi-dark-blue);
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         
-        .coord-header i, .buffer-header i, .search-header i, .district-header i, .panel-title i, .legend-title i {
-            color: var(--iwmi-sky-blue);
-            font-size: 0.95rem;
+        /* Map Section */
+        .map-section {
+            padding: 2rem 2rem 3rem;
+            background: var(--iwmi-background);
         }
         
-        /* 2.11: Input Styles */
-        .coordinate-group, .search-input-group {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 8px;
+        .map-header {
+            text-align: center;
+            margin-bottom: 2rem;
         }
         
-        .coordinate-input, .buffer-input, .district-select, .search-input {
-            flex: 1;
-            padding: 0.5rem 0.6rem;
-            border: 1.5px solid var(--iwmi-light-blue);
-            border-radius: 5px;
-            background: var(--iwmi-white);
+        .map-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
             color: var(--iwmi-dark-blue);
-            font-size: 0.8rem;
-            transition: all 0.3s;
+            margin-bottom: 0.5rem;
+        }
+        
+        .map-header p {
+            color: var(--iwmi-text-light);
+            max-width: 550px;
+            margin: 0 auto;
+        }
+        
+        /* Map Container */
+        .map-container {
+            max-width: 1600px;
+            width: 95%;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 1.5rem;
+            background: transparent;
+            border-radius: 24px;
+            height: 75vh;
+            min-height: 650px;
+        }
+        
+        /* Sidebar Modern */
+        .map-sidebar {
+            background: var(--iwmi-white);
+            border-radius: 20px;
+            padding: 1.2rem;
+            border: 1px solid var(--iwmi-border);
+            box-shadow: var(--iwmi-card-shadow);
+            overflow-y: auto;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        /* Panels */
+        .coord-picker-panel, .buffer-panel, .search-panel, .district-panel, 
+        .layer-control-panel, .drawing-panel, .legend, .stats-panel {
+            background: var(--iwmi-white);
+            border-radius: 16px;
+            border: 1px solid var(--iwmi-border);
+            padding: 1rem;
+            transition: all 0.2s;
+        }
+        
+        .coord-header, .buffer-header, .search-header, .district-header, 
+        .panel-title, .legend-title {
+            font-weight: 600;
+            color: var(--iwmi-dark-blue);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            letter-spacing: 0.3px;
+        }
+        
+        /* Inputs */
+        .coordinate-input, .buffer-input, .district-select, .search-input {
+            background: var(--iwmi-light-grey);
+            border: 1px solid var(--iwmi-border);
+            border-radius: 12px;
+            padding: 0.6rem 0.8rem;
+            font-size: 0.85rem;
+            transition: all 0.2s;
         }
         
         .coordinate-input:focus, .buffer-input:focus, .district-select:focus, .search-input:focus {
             outline: none;
-            border-color: var(--iwmi-dark-blue);
-            box-shadow: 0 0 0 2px rgba(40, 83, 125, 0.1);
+            border-color: var(--iwmi-light-blue);
+            box-shadow: 0 0 0 3px rgba(58, 124, 165, 0.15);
         }
         
-        .buffer-input-group {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-            align-items: center;
-        }
-        
-        .buffer-unit {
-            font-size: 0.75rem;
-            color: var(--iwmi-text-light);
+        /* Buttons */
+        .pick-coord-btn, .analyze-btn, .search-btn, .use-coord-btn, .clear-buffer-btn, 
+        .download-buffer-btn, .draw-btn, .map-btn {
+            border-radius: 12px;
             font-weight: 500;
-        }
-        
-        /* 2.12: Button Variants */
-        .pick-coord-btn, .analyze-btn, .search-btn, .use-coord-btn, .clear-buffer-btn, .download-buffer-btn {
-            width: 100%;
-            padding: 0.6rem;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.3s;
-        }
-        
-        .pick-coord-btn, .search-btn {
-            background: var(--iwmi-light-blue);
-            color: white;
-            border: none;
-        }
-        
-        .pick-coord-btn:hover, .search-btn:hover {
-            background: var(--iwmi-dark-blue);
-            transform: translateY(-2px);
+            transition: all 0.2s;
         }
         
         .analyze-btn {
             background: var(--iwmi-orange);
             color: white;
-            border: none;
-            margin-bottom: 10px;
         }
         
         .analyze-btn:hover {
-            background: #D45A23;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(232, 105, 51, 0.2);
-        }
-        
-        .clear-buffer-btn {
-            background: var(--iwmi-light-grey);
-            color: var(--iwmi-dark-blue);
-            border: 1px solid var(--iwmi-border);
-        }
-        
-        .clear-buffer-btn:hover {
-            background: var(--iwmi-border);
+            background: #D35400;
+            transform: translateY(-1px);
         }
         
         .download-buffer-btn {
             background: var(--iwmi-green);
-            color: white;
-            border: none;
-            margin-top: 10px;
         }
         
-        .download-buffer-btn:hover {
-            background: var(--iwmi-teal);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(34, 173, 122, 0.3);
-        }
-        
-        .use-coord-btn {
-            background: var(--iwmi-green);
-            color: white;
-            border: none;
-            margin-top: 8px;
-        }
-        
-        .use-coord-btn:hover {
-            background: var(--iwmi-teal);
-            transform: translateY(-2px);
-        }
-        
-        .pick-coord-btn.active {
-            background: var(--iwmi-green);
-            box-shadow: 0 0 0 2px rgba(34, 173, 122, 0.3);
-        }
-        
-        /* 2.13: Selected Coordinate Display */
-        .selected-coord {
-            background: rgba(232, 231, 231, 0.2);
-            padding: 8px;
-            border-radius: 5px;
-            margin-top: 8px;
-            border-left: 3px solid var(--iwmi-green);
-        }
-        
-        .coord-label {
-            font-size: 0.7rem;
-            color: var(--iwmi-text-light);
-            margin-bottom: 4px;
-        }
-        
-        .coord-value {
-            font-size: 0.8rem;
-            color: var(--iwmi-dark-blue);
-            font-weight: 600;
-            font-family: monospace;
-        }
-        
-        /* 2.14: Buffer Results Styles */
-        .buffer-results {
-            margin-top: 10px;
-            max-height: 280px;
-            overflow-y: auto;
-            font-size: 0.75rem;
-            background: rgba(232, 231, 231, 0.2);
-            border-radius: 5px;
-            padding: 8px;
-        }
-        
-        .result-section {
-            margin-bottom: 8px;
-            border-bottom: 1px solid var(--iwmi-border);
-            padding-bottom: 6px;
-        }
-        
-        .result-title {
-            font-weight: 700;
-            color: var(--iwmi-dark-blue);
-            margin-bottom: 5px;
-            font-size: 0.8rem;
-        }
-        
-        .result-item {
-            display: flex;
-            justify-content: space-between;
-            margin: 3px 0;
-            padding: 2px 4px;
-        }
-        
-        .result-label {
-            color: var(--iwmi-text-light);
-        }
-        
-        .result-value {
-            color: var(--iwmi-dark-blue);
-            font-weight: 600;
-        }
-        
-        /* 2.15: Search Results */
-        .search-results {
-            font-size: 0.75rem;
-            color: var(--iwmi-text-light);
-            max-height: 100px;
-            overflow-y: auto;
-            background: rgba(232, 231, 231, 0.2);
-            border-radius: 4px;
-            padding: 4px;
-        }
-        
-        .search-result-item {
-            padding: 4px 6px;
-            cursor: pointer;
-            border-radius: 3px;
-            transition: all 0.2s;
-        }
-        
-        .search-result-item:hover {
-            background: rgba(70, 187, 212, 0.1);
-            color: var(--iwmi-dark-blue);
-        }
-        
-        /* 2.16: District Info */
-        .district-info {
-            font-size: 0.75rem;
-            color: var(--iwmi-text-light);
-            line-height: 1.4;
-            background: rgba(232, 231, 231, 0.2);
-            padding: 8px;
-            border-radius: 5px;
-            margin-top: 6px;
-            border-left: 2px solid var(--iwmi-sky-blue);
-        }
-        
-        /* 2.17: Layer Control Panel */
-        .layer-control-panel {
-            display: none;
-        }
-        
-        .layer-control-panel.active {
-            display: block;
-            animation: fadeIn 0.3s ease-out;
-        }
-        
-        .layer-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 5px;
-        }
-        
+        /* Layer cards */
         .layer-card {
-            display: flex;
-            flex-direction: column;
-            background: rgba(232, 231, 231, 0.15);
-            border-radius: 6px;
-            border: 1px solid var(--iwmi-border);
-            padding: 8px;
-            transition: all 0.2s;
-        }
-        
-        .layer-card:hover {
-            border-color: var(--iwmi-sky-blue);
-            background: rgba(70, 187, 212, 0.03);
+            background: var(--iwmi-light-grey);
+            border-radius: 14px;
+            border: none;
+            padding: 0.7rem;
+            margin-bottom: 0.5rem;
         }
         
         .layer-card.active {
-            border-color: var(--iwmi-light-blue);
-            background: rgba(70, 187, 212, 0.06);
+            background: rgba(46, 139, 86, 0.08);
             border-left: 3px solid var(--iwmi-green);
         }
         
-        .layer-header {
+        /* Legend */
+        .legend-list {
             display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 6px;
-            cursor: pointer;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
         
-        .layer-checkbox {
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-            accent-color: var(--iwmi-green);
-            margin: 0;
-        }
-        
-        .layer-label {
-            flex-grow: 1;
-            font-size: 0.8rem;
-            color: var(--iwmi-text-dark);
-            font-weight: 600;
-        }
-        
-        .layer-color-swatch {
-            width: 16px;
-            height: 16px;
-            border-radius: 3px;
-            border: 1.5px solid var(--iwmi-white);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-            flex-shrink: 0;
-        }
-        
-        .opacity-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding-left: 24px;
-        }
-        
-        .opacity-icon {
-            color: var(--iwmi-text-light);
-            font-size: 0.7rem;
-            width: 14px;
-            text-align: center;
-        }
-        
-        .layer-opacity-slider {
-            flex-grow: 1;
-            height: 4px;
-            border-radius: 2px;
-            accent-color: var(--iwmi-light-blue);
-            cursor: pointer;
+        .legend-item {
             background: var(--iwmi-light-grey);
+            border-radius: 40px;
+            padding: 0.2rem 0.7rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
         
-        .opacity-percent {
-            font-size: 0.65rem;
-            color: var(--iwmi-dark-blue);
-            font-weight: 600;
-            min-width: 35px;
-            text-align: right;
-        }
-        
-        /* 2.18: Protected Card */
-        .protected-card {
-            border-left: 3px solid var(--iwmi-protected);
-            background: rgba(46, 204, 113, 0.05);
-        }
-        
-        .protected-badge {
-            font-size: 0.65rem;
-            background: var(--iwmi-protected);
-            color: white;
-            padding: 2px 6px;
-            border-radius: 10px;
-            margin-left: 8px;
-            font-weight: 600;
-        }
-        
-        /* 2.19: Drawing Tools */
+        /* Drawing tools */
         .drawing-tools {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 4px;
-            margin-top: 8px;
+            gap: 8px;
         }
         
         .draw-btn {
             background: var(--iwmi-light-grey);
-            color: var(--iwmi-dark-blue);
-            border: 1px solid var(--iwmi-border);
-            padding: 0.4rem 0;
-            border-radius: 4px;
-            cursor: pointer;
+            border-radius: 12px;
+            padding: 0.5rem 0;
             font-size: 0.7rem;
-            font-weight: 600;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            transition: all 0.2s;
         }
         
-        .draw-btn i {
-            font-size: 0.9rem;
-            color: var(--iwmi-light-blue);
-        }
-        
-        .draw-btn:hover {
-            background: var(--iwmi-light-blue);
-            color: white;
-            border-color: var(--iwmi-dark-blue);
-        }
-        
-        .draw-btn:hover i {
-            color: white;
-        }
-        
-        .draw-btn.active {
-            background: var(--iwmi-green);
-            color: white;
-            border-color: var(--iwmi-dark-blue);
-        }
-        
-        .draw-btn.active i {
-            color: white;
-        }
-        
-        /* 2.20: Measurement Display */
-        .measurement-display {
-            margin-top: 8px;
-            font-size: 0.75rem;
-            background: rgba(232, 231, 231, 0.2);
-            padding: 6px;
-            border-radius: 4px;
-            border-left: 2px solid var(--iwmi-orange);
-        }
-        
-        .measurement-item {
-            display: flex;
-            justify-content: space-between;
-            margin: 2px 0;
-        }
-        
-        .measurement-label {
-            color: var(--iwmi-text-light);
-            font-weight: 500;
-        }
-        
-        .measurement-value {
-            color: var(--iwmi-dark-blue);
-            font-weight: 600;
-        }
-        
-        /* 2.21: Legend List */
-        .legend-list {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 4px 6px;
-            background: rgba(232, 231, 231, 0.2);
-            border-radius: 4px;
-        }
-        
-        .legend-color {
-            width: 14px;
-            height: 14px;
-            border-radius: 3px;
-            border: 1.5px solid var(--iwmi-white);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-        
-        .legend-label {
-            font-size: 0.75rem;
-            color: var(--iwmi-text-dark);
-            font-weight: 500;
-        }
-        
-        /* 2.22: Statistics Display */
-        .stat-display {
-            margin-top: 6px;
-            font-size: 0.75rem;
-            color: var(--iwmi-text-dark);
-            line-height: 1.4;
-            background: rgba(232, 231, 231, 0.2);
-            padding: 10px;
-            border-radius: 5px;
-            min-height: 40px;
-            border-left: 2px solid var(--iwmi-green);
-        }
-        
-        .stats-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        
-        /* 2.23: Dropdown Styles */
-        .filter-dropdown {
-            padding: 0.5rem 0.6rem;
-            border: 1px solid var(--iwmi-light-blue);
-            border-radius: 4px;
+        /* Map area */
+        .map-content {
             background: var(--iwmi-white);
-            color: var(--iwmi-dark-blue);
-            font-size: 0.75rem;
-            cursor: pointer;
-            font-weight: 500;
-            min-width: 100px;
-            transition: all 0.3s;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid var(--iwmi-border);
+            box-shadow: var(--iwmi-card-shadow);
         }
         
-        .filter-dropdown:focus {
-            outline: none;
-            border-color: var(--iwmi-dark-blue);
-            box-shadow: 0 0 0 2px rgba(40, 83, 125, 0.1);
+        #map {
+            height: 100%;
+            width: 100%;
+            min-height: 600px;
         }
         
-        /* 2.24: Status Indicators */
-        .loading {
-            color: var(--iwmi-light-blue);
-            font-style: italic;
-            font-size: 0.75rem;
+        /* Remove old map controls */
+        .map-controls {
+            display: none;
         }
         
-        .success {
-            color: var(--iwmi-green);
+        /* Footer */
+        footer {
+            background: var(--iwmi-white);
+            border-top: 1px solid var(--iwmi-border);
+            padding: 1.5rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--iwmi-text-light);
         }
         
-        .error {
-            color: var(--iwmi-orange);
-        }
-        
-        /* 2.25: Animations */
+        /* Animations */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(20px);
             }
             to {
                 opacity: 1;
@@ -979,144 +464,53 @@
             }
         }
         
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-5px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        
-        @keyframes slideOut {
-            from { transform: translateX(0); opacity: 1; }
-            to { transform: translateX(100%); opacity: 0; }
-        }
-        
-        /* 2.26: Responsive Design */
-        @media (max-width: 1200px) {
-            .map-container {
-                height: 75vh;
-                min-height: 650px;
-                width: 98%;
-                grid-template-columns: 300px 1fr;
-            }
-        }
-        
+        /* Responsive */
         @media (max-width: 1024px) {
             .map-container {
                 grid-template-columns: 1fr;
-                grid-template-rows: auto 1fr;
                 height: auto;
-                min-height: 800px;
             }
-            
             .map-sidebar {
-                height: auto;
-                max-height: 550px;
-                border-right: none;
-                border-bottom: 1px solid var(--iwmi-border);
+                max-height: 500px;
             }
-            
-            #map {
-                min-height: 500px;
+            .quick-stats {
+                flex-wrap: wrap;
+                gap: 1rem;
             }
         }
         
         @media (max-width: 768px) {
-            .hero {
-                height: 50vh;
-                min-height: 350px;
-                padding: 0 1rem;
+            nav {
+                flex-direction: column;
+                gap: 0.8rem;
             }
-            
             .hero h1 {
                 font-size: 2rem;
             }
-            
-            .hero p {
-                font-size: 1rem;
-            }
-            
-            .hero-btn {
-                padding: 0.8rem 1.5rem;
-                font-size: 1rem;
-            }
-            
-            .chatbot-btn {
-                padding: 0.5rem 0.8rem;
-                font-size: 0.8rem;
-            }
-            
-            .quick-stats {
-                flex-direction: column;
-                gap: 1.5rem;
-                margin-top: -30px;
-                padding: 1.5rem;
-                max-width: 90%;
-            }
-            
-            .stat-number {
-                font-size: 1.8rem;
-            }
-            
-            .map-section {
-                padding: 2rem 1rem;
-            }
-            
-            .map-container {
-                min-height: 700px;
-                width: 100%;
-            }
-            
-            .map-controls {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .control-group {
-                width: 100%;
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-            
-            nav {
-                flex-direction: column;
-                gap: 1rem;
-                padding: 1rem;
-            }
-            
-            .nav-links {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 0.8rem;
-            }
-            
-            .coordinate-group {
-                flex-direction: column;
-            }
         }
         
-        @media (max-width: 480px) {
-            .hero {
-                height: 40vh;
-                min-height: 300px;
-            }
-            
-            .hero h1 {
-                font-size: 1.6rem;
-            }
-            
-            .quick-stats {
-                padding: 1rem;
-            }
+        /* Basemap selector (now in sidebar) */
+        .basemap-selector {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .basemap-btn {
+            background: var(--iwmi-light-grey);
+            border: 1px solid var(--iwmi-border);
+            border-radius: 20px;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .basemap-btn:hover {
+            background: var(--iwmi-light-blue);
+            color: white;
+        }
+        .basemap-btn.active {
+            background: var(--iwmi-dark-blue);
+            color: white;
         }
     </style>
 </head>
@@ -1149,7 +543,7 @@
     <section class="hero">
         <div class="hero-content">
             <h1>Explore Sri Lanka's Wetlands</h1>
-            <p>Discover, understand, and help protect our nation's vital wetland ecosystems through interactive mapping with real shapefile data.</p>
+            <p>Discover, understand, and protect vital wetland ecosystems with interactive mapping and real shapefile data.</p>
             <button class="hero-btn" onclick="scrollToMap()">
                 <i class="fas fa-map-marked-alt"></i> View Wetland Data
             </button>
@@ -1184,14 +578,27 @@
     <section class="map-section" id="map-section">
         <div class="map-header">
             <h2>Sri Lanka Wetland Data Explorer</h2>
-            <p>Explore detailed wetland data overlaid on an interactive Sri Lankan map, showcasing spatial distributions and classifications</p>
+            <p>Interactive map with detailed wetland classifications and spatial analysis tools</p>
         </div>
         
         <div class="map-container">
             <!-- 6.1: Sidebar -->
             <div class="map-sidebar">
                 
-                <!-- 6.1.1: Coordinate Picker Panel -->
+                <!-- Basemap Selector (moved from bottom bar) -->
+                <div class="coord-picker-panel">
+                    <div class="coord-header">
+                        <i class="fas fa-map"></i> Basemap
+                    </div>
+                    <div class="basemap-selector">
+                        <button class="basemap-btn" data-map="osm">Street</button>
+                        <button class="basemap-btn" data-map="satellite">Satellite</button>
+                        <button class="basemap-btn" data-map="terrain">Terrain</button>
+                        <button class="basemap-btn" data-map="topo">Topographic</button>
+                    </div>
+                </div>
+                
+                <!-- 6.1.1: Coordinate Picker -->
                 <div class="coord-picker-panel">
                     <div class="coord-header">
                         <i class="fas fa-map-pin"></i> Pick Coordinates
@@ -1209,7 +616,7 @@
                     </div>
                 </div>
                 
-                <!-- 6.1.2: Buffer Zone Analysis Panel -->
+                <!-- 6.1.2: Buffer Zone Analysis -->
                 <div class="buffer-panel">
                     <div class="buffer-header">
                         <i class="fas fa-draw-polygon"></i> Buffer Zone Analysis
@@ -1239,7 +646,7 @@
                     </div>
                 </div>
                 
-                <!-- 6.1.3: Search Panel -->
+                <!-- 6.1.3: Search Location -->
                 <div class="search-panel">
                     <div class="search-header">
                         <i class="fas fa-search"></i> Search Location
@@ -1253,7 +660,7 @@
                     <div class="search-results" id="searchResults"></div>
                 </div>
                 
-                <!-- 6.1.4: District Selection Panel -->
+                <!-- 6.1.4: District Selection -->
                 <div class="district-panel">
                     <div class="district-header">
                         <i class="fas fa-map-marker-alt"></i> Select District
@@ -1287,7 +694,7 @@
                         <option value="kegalle">Kegalle</option>
                     </select>
                     <div class="district-info" id="districtInfo">
-                        <p><strong>Please select a district</strong> to view wetland data. Wetland layers will appear after district selection.</p>
+                        <p><strong>Please select a district</strong> to view wetland data.</p>
                     </div>
                 </div>
                 
@@ -1296,14 +703,13 @@
                     <div class="panel-title">
                         <i class="fas fa-layer-group"></i> Wetland Layers: <span id="currentDistrict" style="color: var(--iwmi-green);">District</span>
                     </div>
-                    
                     <div class="layer-list">
                         <!-- Water Bodies Layer -->
                         <div class="layer-card" id="layer-card-water">
                             <div class="layer-header" onclick="toggleLayer('water')">
                                 <input type="checkbox" class="layer-checkbox" id="waterLayer">
                                 <span class="layer-label">Water Bodies</span>
-                                <div class="layer-color-swatch" style="background-color: rgba(80, 136, 198, 0.7);"></div>
+                                <div class="layer-color-swatch" style="background-color: rgba(58, 124, 165, 0.7);"></div>
                             </div>
                             <div class="opacity-row">
                                 <i class="fas fa-adjust opacity-icon"></i>
@@ -1312,13 +718,11 @@
                                 <span class="opacity-percent" id="waterOpacityValue">70%</span>
                             </div>
                         </div>
-                        
-                        <!-- Irrigated Land Layer -->
                         <div class="layer-card" id="layer-card-paddy">
                             <div class="layer-header" onclick="toggleLayer('paddy')">
                                 <input type="checkbox" class="layer-checkbox" id="paddyLayer">
                                 <span class="layer-label">Irrigated Land</span>
-                                <div class="layer-color-swatch" style="background-color: rgba(221, 145, 3, 0.7);"></div>
+                                <div class="layer-color-swatch" style="background-color: rgba(243, 156, 18, 0.7);"></div>
                             </div>
                             <div class="opacity-row">
                                 <i class="fas fa-adjust opacity-icon"></i>
@@ -1327,13 +731,11 @@
                                 <span class="opacity-percent" id="paddyOpacityValue">70%</span>
                             </div>
                         </div>
-                        
-                        <!-- Freshwater Marshes Layer -->
                         <div class="layer-card" id="layer-card-marsh">
                             <div class="layer-header" onclick="toggleLayer('marsh')">
                                 <input type="checkbox" class="layer-checkbox" id="marshLayer">
                                 <span class="layer-label">Freshwater Marshes</span>
-                                <div class="layer-color-swatch" style="background-color: rgba(70, 187, 212, 0.7);"></div>
+                                <div class="layer-color-swatch" style="background-color: rgba(93, 173, 226, 0.7);"></div>
                             </div>
                             <div class="opacity-row">
                                 <i class="fas fa-adjust opacity-icon"></i>
@@ -1342,13 +744,11 @@
                                 <span class="opacity-percent" id="marshOpacityValue">70%</span>
                             </div>
                         </div>
-                        
-                        <!-- Mangroves Layer -->
                         <div class="layer-card" id="layer-card-mangroves">
                             <div class="layer-header" onclick="toggleLayer('mangroves')">
                                 <input type="checkbox" class="layer-checkbox" id="mangrovesLayer">
                                 <span class="layer-label">Mangroves</span>
-                                <div class="layer-color-swatch" style="background-color: rgba(139, 69, 19, 0.7);"></div>
+                                <div class="layer-color-swatch" style="background-color: rgba(139, 90, 43, 0.7);"></div>
                             </div>
                             <div class="opacity-row">
                                 <i class="fas fa-adjust opacity-icon"></i>
@@ -1357,13 +757,11 @@
                                 <span class="opacity-percent" id="mangrovesOpacityValue">70%</span>
                             </div>
                         </div>
-                        
-                        <!-- Sand Shores Layer -->
                         <div class="layer-card" id="layer-card-sand">
                             <div class="layer-header" onclick="toggleLayer('sand')">
                                 <input type="checkbox" class="layer-checkbox" id="sandLayer">
                                 <span class="layer-label">Sand Shores</span>
-                                <div class="layer-color-swatch" style="background-color: rgba(220, 53, 69, 0.7);"></div>
+                                <div class="layer-color-swatch" style="background-color: rgba(231, 76, 60, 0.7);"></div>
                             </div>
                             <div class="opacity-row">
                                 <i class="fas fa-adjust opacity-icon"></i>
@@ -1372,13 +770,11 @@
                                 <span class="opacity-percent" id="sandOpacityValue">70%</span>
                             </div>
                         </div>
-                        
-                        <!-- Aquaculture Farms Layer -->
                         <div class="layer-card" id="layer-card-aquaculture">
                             <div class="layer-header" onclick="toggleLayer('aquaculture')">
                                 <input type="checkbox" class="layer-checkbox" id="aquacultureLayer">
                                 <span class="layer-label">Aquaculture Farms</span>
-                                <div class="layer-color-swatch" style="background-color: rgba(255, 193, 7, 0.7);"></div>
+                                <div class="layer-color-swatch" style="background-color: rgba(241, 196, 15, 0.7);"></div>
                             </div>
                             <div class="opacity-row">
                                 <i class="fas fa-adjust opacity-icon"></i>
@@ -1387,8 +783,6 @@
                                 <span class="opacity-percent" id="aquacultureOpacityValue">70%</span>
                             </div>
                         </div>
-                        
-                        <!-- Coral Reefs Layer -->
                         <div class="layer-card" id="layer-card-coral">
                             <div class="layer-header" onclick="toggleLayer('coral')">
                                 <input type="checkbox" class="layer-checkbox" id="coralLayer">
@@ -1402,13 +796,11 @@
                                 <span class="opacity-percent" id="coralOpacityValue">70%</span>
                             </div>
                         </div>
-                        
-                        <!-- Permanent Streams Layer -->
                         <div class="layer-card" id="layer-card-streams">
                             <div class="layer-header" onclick="toggleLayer('streams')">
                                 <input type="checkbox" class="layer-checkbox" id="streamsLayer">
                                 <span class="layer-label">Permanent Streams</span>
-                                <div class="layer-color-swatch" style="background-color: rgba(74, 144, 226, 0.7);"></div>
+                                <div class="layer-color-swatch" style="background-color: rgba(52, 152, 219, 0.7);"></div>
                             </div>
                             <div class="opacity-row">
                                 <i class="fas fa-adjust opacity-icon"></i>
@@ -1417,8 +809,6 @@
                                 <span class="opacity-percent" id="streamsOpacityValue">70%</span>
                             </div>
                         </div>
-                        
-                        <!-- Seasonal Wetlands Layer -->
                         <div class="layer-card" id="layer-card-seasonal">
                             <div class="layer-header" onclick="toggleLayer('seasonal')">
                                 <input type="checkbox" class="layer-checkbox" id="seasonalLayer">
@@ -1435,7 +825,7 @@
                     </div>
                 </div>
                 
-                <!-- 6.1.6: Protected Areas Card -->
+                <!-- Protected Areas Card -->
                 <div class="layer-card protected-card" id="layer-card-protected" style="margin-bottom: 12px;">
                     <div class="layer-header" onclick="toggleProtectedAreas()">
                         <input type="checkbox" class="layer-checkbox" id="protectedLayer">
@@ -1450,88 +840,53 @@
                     </div>
                 </div>
                 
-                <!-- 6.1.7: Drawing Tools Panel -->
+                <!-- Drawing Tools Panel + Download Map Button -->
                 <div class="drawing-panel">
-                    <div class="panel-title" style="margin-bottom: 8px; font-size: 0.8rem;">
-                        <i class="fas fa-draw-polygon"></i> Drawing Tools
+                    <div class="panel-title">
+                        <i class="fas fa-draw-polygon"></i> Drawing & Annotation
                     </div>
-                    
                     <div class="drawing-tools">
-                        <button class="draw-btn" onclick="activateDrawTool('marker')" id="draw-marker-btn" title="Place Marker">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Marker</span>
-                        </button>
-                        <button class="draw-btn" onclick="activateDrawTool('polyline')" id="draw-polyline-btn" title="Draw Line">
-                            <i class="fas fa-slash"></i>
-                            <span>Line</span>
-                        </button>
-                        <button class="draw-btn" onclick="activateDrawTool('polygon')" id="draw-polygon-btn" title="Draw Polygon">
-                            <i class="fas fa-draw-polygon"></i>
-                            <span>Polygon</span>
-                        </button>
-                        <button class="draw-btn" onclick="activateDrawTool('rectangle')" id="draw-rectangle-btn" title="Draw Rectangle">
-                            <i class="fas fa-square"></i>
-                            <span>Rect</span>
-                        </button>
-                        <button class="draw-btn" onclick="activateDrawTool('circle')" id="draw-circle-btn" title="Draw Circle">
-                            <i class="fas fa-circle"></i>
-                            <span>Circle</span>
-                        </button>
-                        <button class="draw-btn" onclick="editLayers()" id="edit-btn" title="Edit Features">
-                            <i class="fas fa-pencil-alt"></i>
-                            <span>Edit</span>
-                        </button>
-                        <button class="draw-btn" onclick="deleteSelected()" id="delete-btn" title="Delete Selected">
-                            <i class="fas fa-trash"></i>
-                            <span>Delete</span>
-                        </button>
-                        <button class="draw-btn" onclick="clearAllDrawings()" id="clear-btn" title="Clear All">
-                            <i class="fas fa-eraser"></i>
-                            <span>Clear</span>
-                        </button>
+                        <button class="draw-btn" onclick="activateDrawTool('marker')" id="draw-marker-btn"><i class="fas fa-map-marker-alt"></i><span>Marker</span></button>
+                        <button class="draw-btn" onclick="activateDrawTool('polyline')" id="draw-polyline-btn"><i class="fas fa-slash"></i><span>Line</span></button>
+                        <button class="draw-btn" onclick="activateDrawTool('polygon')" id="draw-polygon-btn"><i class="fas fa-draw-polygon"></i><span>Polygon</span></button>
+                        <button class="draw-btn" onclick="activateDrawTool('rectangle')" id="draw-rectangle-btn"><i class="fas fa-square"></i><span>Rect</span></button>
+                        <button class="draw-btn" onclick="activateDrawTool('circle')" id="draw-circle-btn"><i class="fas fa-circle"></i><span>Circle</span></button>
+                        <button class="draw-btn" onclick="editLayers()" id="edit-btn"><i class="fas fa-pencil-alt"></i><span>Edit</span></button>
+                        <button class="draw-btn" onclick="deleteSelected()" id="delete-btn"><i class="fas fa-trash"></i><span>Delete</span></button>
+                        <button class="draw-btn" onclick="clearAllDrawings()" id="clear-btn"><i class="fas fa-eraser"></i><span>Clear</span></button>
                     </div>
-                    
-                    <!-- Measurements Display -->
-                    <div class="measurement-display" id="measurementDisplay">
-                        <div class="measurement-item">
-                            <span class="measurement-label">Last Distance:</span>
-                            <span class="measurement-value" id="lastDistance">--</span>
-                        </div>
-                        <div class="measurement-item">
-                            <span class="measurement-label">Last Area:</span>
-                            <span class="measurement-value" id="lastArea">--</span>
-                        </div>
+                    <div class="measurement-display">
+                        <div class="measurement-item"><span class="measurement-label">Last Distance:</span><span class="measurement-value" id="lastDistance">--</span></div>
+                        <div class="measurement-item"><span class="measurement-label">Last Area:</span><span class="measurement-value" id="lastArea">--</span></div>
                     </div>
+                    <!-- Download Map Button (moved here) -->
+                    <button class="download-buffer-btn" id="exportMapBtnSidebar" onclick="promptForMapDownload()" style="margin-top: 12px; background: var(--iwmi-light-blue);">
+                        <i class="fas fa-camera"></i> Download Map as Image
+                    </button>
                 </div>
                 
-                <!-- 6.1.8: Legend Panel -->
+                <!-- Legend Panel -->
                 <div class="legend">
-                    <div class="legend-title">
-                        <i class="fas fa-palette"></i> Legend
-                    </div>
+                    <div class="legend-title"><i class="fas fa-palette"></i> Legend</div>
                     <div class="legend-list">
-                        <div class="legend-item"><div class="legend-color" style="background-color: rgba(80, 136, 198, 0.7);"></div><span class="legend-label">Water Bodies</span></div>
-                        <div class="legend-item"><div class="legend-color" style="background-color: rgba(221, 145, 3, 0.7);"></div><span class="legend-label">Irrigated Land</span></div>
-                        <div class="legend-item"><div class="legend-color" style="background-color: rgba(70, 187, 212, 0.7);"></div><span class="legend-label">Freshwater Marshes</span></div>
-                        <div class="legend-item"><div class="legend-color" style="background-color: rgba(139, 69, 19, 0.7);"></div><span class="legend-label">Mangroves</span></div>
-                        <div class="legend-item"><div class="legend-color" style="background-color: rgba(220, 53, 69, 0.7);"></div><span class="legend-label">Sand Shores</span></div>
-                        <div class="legend-item"><div class="legend-color" style="background-color: rgba(255, 193, 7, 0.7);"></div><span class="legend-label">Aquaculture Farms</span></div>
+                        <div class="legend-item"><div class="legend-color" style="background-color: rgba(58, 124, 165, 0.7);"></div><span class="legend-label">Water Bodies</span></div>
+                        <div class="legend-item"><div class="legend-color" style="background-color: rgba(243, 156, 18, 0.7);"></div><span class="legend-label">Irrigated Land</span></div>
+                        <div class="legend-item"><div class="legend-color" style="background-color: rgba(93, 173, 226, 0.7);"></div><span class="legend-label">Freshwater Marshes</span></div>
+                        <div class="legend-item"><div class="legend-color" style="background-color: rgba(139, 90, 43, 0.7);"></div><span class="legend-label">Mangroves</span></div>
+                        <div class="legend-item"><div class="legend-color" style="background-color: rgba(231, 76, 60, 0.7);"></div><span class="legend-label">Sand Shores</span></div>
+                        <div class="legend-item"><div class="legend-color" style="background-color: rgba(241, 196, 15, 0.7);"></div><span class="legend-label">Aquaculture Farms</span></div>
                         <div class="legend-item"><div class="legend-color" style="background-color: rgba(255, 107, 107, 0.7);"></div><span class="legend-label">Coral Reefs</span></div>
-                        <div class="legend-item"><div class="legend-color" style="background-color: rgba(74, 144, 226, 0.7);"></div><span class="legend-label">Permanent Streams</span></div>
+                        <div class="legend-item"><div class="legend-color" style="background-color: rgba(52, 152, 219, 0.7);"></div><span class="legend-label">Permanent Streams</span></div>
                         <div class="legend-item"><div class="legend-color" style="background-color: rgba(155, 89, 182, 0.7);"></div><span class="legend-label">Seasonal Wetlands</span></div>
                         <div class="legend-item"><div class="legend-color" style="background-color: rgba(46, 204, 113, 0.7);"></div><span class="legend-label">Protected Areas</span></div>
                     </div>
                 </div>
                 
-                <!-- 6.1.9: Statistics Panel -->
+                <!-- Statistics Panel -->
                 <div class="stats-panel">
                     <div class="stats-header">
-                        <div class="panel-title" style="margin-bottom: 0; font-size: 0.8rem;">
-                            <i class="fas fa-chart-bar"></i> Statistics
-                        </div>
-                        <button class="map-btn secondary" onclick="recalculateStats()" style="padding: 0.2rem 0.5rem; font-size: 0.65rem;">
-                            <i class="fas fa-sync-alt"></i> Refresh
-                        </button>
+                        <div class="panel-title"><i class="fas fa-chart-bar"></i> Statistics</div>
+                        <button class="map-btn secondary" onclick="recalculateStats()" style="padding: 0.2rem 0.6rem; font-size: 0.7rem;">Refresh</button>
                     </div>
                     <div class="stat-display" id="areaStats">
                         <span class="loading">Select a district to view statistics</span>
@@ -1539,28 +894,9 @@
                 </div>
             </div>
             
-            <!-- 6.2: Map Content Area -->
+            <!-- 6.2: Map Content Area (no controls bar) -->
             <div class="map-content">
                 <div id="map"></div>
-                <div class="map-controls">
-                    <div class="control-group">
-                        <button class="map-btn" onclick="showAllLayers()"><i class="fas fa-eye"></i> Show All</button>
-                        <button class="map-btn secondary" onclick="hideAllLayers()"><i class="fas fa-eye-slash"></i> Hide All</button>
-                        <button class="map-btn" onclick="fitToAllData()"><i class="fas fa-search"></i> Fit to Data</button>
-                        <button class="chatbot-map-btn" onclick="window.open('https://chatbot-wetlandiwmi-85xo9ngytfknlrrck4n6ur.streamlit.app/', '_blank')"><i class="fas fa-robot"></i> Chat</button>
-                        <button class="map-btn secondary" id="exportMapBtn" onclick="promptForMapDownload()"><i class="fas fa-camera"></i> Download Map as Image</button>
-                    </div>
-                    <div class="control-group">
-                        <select class="filter-dropdown" id="baseMap" onchange="changeBaseMap(this.value)">
-                            <option value="osm">OpenStreetMap</option>
-                            <option value="satellite">Satellite</option>
-                            <option value="terrain">Terrain</option>
-                            <option value="topo">Topographic</option>
-                        </select>
-                        <button class="map-btn" onclick="exportData()"><i class="fas fa-download"></i> Export</button>
-                        <button class="map-btn secondary" onclick="printMap()"><i class="fas fa-print"></i> Print</button>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
@@ -1569,9 +905,9 @@
     <!-- SECTION 7: FOOTER -->
     <!-- ============================================ -->
     <footer>
-        <div style="max-width:1200px; margin:0 auto; padding:0 1rem;">
+        <div style="max-width:1200px; margin:0 auto;">
             <p>&copy; National Wetland Inventory of Sri Lanka 2026</p>
-            <p style="font-size:0.9rem; opacity:0.8; margin-top:0.5rem;">Project of International Water Management Institute Sri Lanka</p>
+            <p style="font-size:0.8rem; opacity:0.7; margin-top:0.3rem;">Project of International Water Management Institute Sri Lanka</p>
         </div>
     </footer>
 
@@ -1583,22 +919,18 @@
     <script src="https://unpkg.com/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.js"></script>
     
     <!-- ============================================ -->
-    <!-- SECTION 9: MAIN APPLICATION JAVASCRIPT -->
+    <!-- SECTION 9: MAIN APPLICATION JAVASCRIPT (Full implementation) -->
     <!-- ============================================ -->
     <script>
         // ============================================
-        // 9.1: GLOBAL VARIABLES DECLARATION
+        // 9.1: GLOBAL VARIABLES
         // ============================================
-        
-        // Map and Layer Variables
         let map;
         let shapefileLayers = {
             water: null, paddy: null, marsh: null, mangroves: null,
             sand: null, aquaculture: null, coral: null, streams: null,
             seasonal: null, protected: null
         };
-        
-        // Application State Variables
         let currentDistrict = null;
         let protectedAreasLoaded = false;
         let currentBufferCircle = null;
@@ -1607,57 +939,43 @@
         let tempPickMarker = null;
         let selectedLat = null;
         let selectedLng = null;
-        
-        // Buffer Analysis Storage for Download
-        let lastBufferAnalysis = {
-            lat: null, lng: null, bufferKm: null,
-            features: []  // Array to store clipped features for download
-        };
-        
-        // Drawing and Measurement Variables
+        let lastBufferAnalysis = { lat: null, lng: null, bufferKm: null, features: [] };
         let drawnItems = new L.FeatureGroup();
         let drawControl = null;
         let currentDrawTool = null;
         let lastDistance = 0;
         let lastArea = 0;
         let markers = [];
-        
-        // Base Layers
         let baseLayers = {};
+        let currentBufferFeatures = [];
         
-        // ============================================
-        // 9.2: COLOR CONFIGURATION
-        // ============================================
+        // Layer colors and styles
         const layerColors = {
-            water: 'rgba(80, 136, 198, 0.7)',
-            paddy: 'rgba(221, 145, 3, 0.7)',
-            marsh: 'rgba(70, 187, 212, 0.7)',
-            mangroves: 'rgba(139, 69, 19, 0.7)',
-            sand: 'rgba(220, 53, 69, 0.7)',
-            aquaculture: 'rgba(255, 193, 7, 0.7)',
+            water: 'rgba(58, 124, 165, 0.7)',
+            paddy: 'rgba(243, 156, 18, 0.7)',
+            marsh: 'rgba(93, 173, 226, 0.7)',
+            mangroves: 'rgba(139, 90, 43, 0.7)',
+            sand: 'rgba(231, 76, 60, 0.7)',
+            aquaculture: 'rgba(241, 196, 15, 0.7)',
             coral: 'rgba(255, 107, 107, 0.7)',
-            streams: 'rgba(74, 144, 226, 0.7)',
+            streams: 'rgba(52, 152, 219, 0.7)',
             seasonal: 'rgba(155, 89, 182, 0.7)',
             protected: 'rgba(46, 204, 113, 0.7)'
         };
         
-        // Layer Styles Configuration
         let layerStyles = {
-            water: { fillColor: layerColors.water, weight: 1.5, opacity: 0.7, color: 'rgba(80, 136, 198, 1)', fillOpacity: 0.7 },
-            paddy: { fillColor: layerColors.paddy, weight: 1.5, opacity: 0.7, color: 'rgba(221, 145, 3, 1)', fillOpacity: 0.7 },
-            marsh: { fillColor: layerColors.marsh, weight: 1.5, opacity: 0.7, color: 'rgba(70, 187, 212, 1)', fillOpacity: 0.7, dashArray: '4, 4' },
-            mangroves: { fillColor: layerColors.mangroves, weight: 1.5, opacity: 0.7, color: 'rgba(139, 69, 19, 1)', fillOpacity: 0.7 },
-            sand: { fillColor: layerColors.sand, weight: 1.5, opacity: 0.7, color: 'rgba(220, 53, 69, 1)', fillOpacity: 0.7, dashArray: '6, 3' },
-            aquaculture: { fillColor: layerColors.aquaculture, weight: 1.5, opacity: 0.7, color: 'rgba(255, 193, 7, 1)', fillOpacity: 0.7, dashArray: '2, 2' },
+            water: { fillColor: layerColors.water, weight: 1.5, opacity: 0.7, color: 'rgba(58, 124, 165, 1)', fillOpacity: 0.7 },
+            paddy: { fillColor: layerColors.paddy, weight: 1.5, opacity: 0.7, color: 'rgba(243, 156, 18, 1)', fillOpacity: 0.7 },
+            marsh: { fillColor: layerColors.marsh, weight: 1.5, opacity: 0.7, color: 'rgba(93, 173, 226, 1)', fillOpacity: 0.7, dashArray: '4, 4' },
+            mangroves: { fillColor: layerColors.mangroves, weight: 1.5, opacity: 0.7, color: 'rgba(139, 90, 43, 1)', fillOpacity: 0.7 },
+            sand: { fillColor: layerColors.sand, weight: 1.5, opacity: 0.7, color: 'rgba(231, 76, 60, 1)', fillOpacity: 0.7, dashArray: '6, 3' },
+            aquaculture: { fillColor: layerColors.aquaculture, weight: 1.5, opacity: 0.7, color: 'rgba(241, 196, 15, 1)', fillOpacity: 0.7, dashArray: '2, 2' },
             coral: { fillColor: layerColors.coral, weight: 1.5, opacity: 0.7, color: 'rgba(255, 107, 107, 1)', fillOpacity: 0.7, dashArray: '8, 4' },
-            streams: { fillColor: layerColors.streams, weight: 2, opacity: 0.8, color: 'rgba(74, 144, 226, 1)', fillOpacity: 0.6 },
+            streams: { fillColor: layerColors.streams, weight: 2, opacity: 0.8, color: 'rgba(52, 152, 219, 1)', fillOpacity: 0.6 },
             seasonal: { fillColor: layerColors.seasonal, weight: 1.5, opacity: 0.7, color: 'rgba(155, 89, 182, 1)', fillOpacity: 0.7, dashArray: '5, 3' },
             protected: { fillColor: layerColors.protected, weight: 2, opacity: 0.7, color: 'rgba(46, 204, 113, 1)', fillOpacity: 0.5, dashArray: '10, 5' }
         };
         
-        // ============================================
-        // 9.3: STATISTICS DATA
-        // ============================================
         let layerStats = {
             water: { features: 0, areaSqm: 0 }, paddy: { features: 0, areaSqm: 0 },
             marsh: { features: 0, areaSqm: 0 }, mangroves: { features: 0, areaSqm: 0 },
@@ -1666,9 +984,6 @@
             seasonal: { features: 0, areaSqm: 0 }, protected: { features: 0, areaSqm: 0 }
         };
         
-        // ============================================
-        // 9.4: DISTRICT INFORMATION DATABASE
-        // ============================================
         const districtInfo = {
             colombo: { name: "Colombo", center: [6.9271, 79.8612], zoom: 11 },
             gampaha: { name: "Gampaha", center: [7.0840, 80.0098], zoom: 11 },
@@ -1697,9 +1012,6 @@
             kegalle: { name: "Kegalle", center: [7.2514, 80.3464], zoom: 11 }
         };
         
-        // ============================================
-        // 9.5: SEARCH LOCATIONS DATABASE
-        // ============================================
         const sriLankanLocations = [
             { name: "Colombo", coords: [6.9271, 79.8612], zoom: 12 },
             { name: "Kandy", coords: [7.2906, 80.6337], zoom: 13 },
@@ -1717,145 +1029,99 @@
         ];
         
         // ============================================
-        // 9.6: UTILITY FUNCTIONS
+        // UTILITY FUNCTIONS
         // ============================================
-        
         function formatAreaFromSqm(areaSqm) {
-            if (areaSqm >= 1000000) {
-                return (areaSqm / 1000000).toFixed(2) + ' km²';
-            } else if (areaSqm >= 10000) {
-                return (areaSqm / 10000).toFixed(2) + ' ha';
-            } else if (areaSqm >= 1) {
-                return areaSqm.toFixed(2) + ' m²';
-            } else {
-                return '0 m²';
-            }
+            if (areaSqm >= 1000000) return (areaSqm / 1000000).toFixed(2) + ' km²';
+            else if (areaSqm >= 10000) return (areaSqm / 10000).toFixed(2) + ' ha';
+            else if (areaSqm >= 1) return areaSqm.toFixed(2) + ' m²';
+            else return '0 m²';
         }
         
         function getLayerDisplayName(layerName) {
-            const names = { 
-                water:'Water Bodies', 
-                paddy:'Irrigated Land', 
-                marsh:'Freshwater Marshes', 
-                mangroves:'Mangroves',
-                sand:'Sand Shores', 
-                aquaculture:'Aquaculture Farms', 
-                coral:'Coral Reefs', 
-                streams:'Permanent Streams',
-                seasonal:'Seasonal Wetlands', 
-                protected:'Protected Areas' 
-            };
+            const names = { water:'Water Bodies', paddy:'Irrigated Land', marsh:'Freshwater Marshes', mangroves:'Mangroves',
+                sand:'Sand Shores', aquaculture:'Aquaculture Farms', coral:'Coral Reefs', streams:'Permanent Streams',
+                seasonal:'Seasonal Wetlands', protected:'Protected Areas' };
             return names[layerName] || layerName;
         }
         
         function calculateDistance(latlngs) {
             let total = 0;
-            for (let i = 1; i < latlngs.length; i++) {
-                total += latlngs[i-1].distanceTo(latlngs[i]) / 1000;
-            }
+            for (let i = 1; i < latlngs.length; i++) total += latlngs[i-1].distanceTo(latlngs[i]) / 1000;
             return total;
         }
         
         function showNotification(message, type = 'info') {
-            const colors = { info: '#46BBD4', error: '#E86933', warning: '#DD9103', success: '#22AD7A' };
-            const icons = { info: 'info-circle', error: 'exclamation-triangle', warning: 'exclamation-circle', success: 'check-circle' };
+            const colors = { info: '#5DADE2', error: '#E74C3C', warning: '#F39C12', success: '#2E8B57' };
             const notification = document.createElement('div');
-            notification.style.cssText = `position:fixed; top:20px; right:20px; background:${colors[type]}; color:white; padding:10px 14px; border-radius:4px; box-shadow:0 5px 15px rgba(0,0,0,0.15); z-index:10000; max-width:300px; animation:slideIn 0.3s ease-out; font-size:0.8rem; border-left:4px solid ${type === 'info' ? '#28537D' : type === 'error' ? '#D45A23' : type === 'warning' ? '#C07E02' : '#1B8A5E'}`;
-            notification.innerHTML = `<div style="display:flex; align-items:center; gap:8px;"><i class="fas fa-${icons[type]}"></i><div>${message}</div></div>`;
+            notification.style.cssText = `position:fixed; top:20px; right:20px; background:${colors[type]}; color:white; padding:10px 16px; border-radius:16px; box-shadow:0 10px 25px -5px rgba(0,0,0,0.1); z-index:10000; max-width:320px; animation:slideIn 0.3s ease-out; font-size:0.85rem; backdrop-filter:blur(4px);`;
+            notification.innerHTML = `<div style="display:flex; align-items:center; gap:10px;"><i class="fas fa-${type === 'info' ? 'info-circle' : type === 'error' ? 'exclamation-triangle' : 'check-circle'}"></i><div>${message}</div></div>`;
             document.body.appendChild(notification);
-            setTimeout(() => { notification.style.animation = 'slideOut 0.3s ease-out'; setTimeout(() => notification.remove(), 300); }, 3000);
+            setTimeout(() => { notification.style.opacity = '0'; setTimeout(() => notification.remove(), 300); }, 3000);
         }
         
         // ============================================
-        // 9.7: MAP INITIALIZATION FUNCTIONS
+        // MAP INITIALIZATION
         // ============================================
-        
         function initializeMap() {
-            // Use canvas renderer for better compatibility with html2canvas
-            map = L.map('map', {
-                preferCanvas: true,
-                zoomAnimation: false,
-                fadeAnimation: false,
-                markerZoomAnimation: false
-            }).setView([7.8731, 80.7718], 8);
+            map = L.map('map', { preferCanvas: true }).setView([7.8731, 80.7718], 8);
+            baseLayers.osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap', maxZoom: 19, crossOrigin: true }).addTo(map);
+            baseLayers.satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: '© Esri', maxZoom: 19, crossOrigin: true });
+            baseLayers.terrain = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', { attribution: '© OpenTopoMap', maxZoom: 17, crossOrigin: true });
+            baseLayers.topo = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', { attribution: '© HOT', maxZoom: 19, crossOrigin: true });
+            L.control.scale({ imperial: false }).addTo(map);
             
-            baseLayers.osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors',
-                maxZoom: 19,
-                crossOrigin: true
-            }).addTo(map);
-            
-            baseLayers.satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                attribution: '© Esri, Maxar, Earthstar Geographics',
-                maxZoom: 19,
-                crossOrigin: true
+            // Basemap switcher buttons
+            document.querySelectorAll('.basemap-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const mapType = btn.getAttribute('data-map');
+                    changeBaseMap(mapType);
+                    document.querySelectorAll('.basemap-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                });
             });
-            
-            baseLayers.terrain = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenTopoMap contributors',
-                maxZoom: 17,
-                crossOrigin: true
-            });
-            
-            baseLayers.topo = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-                attribution: '© Humanitarian OpenStreetMap Team',
-                maxZoom: 19,
-                crossOrigin: true
-            });
-            
-            L.control.scale({imperial: false}).addTo(map);
+            document.querySelector('.basemap-btn[data-map="osm"]').classList.add('active');
+        }
+        
+        function changeBaseMap(mapType) {
+            Object.keys(baseLayers).forEach(l => { if (map.hasLayer(baseLayers[l])) map.removeLayer(baseLayers[l]); });
+            if (baseLayers[mapType]) map.addLayer(baseLayers[mapType]);
         }
         
         function initializeDrawingTools() {
             map.addLayer(drawnItems);
-            
             drawControl = new L.Control.Draw({
                 draw: {
-                    polyline: { shapeOptions: { color: '#5088C6', weight: 3 }, metric: true },
-                    polygon: { shapeOptions: { color: '#E86933', weight: 2, fillColor: '#E86933', fillOpacity: 0.3 }, metric: true, showArea: true },
-                    circle: { shapeOptions: { color: '#22AD7A', weight: 2, fillColor: '#22AD7A', fillOpacity: 0.3 }, metric: true },
-                    rectangle: { shapeOptions: { color: '#46BBD4', weight: 2, fillColor: '#46BBD4', fillOpacity: 0.3 }, metric: true },
-                    marker: { icon: L.divIcon({ className: 'custom-marker', html: '<i class="fas fa-map-marker-alt" style="color: #DC3545; font-size: 24px;"></i>', iconSize: [24, 24], iconAnchor: [12, 24] }) }
+                    polyline: { shapeOptions: { color: '#3A7CA5', weight: 3 }, metric: true },
+                    polygon: { shapeOptions: { color: '#E67E22', weight: 2, fillColor: '#E67E22', fillOpacity: 0.3 }, metric: true, showArea: true },
+                    circle: { shapeOptions: { color: '#2E8B57', weight: 2, fillColor: '#2E8B57', fillOpacity: 0.3 }, metric: true },
+                    rectangle: { shapeOptions: { color: '#5DADE2', weight: 2, fillColor: '#5DADE2', fillOpacity: 0.3 }, metric: true },
+                    marker: { icon: L.divIcon({ className: 'custom-marker', html: '<i class="fas fa-map-marker-alt" style="color: #E74C3C; font-size: 24px;"></i>', iconSize: [24, 24], iconAnchor: [12, 24] }) }
                 },
                 edit: { featureGroup: drawnItems, remove: true }
             });
-            
             map.addControl(drawControl);
-            
             map.on(L.Draw.Event.CREATED, function(event) {
                 const layer = event.layer;
                 drawnItems.addLayer(layer);
-                
                 if (event.layerType === 'polyline') {
                     const distance = calculateDistance(layer.getLatLngs());
                     lastDistance = distance;
                     document.getElementById('lastDistance').textContent = distance.toFixed(2) + ' km';
                 } else if (event.layerType === 'polygon' || event.layerType === 'rectangle') {
-                    const area = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
-                    const areaKm2 = area / 1000000;
-                    lastArea = areaKm2;
-                    document.getElementById('lastArea').textContent = areaKm2.toFixed(2) + ' km²';
+                    const area = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]) / 1000000;
+                    lastArea = area;
+                    document.getElementById('lastArea').textContent = area.toFixed(2) + ' km²';
                 } else if (event.layerType === 'circle') {
                     const area = Math.PI * Math.pow(layer.getRadius(), 2) / 1000000;
                     lastArea = area;
                     document.getElementById('lastArea').textContent = area.toFixed(2) + ' km²';
-                } else if (event.layerType === 'marker') {
-                    markers.push(layer);
-                }
+                } else if (event.layerType === 'marker') markers.push(layer);
                 resetDrawButtons();
             });
-            
-            map.on(L.Draw.Event.EDITED, function(event) {
-                event.layers.eachLayer(function(layer) { updateMeasurements(layer); });
-                showNotification('Features updated', 'success');
-            });
-            
+            map.on(L.Draw.Event.EDITED, function(event) { event.layers.eachLayer(layer => updateMeasurements(layer)); showNotification('Features updated', 'success'); });
             map.on(L.Draw.Event.DELETED, function() { showNotification('Features deleted', 'info'); });
         }
-        
-        // ============================================
-        // 9.8: DRAWING TOOLS FUNCTIONS
-        // ============================================
         
         function updateMeasurements(layer) {
             if (layer instanceof L.Polyline && !(layer instanceof L.Polygon)) {
@@ -1888,37 +1154,19 @@
         }
         
         function resetDrawButtons() {
-            ['marker', 'polyline', 'polygon', 'rectangle', 'circle', 'edit', 'delete'].forEach(btn => {
+            ['marker','polyline','polygon','rectangle','circle','edit','delete'].forEach(btn => {
                 const el = document.getElementById(`draw-${btn}-btn`);
-                if (el) el.classList.remove('active');
+                if(el) el.classList.remove('active');
             });
         }
         
-        function editLayers() {
-            resetDrawButtons();
-            document.getElementById('edit-btn').classList.add('active');
-            new L.EditToolbar.Edit(map, { featureGroup: drawnItems, remove: true }).enable();
-        }
-        
-        function deleteSelected() {
-            resetDrawButtons();
-            document.getElementById('delete-btn').classList.add('active');
-            new L.EditToolbar.Delete(map, { featureGroup: drawnItems }).enable();
-        }
-        
-        function clearAllDrawings() {
-            drawnItems.clearLayers();
-            markers = [];
-            lastDistance = lastArea = 0;
-            document.getElementById('lastDistance').textContent = document.getElementById('lastArea').textContent = '--';
-            resetDrawButtons();
-            showNotification('All drawings cleared', 'info');
-        }
+        function editLayers() { resetDrawButtons(); document.getElementById('edit-btn').classList.add('active'); new L.EditToolbar.Edit(map, { featureGroup: drawnItems, remove: true }).enable(); }
+        function deleteSelected() { resetDrawButtons(); document.getElementById('delete-btn').classList.add('active'); new L.EditToolbar.Delete(map, { featureGroup: drawnItems }).enable(); }
+        function clearAllDrawings() { drawnItems.clearLayers(); markers = []; lastDistance = lastArea = 0; document.getElementById('lastDistance').textContent = document.getElementById('lastArea').textContent = '--'; resetDrawButtons(); showNotification('All drawings cleared', 'info'); }
         
         // ============================================
-        // 9.9: COORDINATE PICKER FUNCTIONS
+        // COORDINATE PICKER
         // ============================================
-        
         function toggleCoordinatePicker() {
             const pickBtn = document.getElementById('pickCoordBtn');
             if (!isPickingCoordinates) {
@@ -1985,9 +1233,8 @@
         }
         
         // ============================================
-        // 9.10: SEARCH FUNCTIONS
+        // SEARCH
         // ============================================
-        
         function searchLocation() {
             const query = document.getElementById('searchInput').value.toLowerCase().trim();
             if (!query) { showNotification('Enter a location name', 'warning'); return; }
@@ -2004,16 +1251,15 @@
         
         function goToLocation(lat, lng, zoom) {
             map.setView([lat, lng], zoom || 12);
-            const marker = L.marker([lat, lng], { icon: L.divIcon({ className: 'search-marker', html: '<i class="fas fa-map-marker-alt" style="color: #22AD7A; font-size: 30px;"></i>', iconSize: [30, 30], iconAnchor: [15, 30] }) }).addTo(map);
+            const marker = L.marker([lat, lng], { icon: L.divIcon({ className: 'search-marker', html: '<i class="fas fa-map-marker-alt" style="color: #2E8B57; font-size: 30px;"></i>', iconSize: [30, 30], iconAnchor: [15, 30] }) }).addTo(map);
             setTimeout(() => map.removeLayer(marker), 3000);
             document.getElementById('searchResults').innerHTML = '';
             document.getElementById('searchInput').value = '';
         }
         
         // ============================================
-        // 9.11: DISTRICT DATA LOADING FUNCTIONS
+        // DISTRICT DATA LOADING
         // ============================================
-        
         async function loadDistrictData(districtCode) {
             if (!districtCode) {
                 document.getElementById('layerPanel').classList.remove('active');
@@ -2117,9 +1363,8 @@
         }
         
         // ============================================
-        // 9.12: PROTECTED AREAS FUNCTIONS
+        // PROTECTED AREAS
         // ============================================
-        
         async function loadProtectedAreas() {
             try {
                 const response = await fetch(`data/protected_areas.geojson`);
@@ -2154,18 +1399,12 @@
             L.popup().setLatLng(latlng).setContent(html).openOn(map);
         }
         
-        // ============================================
-        // 9.13: FEATURE INFO FUNCTIONS
-        // ============================================
-        
         function showFeatureInfo(feature, latlng, districtCode) {
             const districtName = districtInfo[districtCode]?.name || districtCode;
             let areaText = '';
             if (feature.properties) {
                 const areaSqm = feature.properties.area_sqm || feature.properties.area_m2 || feature.properties.area || 0;
-                if (areaSqm > 0) {
-                    areaText = `<p><strong>Area:</strong> ${formatAreaFromSqm(areaSqm)}</p>`;
-                }
+                if (areaSqm > 0) areaText = `<p><strong>Area:</strong> ${formatAreaFromSqm(areaSqm)}</p>`;
             }
             let html = `<div style="padding:12px"><h4 style="margin:0 0 10px 0;color:#28537D;">Wetland Feature</h4><p><strong>District:</strong> ${districtName}</p>${areaText}`;
             if (feature.properties) Object.entries(feature.properties).forEach(([k,v]) => { if(v && k !== 'district' && !k.includes('area')) html += `<p><strong>${k}:</strong> ${v}</p>`; });
@@ -2174,9 +1413,8 @@
         }
         
         // ============================================
-        // 9.14: LAYER CONTROL FUNCTIONS
+        // LAYER CONTROL
         // ============================================
-        
         function toggleLayer(layerName) {
             const checkbox = document.getElementById(layerName + 'Layer');
             if (shapefileLayers[layerName]) {
@@ -2223,28 +1461,17 @@
         }
         
         // ============================================
-        // 9.15: BUFFER ZONE ANALYSIS FUNCTIONS WITH DOWNLOAD SUPPORT
+        // BUFFER ANALYSIS
         // ============================================
-        
-        // Store clipped features for download
-        let currentBufferFeatures = [];
-        
         async function analyzeBufferZone() {
             const lat = parseFloat(document.getElementById('latitude').value);
             const lng = parseFloat(document.getElementById('longitude').value);
             const bufferKm = parseFloat(document.getElementById('bufferDistance').value);
             
-            if (isNaN(lat) || isNaN(lng)) {
-                showNotification('Please enter valid latitude and longitude', 'error');
-                return;
-            }
-            if (isNaN(bufferKm) || bufferKm <= 0) {
-                showNotification('Please enter a valid buffer distance', 'error');
-                return;
-            }
+            if (isNaN(lat) || isNaN(lng)) { showNotification('Please enter valid latitude and longitude', 'error'); return; }
+            if (isNaN(bufferKm) || bufferKm <= 0) { showNotification('Please enter a valid buffer distance', 'error'); return; }
             
-            showNotification('Analyzing buffer zone - calculating area INSIDE buffer only...', 'info');
-            
+            showNotification('Analyzing buffer zone...', 'info');
             clearBufferAnalysis();
             
             currentBufferMarker = L.marker([lat, lng], {
@@ -2267,33 +1494,25 @@
             }).addTo(map);
             map.fitBounds(currentBufferCircle.getBounds(), { padding: [30, 30] });
             
-            const bufferCenter = [lng, lat];
-            const bufferPolygon = turf.circle(bufferCenter, bufferMeters, { steps: 128, units: 'meters' });
-            
+            const bufferPolygon = turf.circle([lng, lat], bufferMeters, { steps: 128, units: 'meters' });
             const analysisResults = {};
             let totalAreaSqm = 0;
-            
-            // Reset features for download
             currentBufferFeatures = [];
-            
             const wetlandLayers = ['water', 'paddy', 'marsh', 'mangroves', 'sand', 'aquaculture', 'coral', 'streams', 'seasonal', 'protected'];
             
             for (const layer of wetlandLayers) {
                 if (shapefileLayers[layer] && map.hasLayer(shapefileLayers[layer])) {
                     let layerArea = 0;
-                    
                     shapefileLayers[layer].eachLayer(function(featureLayer) {
                         if (featureLayer.feature && featureLayer.feature.geometry) {
                             try {
                                 const featureGeoJSON = featureLayer.toGeoJSON();
                                 const intersection = turf.intersect(bufferPolygon, featureGeoJSON);
-                                
                                 if (intersection) {
                                     const intersectionArea = turf.area(intersection);
                                     if (intersectionArea > 0.1) {
                                         layerArea += intersectionArea;
-                                        // Add clipped feature for download with layer type info
-                                        const clippedFeature = {
+                                        currentBufferFeatures.push({
                                             type: "Feature",
                                             geometry: intersection.geometry,
                                             properties: {
@@ -2305,31 +1524,20 @@
                                                 buffer_center_lng: lng,
                                                 buffer_radius_km: bufferKm
                                             }
-                                        };
-                                        currentBufferFeatures.push(clippedFeature);
+                                        });
                                     }
                                 }
                             } catch(e) {
-                                // Fallback: check if centroid is within buffer
                                 try {
                                     const centroid = turf.centroid(featureGeoJSON);
-                                    const isWithin = turf.booleanPointInPolygon(centroid, bufferPolygon);
-                                    if (isWithin) {
-                                        let area = 0;
-                                        if (featureLayer.feature.properties) {
-                                            area = featureLayer.feature.properties.area_sqm || 
-                                                   featureLayer.feature.properties.area_m2 || 
-                                                   featureLayer.feature.properties.area || 0;
-                                        }
+                                    if (turf.booleanPointInPolygon(centroid, bufferPolygon)) {
+                                        let area = featureLayer.feature.properties?.area_sqm || featureLayer.feature.properties?.area_m2 || featureLayer.feature.properties?.area || 0;
                                         if (area === 0) area = turf.area(featureGeoJSON);
                                         if (area > 0) {
                                             layerArea += area;
-                                            // Add original feature for download
                                             const downloadFeature = JSON.parse(JSON.stringify(featureLayer.feature));
                                             downloadFeature.properties = downloadFeature.properties || {};
                                             downloadFeature.properties.wetland_type = getLayerDisplayName(layer);
-                                            downloadFeature.properties.original_layer = layer;
-                                            downloadFeature.properties.estimated_area_sqm = area;
                                             downloadFeature.properties.buffer_center_lat = lat;
                                             downloadFeature.properties.buffer_center_lng = lng;
                                             downloadFeature.properties.buffer_radius_km = bufferKm;
@@ -2340,7 +1548,6 @@
                             }
                         }
                     });
-                    
                     if (layerArea > 0) {
                         analysisResults[layer] = {
                             displayName: getLayerDisplayName(layer),
@@ -2352,51 +1559,56 @@
                 }
             }
             
-            // Store buffer info for download
-            lastBufferAnalysis = {
-                lat: lat, lng: lng, bufferKm: bufferKm,
-                totalAreaSqm: totalAreaSqm,
-                timestamp: new Date().toISOString()
-            };
-            
+            lastBufferAnalysis = { lat, lng, bufferKm, totalAreaSqm, timestamp: new Date().toISOString() };
             displayBufferResults(analysisResults, lat, lng, bufferKm, totalAreaSqm);
-            
-            // Show download button if there are features to download
             const downloadBtn = document.getElementById('downloadBufferBtn');
             if (currentBufferFeatures.length > 0) {
                 downloadBtn.style.display = 'flex';
-                showNotification(`Analysis complete! ${currentBufferFeatures.length} wetland features found inside buffer. Click Download to save GeoJSON.`, 'success');
+                showNotification(`Analysis complete! ${currentBufferFeatures.length} features found inside buffer.`, 'success');
             } else {
                 downloadBtn.style.display = 'none';
-                showNotification(`Analysis complete! No wetlands found inside buffer.`, 'info');
+                showNotification(`No wetlands found inside buffer.`, 'info');
             }
         }
         
-        function downloadBufferGeoJSON() {
-            if (currentBufferFeatures.length === 0) {
-                showNotification('No buffer data available. Please run buffer analysis first.', 'warning');
-                return;
+        function displayBufferResults(results, lat, lng, bufferKm, totalAreaSqm) {
+            const resultsDiv = document.getElementById('bufferResults');
+            let html = `<div class="result-section">
+                <div class="result-title">📍 Location: ${lat.toFixed(4)}, ${lng.toFixed(4)}</div>
+                <div class="result-title">🔄 Buffer Radius: ${bufferKm} km</div>
+                <div class="result-title">📏 Total Wetland Area INSIDE Buffer: ${formatAreaFromSqm(totalAreaSqm)}</div>
+                <div class="result-title" style="color: #2ECC71;">📊 Features inside buffer: ${currentBufferFeatures.length}</div>
+            </div>`;
+            if (Object.keys(results).length > 0) {
+                html += `<div class="result-section"><div class="result-title">🌿 Wetland Breakdown:</div>`;
+                for (const [key, result] of Object.entries(results)) {
+                    const colorMatch = result.color.match(/rgba\((\d+),\s*(\d+),\s*(\d+)/);
+                    const colorRgb = colorMatch ? `rgb(${colorMatch[1]}, ${colorMatch[2]}, ${colorMatch[3]})` : '#666';
+                    html += `<div class="result-item"><span class="result-label"><span style="display:inline-block; width:12px; height:12px; background:${colorRgb}; border-radius:2px; margin-right:6px;"></span> ${result.displayName}:</span><span class="result-value">${formatAreaFromSqm(result.totalAreaSqm)}</span></div>`;
+                }
+                html += `</div>`;
+            } else {
+                html += `<div class="result-section"><div class="result-title">⚠️ No wetlands found within the buffer zone</div></div>`;
             }
-            
-            // Create GeoJSON FeatureCollection
+            resultsDiv.innerHTML = html;
+        }
+        
+        function downloadBufferGeoJSON() {
+            if (currentBufferFeatures.length === 0) { showNotification('No buffer data available.', 'warning'); return; }
             const featureCollection = {
                 type: "FeatureCollection",
                 features: currentBufferFeatures,
                 metadata: {
-                    analysis_date: lastBufferAnalysis.timestamp || new Date().toISOString(),
+                    analysis_date: lastBufferAnalysis.timestamp,
                     center_latitude: lastBufferAnalysis.lat,
                     center_longitude: lastBufferAnalysis.lng,
                     buffer_radius_km: lastBufferAnalysis.bufferKm,
                     total_wetland_area_sqm: lastBufferAnalysis.totalAreaSqm,
                     total_wetland_area_formatted: formatAreaFromSqm(lastBufferAnalysis.totalAreaSqm),
                     feature_count: currentBufferFeatures.length,
-                    data_source: "National Wetland Inventory of Sri Lanka",
-                    district: currentDistrict ? districtInfo[currentDistrict]?.name : "Unknown",
-                    description: "Wetland features within buffer zone extracted from NWI Sri Lanka dataset"
+                    district: currentDistrict ? districtInfo[currentDistrict]?.name : "Unknown"
                 }
             };
-            
-            // Create download link
             const geojsonStr = JSON.stringify(featureCollection, null, 2);
             const blob = new Blob([geojsonStr], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
@@ -2406,60 +1618,12 @@
             a.href = url;
             a.click();
             URL.revokeObjectURL(url);
-            
-            showNotification(`Downloaded ${currentBufferFeatures.length} wetland features as GeoJSON`, 'success');
-        }
-        
-        function displayBufferResults(results, lat, lng, bufferKm, totalAreaSqm) {
-            const resultsDiv = document.getElementById('bufferResults');
-            
-            let html = `<div class="result-section">
-                <div class="result-title">📍 Location: ${lat.toFixed(4)}, ${lng.toFixed(4)}</div>
-                <div class="result-title">🔄 Buffer Radius: ${bufferKm} km</div>
-                <div class="result-title">📏 Total Wetland Area INSIDE Buffer: ${formatAreaFromSqm(totalAreaSqm)}</div>
-                <div class="result-title" style="color: #2ECC71; font-size: 0.7rem;">✓ Only area within the buffer zone is counted</div>
-                <div class="result-title" style="color: #5088C6; font-size: 0.7rem; margin-top: 5px;">📊 Features inside buffer: ${currentBufferFeatures.length}</div>
-            </div>`;
-            
-            if (Object.keys(results).length > 0) {
-                html += `<div class="result-section"><div class="result-title">🌿 Wetland Breakdown (area inside buffer):</div>`;
-                for (const [key, result] of Object.entries(results)) {
-                    const colorMatch = result.color.match(/rgba\((\d+),\s*(\d+),\s*(\d+)/);
-                    const colorRgb = colorMatch ? `rgb(${colorMatch[1]}, ${colorMatch[2]}, ${colorMatch[3]})` : '#666';
-                    html += `<div class="result-item">
-                        <span class="result-label"><span style="display:inline-block; width:12px; height:12px; background:${colorRgb}; border-radius:2px; margin-right:6px;"></span> ${result.displayName}:</span>
-                        <span class="result-value">${formatAreaFromSqm(result.totalAreaSqm)}</span>
-                    </div>`;
-                }
-                html += `</div><div class="result-section"><div class="result-title">📈 Area Distribution (inside buffer):</div>`;
-                const sortedResults = Object.entries(results).sort((a,b) => b[1].totalAreaSqm - a[1].totalAreaSqm);
-                const maxArea = sortedResults[0]?.[1]?.totalAreaSqm || 1;
-                for (const [key, result] of sortedResults) {
-                    const percentage = totalAreaSqm > 0 ? (result.totalAreaSqm / totalAreaSqm * 100).toFixed(1) : 0;
-                    const barWidth = maxArea > 0 ? (result.totalAreaSqm / maxArea * 100).toFixed(0) : 0;
-                    const colorMatch = result.color.match(/rgba\((\d+),\s*(\d+),\s*(\d+)/);
-                    const colorRgb = colorMatch ? `rgb(${colorMatch[1]}, ${colorMatch[2]}, ${colorMatch[3]})` : '#22AD7A';
-                    html += `<div style="margin: 6px 0;">
-                        <div style="display: flex; justify-content: space-between; font-size: 0.7rem;"><span>${result.displayName}</span><span>${percentage}%</span></div>
-                        <div style="background: #E8E7E7; height: 6px; border-radius: 3px; overflow: hidden;"><div style="background: ${colorRgb}; width: ${barWidth}%; height: 100%;"></div></div>
-                    </div>`;
-                }
-                html += `</div>`;
-            } else {
-                html += `<div class="result-section"><div class="result-title">⚠️ No wetlands found within the buffer zone</div></div>`;
-            }
-            resultsDiv.innerHTML = html;
+            showNotification(`Downloaded ${currentBufferFeatures.length} features as GeoJSON`, 'success');
         }
         
         function clearBufferAnalysis() {
-            if (currentBufferCircle) {
-                map.removeLayer(currentBufferCircle);
-                currentBufferCircle = null;
-            }
-            if (currentBufferMarker) {
-                map.removeLayer(currentBufferMarker);
-                currentBufferMarker = null;
-            }
+            if (currentBufferCircle) { map.removeLayer(currentBufferCircle); currentBufferCircle = null; }
+            if (currentBufferMarker) { map.removeLayer(currentBufferMarker); currentBufferMarker = null; }
             currentBufferFeatures = [];
             lastBufferAnalysis = { lat: null, lng: null, bufferKm: null, totalAreaSqm: 0, timestamp: null };
             document.getElementById('bufferResults').innerHTML = `<div class="result-section"><div class="result-title">📌 Enter coordinates or pick from map</div><div style="color: #666; font-size: 0.7rem; padding: 5px;">Example: Colombo (6.9271, 79.8612)</div></div>`;
@@ -2468,9 +1632,8 @@
         }
         
         // ============================================
-        // 9.16: STATISTICS DISPLAY FUNCTIONS
+        // STATISTICS
         // ============================================
-        
         function updateStatisticsDisplay() {
             if (!currentDistrict) { document.getElementById('areaStats').innerHTML = '<span class="loading">Select a district to view statistics</span>'; return; }
             const districtName = districtInfo[currentDistrict]?.name || currentDistrict;
@@ -2486,83 +1649,37 @@
         }
         
         function recalculateStats() { if (currentDistrict) updateStatisticsDisplay(); else showNotification('Select a district first', 'warning'); }
-        
         function updateQuickStats() { document.getElementById('featureCount').textContent = '0'; document.getElementById('totalArea').textContent = '0 m²'; }
         
         // ============================================
-        // 9.17: MAP CONTROL FUNCTIONS
+        // MAP EXPORT (with custom North arrow, no scale)
         // ============================================
-        
-        function changeBaseMap(mapType) { 
-            Object.keys(baseLayers).forEach(l => { if (map.hasLayer(baseLayers[l])) map.removeLayer(baseLayers[l]); }); 
-            if (baseLayers[mapType]) map.addLayer(baseLayers[mapType]); 
-        }
-        
-        function fitToAllData() {
-            if (!currentDistrict) { showNotification('Select a district first', 'warning'); return; }
-            const bounds = new L.LatLngBounds();
-            let hasBounds = false;
-            Object.keys(shapefileLayers).forEach(layer => {
-                if (shapefileLayers[layer] && map.hasLayer(shapefileLayers[layer]) && shapefileLayers[layer].getBounds) {
-                    const b = shapefileLayers[layer].getBounds();
-                    if (b.isValid()) { bounds.extend(b); hasBounds = true; }
-                }
-            });
-            if (hasBounds) map.fitBounds(bounds, { padding: [50,50] });
-            else zoomToDistrict(currentDistrict);
-        }
-        
-        function exportData() { 
-            if (!currentDistrict) showNotification('Select district first', 'warning'); 
-            else showNotification('Export feature - would export data for ' + districtInfo[currentDistrict]?.name, 'info'); 
-        }
-        
-        function printMap() { window.print(); }
-        function scrollToMap() { document.getElementById('map-section').scrollIntoView({ behavior: 'smooth' }); }
-        
-        // ============================================
-        // 9.18: IMPROVED MAP DOWNLOAD FUNCTION (FULL LANDSCAPE)
-        // ============================================
-        
         async function waitForTiles() {
             return new Promise((resolve) => {
-                let tileLoadCount = 0;
-                const checkTiles = () => {
-                    const tiles = document.querySelectorAll('.leaflet-tile-loaded');
-                    if (tiles.length > 0 || tileLoadCount > 50) {
-                        resolve();
-                    } else {
-                        tileLoadCount++;
-                        setTimeout(checkTiles, 100);
-                    }
+                let count = 0;
+                const check = () => {
+                    if (document.querySelectorAll('.leaflet-tile-loaded').length > 0 || count > 50) resolve();
+                    else { count++; setTimeout(check, 100); }
                 };
-                setTimeout(checkTiles, 500);
+                setTimeout(check, 500);
             });
         }
         
         async function downloadMapAsImage(mapTitle) {
             showNotification('Preparing map for export, please wait...', 'info');
-            
-            // Store original styles
             const mapContainer = document.getElementById('map');
             const originalOverflow = mapContainer.style.overflow;
             const originalPosition = mapContainer.style.position;
             const originalWidth = mapContainer.style.width;
             const originalHeight = mapContainer.style.height;
             
-            // Force a full repaint of all layers
             map.invalidateSize();
             await waitForTiles();
             
-            // Temporarily hide sidebar and controls
             const sidebar = document.querySelector('.map-sidebar');
-            const controls = document.querySelector('.map-controls');
             const originalSidebarDisplay = sidebar ? sidebar.style.display : null;
-            const originalControlsDisplay = controls ? controls.style.display : null;
             if (sidebar) sidebar.style.display = 'none';
-            if (controls) controls.style.display = 'none';
             
-            // Set map container to a fixed landscape size for capture
             mapContainer.style.width = '1200px';
             mapContainer.style.height = '800px';
             mapContainer.style.position = 'relative';
@@ -2570,7 +1687,6 @@
             map.invalidateSize();
             await new Promise(r => setTimeout(r, 300));
             
-            // Create overlay elements
             const overlayDiv = document.createElement('div');
             overlayDiv.style.position = 'absolute';
             overlayDiv.style.top = '0';
@@ -2580,7 +1696,7 @@
             overlayDiv.style.pointerEvents = 'none';
             overlayDiv.style.zIndex = '10000';
             
-            // Title (top center)
+            // Title
             const titleDiv = document.createElement('div');
             titleDiv.style.position = 'absolute';
             titleDiv.style.top = '20px';
@@ -2589,43 +1705,39 @@
             titleDiv.style.textAlign = 'center';
             titleDiv.style.fontSize = '24px';
             titleDiv.style.fontWeight = 'bold';
-            titleDiv.style.color = '#28537D';
+            titleDiv.style.color = '#1E3A5F';
             titleDiv.style.backgroundColor = 'rgba(255,255,255,0.85)';
             titleDiv.style.padding = '10px';
-            titleDiv.style.borderRadius = '4px';
-            titleDiv.style.fontFamily = 'Arial, sans-serif';
+            titleDiv.style.borderRadius = '8px';
+            titleDiv.style.fontFamily = 'Inter, sans-serif';
             titleDiv.innerText = mapTitle;
             overlayDiv.appendChild(titleDiv);
             
-            // North arrow (top right) - using custom North.png image
+            // North Arrow (custom image)
             const northDiv = document.createElement('div');
             northDiv.style.position = 'absolute';
             northDiv.style.top = '20px';
             northDiv.style.right = '20px';
             northDiv.style.backgroundColor = 'rgba(255,255,255,0.9)';
-            northDiv.style.padding = '8px 12px';
-            northDiv.style.borderRadius = '4px';
+            northDiv.style.padding = '8px';
+            northDiv.style.borderRadius = '8px';
             northDiv.style.border = '1px solid #ccc';
-            northDiv.style.textAlign = 'center';
             northDiv.style.boxShadow = '0 1px 3px rgba(0,0,0,0.2)';
-            northDiv.style.zIndex = '10001';
             northDiv.style.width = '50px';
             northDiv.style.height = '50px';
             northDiv.style.display = 'flex';
             northDiv.style.alignItems = 'center';
             northDiv.style.justifyContent = 'center';
-            
             const northImg = document.createElement('img');
-            northImg.src = 'https://raw.githubusercontent.com/lakshithamadusanka555-png/WETLAND-INVENTORY/main/images/NorthA.png';
+            northImg.src = 'https://raw.githubusercontent.com/lakshithamadusanka555-png/WETLAND-INVENTORY/main/images/North.png';
             northImg.style.width = '40px';
             northImg.style.height = '40px';
             northImg.style.objectFit = 'contain';
-            northImg.style.display = 'block';
             northImg.crossOrigin = 'Anonymous';
             northDiv.appendChild(northImg);
             overlayDiv.appendChild(northDiv);
             
-            // Legend image (bottom right)
+            // Legend image
             const legendImg = document.createElement('img');
             legendImg.src = 'https://raw.githubusercontent.com/lakshithamadusanka555-png/WETLAND-INVENTORY/main/images/Legend.png';
             legendImg.style.position = 'absolute';
@@ -2635,25 +1747,20 @@
             legendImg.style.backgroundColor = 'white';
             legendImg.style.border = '1px solid #ccc';
             legendImg.style.padding = '5px';
-            legendImg.style.borderRadius = '4px';
+            legendImg.style.borderRadius = '8px';
             legendImg.style.boxShadow = '0 1px 3px rgba(0,0,0,0.2)';
             legendImg.crossOrigin = 'Anonymous';
             overlayDiv.appendChild(legendImg);
             
             mapContainer.appendChild(overlayDiv);
             
-            // Wait for images to load
             await new Promise((resolve) => {
                 let loaded = 0;
-                const checkLoaded = () => {
-                    loaded++;
-                    if (loaded >= 2) resolve();
-                };
-                if (legendImg.complete) checkLoaded(); else legendImg.onload = checkLoaded;
-                if (northImg.complete) checkLoaded(); else northImg.onload = checkLoaded;
+                const check = () => { loaded++; if (loaded >= 2) resolve(); };
+                if (legendImg.complete) check(); else legendImg.onload = check;
+                if (northImg.complete) check(); else northImg.onload = check;
                 setTimeout(resolve, 2000);
             });
-            
             await new Promise(r => setTimeout(r, 500));
             
             try {
@@ -2666,7 +1773,6 @@
                     windowWidth: mapContainer.scrollWidth,
                     windowHeight: mapContainer.scrollHeight
                 });
-                
                 const link = document.createElement('a');
                 const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
                 link.download = `wetland_map_${timestamp}.png`;
@@ -2677,7 +1783,6 @@
                 console.error('html2canvas error:', err);
                 showNotification('Failed to generate map image. Please try again.', 'error');
             } finally {
-                // Clean up
                 mapContainer.removeChild(overlayDiv);
                 mapContainer.style.width = originalWidth;
                 mapContainer.style.height = originalHeight;
@@ -2685,33 +1790,27 @@
                 mapContainer.style.overflow = originalOverflow;
                 map.invalidateSize();
                 if (sidebar) sidebar.style.display = originalSidebarDisplay;
-                if (controls) controls.style.display = originalControlsDisplay;
             }
         }
         
         function promptForMapDownload() {
-            if (!currentDistrict) {
-                showNotification('Please select a district first to load wetland data.', 'warning');
-                return;
-            }
+            if (!currentDistrict) { showNotification('Please select a district first.', 'warning'); return; }
             const title = prompt("Enter map title:", `Wetland Map of ${districtInfo[currentDistrict]?.name || currentDistrict} District`);
-            if (title !== null && title.trim() !== "") {
-                downloadMapAsImage(title);
-            } else if (title !== null) {
-                downloadMapAsImage(`Wetland Map of ${districtInfo[currentDistrict]?.name || currentDistrict} District`);
-            }
+            if (title && title.trim() !== "") downloadMapAsImage(title);
+            else if (title !== null) downloadMapAsImage(`Wetland Map of ${districtInfo[currentDistrict]?.name || currentDistrict} District`);
         }
         
-        // ============================================
-        // 9.19: APPLICATION INITIALIZATION
-        // ============================================
+        function scrollToMap() { document.getElementById('map-section').scrollIntoView({ behavior: 'smooth' }); }
         
+        // ============================================
+        // INITIALIZATION
+        // ============================================
         document.addEventListener('DOMContentLoaded', function() {
             initializeMap();
             updateQuickStats();
             initializeDrawingTools();
             loadProtectedAreas();
-            const layers = ['water', 'paddy', 'marsh', 'mangroves', 'sand', 'aquaculture', 'coral', 'streams', 'seasonal', 'protected'];
+            const layers = ['water','paddy','marsh','mangroves','sand','aquaculture','coral','streams','seasonal','protected'];
             layers.forEach(layer => updateOpacityDisplay(layer, 70));
         });
     </script>

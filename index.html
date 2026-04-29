@@ -2521,7 +2521,7 @@
         function scrollToMap() { document.getElementById('map-section').scrollIntoView({ behavior: 'smooth' }); }
         
         // ============================================
-        // 9.18: MAP DOWNLOAD/EXPORT FUNCTION (FIXED)
+        // 9.18: MAP DOWNLOAD/EXPORT FUNCTION (FULLY FIXED)
         // ============================================
         
         function promptForMapDownload() {
@@ -2540,7 +2540,7 @@
         async function downloadMapAsImage(mapTitle) {
             showNotification('Generating map image, please wait...', 'info');
             
-            // Temporarily hide sidebar and map controls for cleaner capture
+            // Temporarily hide sidebar and map controls for a clean capture
             const sidebar = document.querySelector('.map-sidebar');
             const controls = document.querySelector('.map-controls');
             const originalSidebarDisplay = sidebar ? sidebar.style.display : null;
@@ -2548,11 +2548,10 @@
             if (sidebar) sidebar.style.display = 'none';
             if (controls) controls.style.display = 'none';
             
-            // Add custom overlays: north arrow, scale bar, legend, and title
+            // Get the map container
             const mapContainer = document.getElementById('map');
-            const mapRect = mapContainer.getBoundingClientRect();
             
-            // Create overlay container
+            // Create overlay container for title, north arrow, scale bar, and legend
             const overlayDiv = document.createElement('div');
             overlayDiv.style.position = 'absolute';
             overlayDiv.style.top = '0';
@@ -2561,9 +2560,8 @@
             overlayDiv.style.height = '100%';
             overlayDiv.style.pointerEvents = 'none';
             overlayDiv.style.zIndex = '10000';
-            overlayDiv.style.backgroundColor = 'transparent';
             
-            // Title overlay
+            // Title (top center)
             const titleDiv = document.createElement('div');
             titleDiv.style.position = 'absolute';
             titleDiv.style.top = '20px';
@@ -2573,14 +2571,15 @@
             titleDiv.style.fontSize = '24px';
             titleDiv.style.fontWeight = 'bold';
             titleDiv.style.color = '#28537D';
-            titleDiv.style.textShadow = '1px 1px 2px white';
-            titleDiv.style.backgroundColor = 'rgba(255,255,255,0.7)';
+            titleDiv.style.backgroundColor = 'rgba(255,255,255,0.8)';
             titleDiv.style.padding = '10px';
-            titleDiv.style.zIndex = '10001';
+            titleDiv.style.borderRadius = '4px';
+            titleDiv.style.boxShadow = '0 1px 3px rgba(0,0,0,0.2)';
+            titleDiv.style.fontFamily = 'Arial, sans-serif';
             titleDiv.innerText = mapTitle;
             overlayDiv.appendChild(titleDiv);
             
-            // North arrow
+            // North arrow (top right)
             const northDiv = document.createElement('div');
             northDiv.style.position = 'absolute';
             northDiv.style.top = '20px';
@@ -2589,14 +2588,14 @@
             northDiv.style.padding = '8px 12px';
             northDiv.style.borderRadius = '4px';
             northDiv.style.border = '1px solid #ccc';
-            northDiv.style.fontSize = '24px';
             northDiv.style.textAlign = 'center';
+            northDiv.style.fontSize = '24px';
             northDiv.style.boxShadow = '0 1px 3px rgba(0,0,0,0.2)';
-            northDiv.style.zIndex = '10001';
+            northDiv.style.fontFamily = 'Arial, sans-serif';
             northDiv.innerHTML = '<i class="fas fa-arrow-up" style="display:block; font-size:32px; color:#E86933; margin-bottom:4px;"></i><span style="font-size:12px; font-weight:bold; color:#28537D;">N</span>';
             overlayDiv.appendChild(northDiv);
             
-            // Scale bar
+            // Scale bar (bottom left)
             const zoomLevel = map.getZoom();
             let scaleText = '';
             if (zoomLevel >= 18) scaleText = '~ 10 m';
@@ -2625,11 +2624,10 @@
             scaleDiv.style.fontFamily = 'monospace';
             scaleDiv.style.fontSize = '14px';
             scaleDiv.style.boxShadow = '0 1px 3px rgba(0,0,0,0.2)';
-            scaleDiv.style.zIndex = '10001';
             scaleDiv.innerHTML = `<span style="display:inline-block; width:100px; height:4px; background:#333; margin-right:8px; vertical-align:middle;"></span> ${scaleText}`;
             overlayDiv.appendChild(scaleDiv);
             
-            // Legend image - using raw GitHub URL
+            // Legend image (bottom right) - using raw GitHub URL
             const legendImg = document.createElement('img');
             legendImg.src = 'https://raw.githubusercontent.com/lakshithamadusanka555-png/WETLAND-INVENTORY/main/images/Legend.png';
             legendImg.style.position = 'absolute';
@@ -2641,11 +2639,11 @@
             legendImg.style.padding = '5px';
             legendImg.style.borderRadius = '4px';
             legendImg.style.boxShadow = '0 1px 3px rgba(0,0,0,0.2)';
-            legendImg.style.zIndex = '10001';
             legendImg.style.width = 'auto';
             legendImg.style.height = 'auto';
             overlayDiv.appendChild(legendImg);
             
+            // Append overlay to map container
             mapContainer.style.position = 'relative';
             mapContainer.appendChild(overlayDiv);
             
@@ -2653,11 +2651,11 @@
             await new Promise((resolve) => {
                 if (legendImg.complete) resolve();
                 else legendImg.onload = resolve;
-                setTimeout(resolve, 1000);
+                setTimeout(resolve, 1500); // fallback
             });
             
-            // Small delay to ensure everything renders
-            await new Promise(r => setTimeout(r, 200));
+            // Small delay to ensure rendering
+            await new Promise(r => setTimeout(r, 300));
             
             try {
                 const canvas = await html2canvas(mapContainer, {
@@ -2680,7 +2678,7 @@
                 console.error('html2canvas error:', err);
                 showNotification('Failed to generate map image. Please try again.', 'error');
             } finally {
-                // Clean up overlays and restore UI
+                // Clean up
                 mapContainer.removeChild(overlayDiv);
                 mapContainer.style.position = '';
                 if (sidebar) sidebar.style.display = originalSidebarDisplay;

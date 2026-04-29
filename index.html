@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
     <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     
     <!-- ============================================ -->
     <!-- SECTION 2: CSS VARIABLES AND CUSTOM STYLES -->
@@ -1117,6 +1118,104 @@
                 padding: 1rem;
             }
         }
+        
+        /* 2.27: Print/Export Styles */
+        #printContainer {
+            position: fixed;
+            top: -9999px;
+            left: -9999px;
+            width: 1200px;
+            background: white;
+            z-index: -1;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        #printMap {
+            width: 100%;
+            height: 600px;
+            background: #f0f0f0;
+        }
+        
+        .print-title {
+            text-align: center;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            font-size: 28px;
+            font-weight: bold;
+            color: #28537D;
+            margin: 20px 0;
+            padding: 0 20px;
+        }
+        
+        .print-layout {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            background: white;
+        }
+        
+        .print-map-container {
+            flex: 3;
+            position: relative;
+        }
+        
+        .print-legend-container {
+            flex: 1;
+            border-left: 2px solid #e0e0e0;
+            padding-left: 20px;
+        }
+        
+        .print-legend-container h4 {
+            margin-top: 0;
+            color: #28537D;
+            font-size: 18px;
+        }
+        
+        .print-legend-container img {
+            width: 100%;
+            max-width: 250px;
+            border: 1px solid #ddd;
+            background: white;
+        }
+        
+        .print-scale-bar {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-family: monospace;
+            font-size: 14px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .print-north-arrow {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-size: 24px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .print-north-arrow i {
+            display: block;
+            font-size: 32px;
+            color: #E86933;
+            margin-bottom: 4px;
+        }
+        
+        .print-north-arrow span {
+            font-size: 12px;
+            font-weight: bold;
+            color: #28537D;
+        }
     </style>
 </head>
 <body>
@@ -1547,6 +1646,7 @@
                         <button class="map-btn secondary" onclick="hideAllLayers()"><i class="fas fa-eye-slash"></i> Hide All</button>
                         <button class="map-btn" onclick="fitToAllData()"><i class="fas fa-search"></i> Fit to Data</button>
                         <button class="chatbot-map-btn" onclick="window.open('https://chatbot-wetlandiwmi-85xo9ngytfknlrrck4n6ur.streamlit.app/', '_blank')"><i class="fas fa-robot"></i> Chat</button>
+                        <button class="map-btn secondary" id="exportMapBtn" onclick="promptForMapDownload()"><i class="fas fa-camera"></i> Download Map as Image</button>
                     </div>
                     <div class="control-group">
                         <select class="filter-dropdown" id="baseMap" onchange="changeBaseMap(this.value)">
@@ -1769,26 +1869,36 @@
         // ============================================
         
         function initializeMap() {
-            map = L.map('map').setView([7.8731, 80.7718], 8);
+            // Use canvas renderer for better compatibility with html2canvas
+            map = L.map('map', {
+                preferCanvas: true,
+                zoomAnimation: false,
+                fadeAnimation: false,
+                markerZoomAnimation: false
+            }).setView([7.8731, 80.7718], 8);
             
             baseLayers.osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap contributors',
-                maxZoom: 19
+                maxZoom: 19,
+                crossOrigin: true
             }).addTo(map);
             
             baseLayers.satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
                 attribution: '© Esri, Maxar, Earthstar Geographics',
-                maxZoom: 19
+                maxZoom: 19,
+                crossOrigin: true
             });
             
             baseLayers.terrain = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenTopoMap contributors',
-                maxZoom: 17
+                maxZoom: 17,
+                crossOrigin: true
             });
             
             baseLayers.topo = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
                 attribution: '© Humanitarian OpenStreetMap Team',
-                maxZoom: 19
+                maxZoom: 19,
+                crossOrigin: true
             });
             
             L.control.scale({imperial: false}).addTo(map);
@@ -2072,6 +2182,7 @@
             if (shapefileLayers[layerName]) map.removeLayer(shapefileLayers[layerName]);
             shapefileLayers[layerName] = L.geoJSON(geojsonData, {
                 style: layerStyles[layerName],
+                renderer: L.canvas(),
                 onEachFeature: (f, l) => {
                     l.on('click', e => showFeatureInfo(f, e.latlng, districtCode));
                     if (f.properties) {
@@ -2114,6 +2225,7 @@
                 const geojsonData = await response.json();
                 shapefileLayers.protected = L.geoJSON(geojsonData, {
                     style: layerStyles.protected,
+                    renderer: L.canvas(),
                     onEachFeature: (f, l) => l.on('click', e => showProtectedAreaInfo(f, e.latlng))
                 });
                 layerStats.protected.features = geojsonData.features.length;
@@ -2507,7 +2619,190 @@
         function scrollToMap() { document.getElementById('map-section').scrollIntoView({ behavior: 'smooth' }); }
         
         // ============================================
-        // 9.18: APPLICATION INITIALIZATION
+        // 9.18: MAP DOWNLOAD/EXPORT FUNCTION
+        // ============================================
+        
+        function promptForMapDownload() {
+            if (!currentDistrict) {
+                showNotification('Please select a district first to load wetland data.', 'warning');
+                return;
+            }
+            const title = prompt("Enter map title:", `Wetland Map of ${districtInfo[currentDistrict]?.name || currentDistrict} District`);
+            if (title !== null && title.trim() !== "") {
+                downloadMapAsImage(title);
+            } else if (title !== null) {
+                showNotification('Map title cannot be empty. Using default title.', 'info');
+                downloadMapAsImage(`Wetland Map of ${districtInfo[currentDistrict]?.name || currentDistrict} District`);
+            }
+            // If user cancels, do nothing
+        }
+        
+        async function downloadMapAsImage(mapTitle) {
+            showNotification('Generating map image, please wait...', 'info');
+            
+            // Temporarily hide map controls for cleaner capture
+            const controlContainer = document.querySelector('.leaflet-control-container');
+            const originalDisplay = controlContainer ? controlContainer.style.display : null;
+            if (controlContainer) controlContainer.style.display = 'none';
+            
+            // Create a print container dynamically
+            const printContainer = document.createElement('div');
+            printContainer.id = 'dynamicPrintContainer';
+            printContainer.style.position = 'absolute';
+            printContainer.style.top = '-9999px';
+            printContainer.style.left = '-9999px';
+            printContainer.style.width = '1200px';
+            printContainer.style.backgroundColor = 'white';
+            printContainer.style.padding = '20px';
+            printContainer.style.fontFamily = 'Arial, sans-serif';
+            printContainer.style.boxSizing = 'border-box';
+            
+            // Clone the map container
+            const originalMapContainer = document.getElementById('map');
+            const mapClone = originalMapContainer.cloneNode(true);
+            mapClone.id = 'printMapClone';
+            mapClone.style.width = '100%';
+            mapClone.style.height = '600px';
+            mapClone.style.position = 'relative';
+            mapClone.style.backgroundColor = '#f0f0f0';
+            
+            // Create title element
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'print-title';
+            titleDiv.style.textAlign = 'center';
+            titleDiv.style.fontSize = '28px';
+            titleDiv.style.fontWeight = 'bold';
+            titleDiv.style.color = '#28537D';
+            titleDiv.style.margin = '20px 0';
+            titleDiv.style.padding = '0 20px';
+            titleDiv.innerText = mapTitle;
+            
+            // Create layout container
+            const layoutDiv = document.createElement('div');
+            layoutDiv.style.display = 'flex';
+            layoutDiv.style.gap = '20px';
+            layoutDiv.style.padding = '20px';
+            layoutDiv.style.backgroundColor = 'white';
+            
+            const mapContainerDiv = document.createElement('div');
+            mapContainerDiv.style.flex = '3';
+            mapContainerDiv.style.position = 'relative';
+            mapContainerDiv.appendChild(mapClone);
+            
+            // Add north arrow
+            const northArrow = document.createElement('div');
+            northArrow.className = 'print-north-arrow';
+            northArrow.style.position = 'absolute';
+            northArrow.style.top = '20px';
+            northArrow.style.right = '20px';
+            northArrow.style.backgroundColor = 'rgba(255,255,255,0.9)';
+            northArrow.style.padding = '8px 12px';
+            northArrow.style.borderRadius = '4px';
+            northArrow.style.border = '1px solid #ccc';
+            northArrow.style.fontSize = '24px';
+            northArrow.style.textAlign = 'center';
+            northArrow.style.boxShadow = '0 1px 3px rgba(0,0,0,0.2)';
+            northArrow.style.zIndex = '1000';
+            northArrow.innerHTML = '<i class="fas fa-arrow-up" style="display:block; font-size:32px; color:#E86933; margin-bottom:4px;"></i><span style="font-size:12px; font-weight:bold; color:#28537D;">N</span>';
+            mapContainerDiv.appendChild(northArrow);
+            
+            // Add scale bar
+            const zoomLevel = map.getZoom();
+            let scaleText = '';
+            if (zoomLevel >= 18) scaleText = '~ 10 m';
+            else if (zoomLevel >= 17) scaleText = '~ 20 m';
+            else if (zoomLevel >= 16) scaleText = '~ 50 m';
+            else if (zoomLevel >= 15) scaleText = '~ 100 m';
+            else if (zoomLevel >= 14) scaleText = '~ 200 m';
+            else if (zoomLevel >= 13) scaleText = '~ 500 m';
+            else if (zoomLevel >= 12) scaleText = '~ 1 km';
+            else if (zoomLevel >= 11) scaleText = '~ 2 km';
+            else if (zoomLevel >= 10) scaleText = '~ 5 km';
+            else if (zoomLevel >= 9) scaleText = '~ 10 km';
+            else if (zoomLevel >= 8) scaleText = '~ 20 km';
+            else if (zoomLevel >= 7) scaleText = '~ 50 km';
+            else if (zoomLevel >= 6) scaleText = '~ 100 km';
+            else scaleText = '~ 200 km';
+            
+            const scaleBar = document.createElement('div');
+            scaleBar.className = 'print-scale-bar';
+            scaleBar.style.position = 'absolute';
+            scaleBar.style.bottom = '20px';
+            scaleBar.style.left = '20px';
+            scaleBar.style.backgroundColor = 'rgba(255,255,255,0.9)';
+            scaleBar.style.padding = '8px 12px';
+            scaleBar.style.borderRadius = '4px';
+            scaleBar.style.border = '1px solid #ccc';
+            scaleBar.style.fontFamily = 'monospace';
+            scaleBar.style.fontSize = '14px';
+            scaleBar.style.boxShadow = '0 1px 3px rgba(0,0,0,0.2)';
+            scaleBar.style.zIndex = '1000';
+            scaleBar.innerHTML = `<span style="display:inline-block; width:100px; height:4px; background:#333; margin-right:8px; vertical-align:middle;"></span> ${scaleText}`;
+            mapContainerDiv.appendChild(scaleBar);
+            
+            // Create legend container
+            const legendContainer = document.createElement('div');
+            legendContainer.style.flex = '1';
+            legendContainer.style.borderLeft = '2px solid #e0e0e0';
+            legendContainer.style.paddingLeft = '20px';
+            
+            const legendTitle = document.createElement('h4');
+            legendTitle.style.marginTop = '0';
+            legendTitle.style.color = '#28537D';
+            legendTitle.style.fontSize = '18px';
+            legendTitle.innerText = 'Legend';
+            legendContainer.appendChild(legendTitle);
+            
+            const legendImg = document.createElement('img');
+            legendImg.src = 'https://github.com/lakshithamadusanka555-png/WETLAND-INVENTORY/blob/main/images/Legend.png';
+            legendImg.style.width = '100%';
+            legendImg.style.maxWidth = '250px';
+            legendImg.style.border = '1px solid #ddd';
+            legendImg.style.backgroundColor = 'white';
+            legendImg.crossOrigin = 'Anonymous';
+            legendContainer.appendChild(legendImg);
+            
+            layoutDiv.appendChild(mapContainerDiv);
+            layoutDiv.appendChild(legendContainer);
+            
+            printContainer.appendChild(titleDiv);
+            printContainer.appendChild(layoutDiv);
+            
+            document.body.appendChild(printContainer);
+            
+            // Wait for images to load and map to render
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Use html2canvas to capture the print container
+            try {
+                const canvas = await html2canvas(printContainer, {
+                    scale: 3,
+                    useCORS: true,
+                    backgroundColor: '#ffffff',
+                    logging: false,
+                    allowTaint: false
+                });
+                
+                // Trigger download
+                const link = document.createElement('a');
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+                link.download = `wetland_map_${timestamp}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                
+                showNotification('Map image downloaded successfully!', 'success');
+            } catch (err) {
+                console.error('html2canvas error:', err);
+                showNotification('Failed to generate map image. Please try again.', 'error');
+            } finally {
+                // Clean up
+                document.body.removeChild(printContainer);
+                if (controlContainer) controlContainer.style.display = originalDisplay;
+            }
+        }
+        
+        // ============================================
+        // 9.19: APPLICATION INITIALIZATION
         // ============================================
         
         document.addEventListener('DOMContentLoaded', function() {

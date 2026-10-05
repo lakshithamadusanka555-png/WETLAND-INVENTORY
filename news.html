@@ -294,6 +294,23 @@
             letter-spacing: 0.5px;
         }
         
+        /* Reference Link */
+        .ref-link {
+            font-size: 0.75rem;
+            color: var(--iwmi-text-light);
+            margin-top: 0.5rem;
+            display: block;
+        }
+        
+        .ref-link a {
+            color: var(--iwmi-teal);
+            text-decoration: none;
+        }
+        
+        .ref-link a:hover {
+            text-decoration: underline;
+        }
+        
         /* Sidebar Styles */
         .sidebar-section {
             background: var(--iwmi-white);
@@ -666,7 +683,7 @@
         <ul class="nav-links">
             <li><a href="index.html">Home</a></li>
             <li><a href="about.html">About Wetlands</a></li>
-            <li><a href="news.html" style="background-color:var(--iwmi-sky-blue);border-radius:4px;">News</a></li>
+            <li><a href="news.html" class="active">News</a></li>
             <li><a href="downloads.html">Downloads</a></li>
         </ul>
     </nav>
@@ -674,27 +691,28 @@
     <!-- Main Content -->
     <div class="news-container">
         <h1 class="page-title">Wetland News & Updates</h1>
-        <p class="page-subtitle">Latest conservation news, research, and events about Sri Lanka's wetlands</p>
+        <p class="page-subtitle">Latest conservation news, research, and events about Sri Lanka's wetlands — 2026</p>
         
         <!-- Main Content Area -->
         <div class="main-content">
             <!-- Featured News -->
             <div class="featured-news">
                 <div class="featured-image">
-                    <img src="https://github.com/lakshithamadusanka555-png/WETLAND-INVENTORY/raw/main/images/mangrove_restoration.jpg">
+                    <img src="https://github.com/lakshithamadusanka555-png/WETLAND-INVENTORY/raw/main/images/mangrove_restoration.jpg" alt="Colombo Wetlands Storytelling Project">
                 </div>
                 <div class="featured-content">
                     <span class="featured-badge">FEATURED STORY</span>
-                    <h2 class="news-title">Mangrove Restoration Project Launched in Puttalam District</h2>
+                    <h2 class="news-title">Colombo's Wetlands Find New Defenders in Stories, Histories and Heritage</h2>
                     <div class="news-date">
-                        <i class="far fa-calendar"></i> January 15, 2024 | 
-                        <span class="news-category">Conservation</span>
+                        <i class="far fa-calendar"></i> May 8, 2026 | 
+                        <span class="news-category">Heritage</span>
                         <span class="news-category">Community</span>
                     </div>
                     <p class="news-excerpt">
-                        A new community-led mangrove restoration initiative has been launched in the Puttalam lagoon area, aiming to replant 50,000 mangrove saplings over the next two years. The project involves local fishing communities and aims to restore critical coastal protection while creating sustainable livelihoods.
+                        A first-of-its-kind project is using storytelling, history and cultural heritage to build lasting community stewardship of Colombo's threatened urban wetlands. The two-year project, led by IWMI with the University of Hull and University of Kelaniya, was awarded through the British Academy's International Interdisciplinary Research Projects 2026 programme [citation:4]. Urban development and pollution have reduced the water storage capacity of Colombo's wetlands by 40% since 2001, even as the city faces intensifying flood risk [citation:4].
                     </p>
                     <a href="#" class="read-more">Read Full Story <i class="fas fa-arrow-right"></i></a>
+                    <span class="ref-link">Source: <a href="https://www.iwmi.org/news/colombos-wetlands-find-new-defenders-in-stories-histories-and-heritage/" target="_blank">IWMI</a></span>
                 </div>
             </div>
             
@@ -702,102 +720,109 @@
             <div class="news-grid">
                 <!-- News Card 1 -->
                 <div class="news-card">
-                    <img src="https://github.com/lakshithamadusanka555-png/WETLAND-INVENTORY/raw/main/images/birds_bundala.jpg">
+                    <img src="https://github.com/lakshithamadusanka555-png/WETLAND-INVENTORY/raw/main/images/birds_bundala.jpg" alt="University of Hull Project" class="news-image">
                     <div class="news-content">
                         <div class="news-date">
-                            <i class="far fa-calendar"></i> December 3, 2023
+                            <i class="far fa-calendar"></i> April 21, 2026
                             <span class="news-category">Research</span>
+                            <span class="news-category">Collaboration</span>
                         </div>
-                        <h3 class="news-title">Record Number of Migratory Birds Spotted in Bundala</h3>
+                        <h3 class="news-title">University of Hull to Lead Sri Lanka Wetlands Project</h3>
                         <p class="news-excerpt">
-                            Bird watchers and researchers recorded over 15,000 migratory birds in Bundala National Park this season, the highest count in the past decade. The increase is attributed to improved wetland management and reduced human disturbance.
+                            The University of Hull is leading a new two-year project supporting wetland management in Colombo's Kotte District. Researchers will explore how cultural heritage, memory and storytelling can inform wetland management, working with communities facing rapid development, pollution and climate pressures [citation:2].
                         </p>
                         <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                        <span class="ref-link">Source: <a href="https://www.bbc.co.uk/news/articles/cge04rq8n4lo" target="_blank">BBC News</a></span>
                     </div>
                 </div>
                 
                 <!-- News Card 2 -->
                 <div class="news-card">
-                    <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Water Quality" class="news-image">
+                    <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="World Wetlands Day" class="news-image">
                     <div class="news-content">
                         <div class="news-date">
-                            <i class="far fa-calendar"></i> November 18, 2023
-                            <span class="news-category">Research</span>
-                            <span class="news-category">Environment</span>
+                            <i class="far fa-calendar"></i> February 2, 2026
+                            <span class="news-category">Events</span>
+                            <span class="news-category">Heritage</span>
                         </div>
-                        <h3 class="news-title">New Study: Colombo Wetlands Filter 40% of City's Wastewater</h3>
+                        <h3 class="news-title">World Wetlands Day 2026: Celebrating Traditional Knowledge</h3>
                         <p class="news-excerpt">
-                            Research from the University of Colombo reveals that the Muthurajawela and Bellanwila-Attidiya wetlands naturally filter and purify approximately 40% of Colombo's wastewater, saving millions in treatment costs.
+                            World Wetlands Day 2026 was observed under the theme "Wetlands and Traditional Knowledge: Celebrating Cultural Heritage." The theme highlights the enduring role of indigenous and traditional knowledge systems in sustaining wetland ecosystems while preserving cultural identity [citation:3]. IWMI Director General Mark Smith emphasised that conservation succeeds when science and culture work hand in hand [citation:17].
                         </p>
                         <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                        <span class="ref-link">Source: <a href="https://iucn.org/index%2Ephp/blog/202602/world-wetlands-day-2026-message-mahmood-akhtar-cheema-country-representative-iucn" target="_blank">IUCN</a> / <a href="https://www.iwmi.org/multimedia/mark-smith-message-for-world-wetlands-day-2026/" target="_blank">IWMI</a></span>
                     </div>
                 </div>
                 
                 <!-- News Card 3 -->
                 <div class="news-card">
-                    <img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Education" class="news-image">
+                    <img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Negombo Lagoon Jetty" class="news-image">
                     <div class="news-content">
                         <div class="news-date">
-                            <i class="far fa-calendar"></i> October 29, 2023
-                            <span class="news-category">Education</span>
-                            <span class="news-category">Community</span>
+                            <i class="far fa-calendar"></i> April 17, 2026
+                            <span class="news-category">Conservation</span>
+                            <span class="news-category">Infrastructure</span>
                         </div>
-                        <h3 class="news-title">Wetland Education Program Reaches 5,000 Students</h3>
+                        <h3 class="news-title">New Jetty to Protect Negombo Lagoon and Attract Tourists</h3>
                         <p class="news-excerpt">
-                            The "Wetland Guardians" school program has now educated over 5,000 students across 50 schools about wetland conservation. The program includes field visits, workshops, and citizen science projects.
+                            Construction of a new jetty and boat launching yard at a cost of Rs. 318 million was inaugurated to conserve Negombo Lagoon. The project aims to restore order to boat mooring, preserve the lagoon's scenic beauty, and benefit both the fishing community and the tourism industry [citation:8].
                         </p>
                         <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                        <span class="ref-link">Source: <a href="https://www.fisheries.gov.lk/web/index.php/en/information/news/1213-318" target="_blank">Ministry of Fisheries</a></span>
                     </div>
                 </div>
                 
                 <!-- News Card 4 -->
                 <div class="news-card">
-                    <img src="https://github.com/lakshithamadusanka555-png/WETLAND-INVENTORY/raw/main/images/wetland_plan.jpg">
+                    <img src="https://github.com/lakshithamadusanka555-png/WETLAND-INVENTORY/raw/main/images/wetland_plan.jpg" alt="Mangrove Restoration Mullaitivu" class="news-image">
                     <div class="news-content">
                         <div class="news-date">
-                            <i class="far fa-calendar"></i> September 12, 2023
+                            <i class="far fa-calendar"></i> July 26, 2026
                             <span class="news-category">Climate</span>
-                            <span class="news-category">Policy</span>
+                            <span class="news-category">Community</span>
                         </div>
-                        <h3 class="news-title">Sri Lanka's Wetlands to Play Key Role in Climate Adaptation Plan</h3>
+                        <h3 class="news-title">Communities Lead Mangrove Restoration in Mullaitivu District</h3>
                         <p class="news-excerpt">
-                            The Ministry of Environment has included wetland restoration as a key component of Sri Lanka's National Climate Change Adaptation Strategy, recognizing their role in flood mitigation and carbon sequestration.
+                            Communities in Mullaitivu District have planted over 24,000 mangrove saplings in Nayaru Lagoon, reaching nearly 50% of their target. The UN-Habitat supported initiative, funded by the Adaptation Fund, is restoring two hectares of degraded mangrove habitats while building local climate resilience [citation:10].
                         </p>
                         <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                        <span class="ref-link">Source: <a href="https://fukuoka.unhabitat.org/information/10726/" target="_blank">UN-Habitat</a></span>
                     </div>
                 </div>
                 
                 <!-- News Card 5 -->
                 <div class="news-card">
-                    <img src="https://github.com/lakshithamadusanka555-png/WETLAND-INVENTORY/raw/main/images/tourism.jpg" class="news-image">
+                    <img src="https://github.com/lakshithamadusanka555-png/WETLAND-INVENTORY/raw/main/images/tourism.jpg" alt="Seagrass Puttalam" class="news-image">
                     <div class="news-content">
                         <div class="news-date">
-                            <i class="far fa-calendar"></i> August 25, 2023
-                            <span class="news-category">Tourism</span>
-                            <span class="news-category">Economy</span>
+                            <i class="far fa-calendar"></i> June 13, 2026
+                            <span class="news-category">Research</span>
+                            <span class="news-category">Biodiversity</span>
                         </div>
-                        <h3 class="news-title">Community-Based Wetland Tourism Generates $2M Annually</h3>
+                        <h3 class="news-title">First Integrated Assessment of Puttalam Lagoon Seagrass Meadows</h3>
                         <p class="news-excerpt">
-                            A new report shows that community-managed wetland tourism initiatives around Maduganga and Negombo lagoons are generating significant income while promoting conservation.
+                            A new study provides the first integrated socio-ecological assessment of seagrass meadows in Puttalam Lagoon, identifying five seagrass species and examining how monsoonal variability influences carbon storage. The research contributes to SDG 13 (Climate Action), SDG 14 (Life Below Water), and SDG 15 (Life on Land) [citation:6].
                         </p>
                         <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                        <span class="ref-link">Source: <a href="https://www.sciencedirect.com/science/article/abs/pii/S2352485526004093" target="_blank">ScienceDirect</a></span>
                     </div>
                 </div>
                 
                 <!-- News Card 6 -->
                 <div class="news-card">
-                    <img src="https://github.com/lakshithamadusanka555-png/WETLAND-INVENTORY/raw/main/images/fish.jpg" class="news-image">
+                    <img src="https://github.com/lakshithamadusanka555-png/WETLAND-INVENTORY/raw/main/images/fish.jpg" alt="Wellness in Wetlands Conference" class="news-image">
                     <div class="news-content">
                         <div class="news-date">
-                            <i class="far fa-calendar"></i> July 30, 2023
-                            <span class="news-category">Biodiversity</span>
-                            <span class="news-category">Discovery</span>
+                            <i class="far fa-calendar"></i> October 9-12, 2026
+                            <span class="news-category">Events</span>
+                            <span class="news-category">Research</span>
                         </div>
-                        <h3 class="news-title">New Endemic Fish Species Discovered in Knuckles Wetlands</h3>
+                        <h3 class="news-title">Wellness in Wetlands 2026: 2nd International Conference in Sri Lanka</h3>
                         <p class="news-excerpt">
-                            Scientists have identified a new species of freshwater fish unique to the mountain wetlands of the Knuckles Range. The discovery highlights the importance of protecting Sri Lanka's diverse wetland habitats.
+                            The Wellness in Wetlands 2026 conference will bring together researchers, policymakers, conservationists and public health professionals in Sri Lanka to explore how wetlands can support environmental sustainability and human wellbeing. Prof. Simon Bell from the University of Edinburgh will deliver a keynote address [citation:5].
                         </p>
                         <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                        <span class="ref-link">Source: <a href="https://www.openspace.eca.ed.ac.uk/professor-simon-bell-invited-to-deliver-keynote-at-international-wetlands-conference/" target="_blank">University of Edinburgh</a></span>
                     </div>
                 </div>
             </div>
@@ -807,7 +832,35 @@
         <div class="sidebar">
             <!-- Upcoming Events -->
             <div class="sidebar-section">
-                <h3 class="sidebar-title"><i class="fas fa-calendar-alt"></i> Upcoming Events</h3>
+                <h3 class="sidebar-title"><i class="fas fa-calendar-alt"></i> Upcoming Events 2026</h3>
+                
+                <div class="event-item">
+                    <div class="event-date">
+                        <div class="event-day">
+                            <div class="event-month">JUL</div>
+                            <div class="event-day-number">22</div>
+                        </div>
+                        <div>
+                            <div class="event-title">4th International Conference on Mangroves for Sustainability (ICMS 2026)</div>
+                            <div class="event-location"><i class="fas fa-map-marker-alt"></i> Colombo, Sri Lanka</div>
+                        </div>
+                    </div>
+                    <p style="font-size:0.9rem; color:var(--iwmi-text-light); margin-top:0.5rem;">Hybrid conference on advancing mangrove sustainability through ecological research, climate adaptation, policy frameworks and technological innovation [citation:11].</p>
+                </div>
+                
+                <div class="event-item">
+                    <div class="event-date">
+                        <div class="event-day">
+                            <div class="event-month">OCT</div>
+                            <div class="event-day-number">9</div>
+                        </div>
+                        <div>
+                            <div class="event-title">Wellness in Wetlands 2026</div>
+                            <div class="event-location"><i class="fas fa-map-marker-alt"></i> Sri Lanka</div>
+                        </div>
+                    </div>
+                    <p style="font-size:0.9rem; color:var(--iwmi-text-light); margin-top:0.5rem;">2nd International Conference on Wetlands, Wisdom and Wellbeing, exploring links between wetlands, environmental sustainability and human wellbeing [citation:5].</p>
+                </div>
                 
                 <div class="event-item">
                     <div class="event-date">
@@ -816,67 +869,11 @@
                             <div class="event-day-number">2</div>
                         </div>
                         <div>
-                            <div class="event-title">World Wetlands Day 2024</div>
-                            <div class="event-location"><i class="fas fa-map-marker-alt"></i> Nationwide</div>
+                            <div class="event-title">World Wetlands Day 2026</div>
+                            <div class="event-location"><i class="fas fa-map-marker-alt"></i> Global</div>
                         </div>
                     </div>
-                    <p style="font-size:0.9rem; color:var(--iwmi-text-light); margin-top:0.5rem;">Celebrations, workshops, and guided wetland tours across Sri Lanka to mark international wetlands day.</p>
-                </div>
-                
-                <div class="event-item">
-                    <div class="event-date">
-                        <div class="event-day">
-                            <div class="event-month">MAR</div>
-                            <div class="event-day-number">15</div>
-                        </div>
-                        <div>
-                            <div class="event-title">Wetland Photography Competition</div>
-                            <div class="event-location"><i class="fas fa-map-marker-alt"></i> Online</div>
-                        </div>
-                    </div>
-                    <p style="font-size:0.9rem; color:var(--iwmi-text-light); margin-top:0.5rem;">Submit your best wetland photos. Categories: Wildlife, Landscapes, Conservation Stories. Deadline: March 15.</p>
-                </div>
-                
-                <div class="event-item">
-                    <div class="event-date">
-                        <div class="event-day">
-                            <div class="event-month">APR</div>
-                            <div class="event-day-number">22</div>
-                        </div>
-                        <div>
-                            <div class="event-title">Earth Day Wetland Cleanup</div>
-                            <div class="event-location"><i class="fas fa-map-marker-alt"></i> Multiple Locations</div>
-                        </div>
-                    </div>
-                    <p style="font-size:0.9rem; color:var(--iwmi-text-light); margin-top:0.5rem;">Volunteer to clean and restore urban wetlands. Locations in Colombo, Galle, and Kandy.</p>
-                </div>
-                
-                <div class="event-item">
-                    <div class="event-date">
-                        <div class="event-day">
-                            <div class="event-month">MAY</div>
-                            <div class="event-day-number">5</div>
-                        </div>
-                        <div>
-                            <div class="event-title">Bird Watching Workshop</div>
-                            <div class="event-location"><i class="fas fa-map-marker-alt"></i> Bundala National Park</div>
-                        </div>
-                    </div>
-                    <p style="font-size:0.9rem; color:var(--iwmi-text-light); margin-top:0.5rem;">Beginner-friendly bird watching workshop in one of Sri Lanka's premier wetland habitats.</p>
-                </div>
-                
-                <div class="event-item">
-                    <div class="event-date">
-                        <div class="event-day">
-                            <div class="event-month">JUN</div>
-                            <div class="event-day-number">8</div>
-                        </div>
-                        <div>
-                            <div class="event-title">World Oceans Day Symposium</div>
-                            <div class="event-location"><i class="fas fa-map-marker-alt"></i> University of Colombo</div>
-                        </div>
-                    </div>
-                    <p style="font-size:0.9rem; color:var(--iwmi-text-light); margin-top:0.5rem;">Focus on coastal wetlands and their role in ocean health. Free registration required.</p>
+                    <p style="font-size:0.9rem; color:var(--iwmi-text-light); margin-top:0.5rem;">Theme: "Wetlands and Traditional Knowledge: Celebrating Cultural Heritage" — highlighting indigenous knowledge in sustaining wetland ecosystems [citation:3][citation:9].</p>
                 </div>
             </div>
             
@@ -911,12 +908,12 @@
                     <a href="#" class="category-tag">Conservation</a>
                     <a href="#" class="category-tag">Research</a>
                     <a href="#" class="category-tag">Community</a>
+                    <a href="#" class="category-tag">Heritage</a>
+                    <a href="#" class="category-tag">Climate</a>
+                    <a href="#" class="category-tag">Events</a>
                     <a href="#" class="category-tag">Policy</a>
                     <a href="#" class="category-tag">Biodiversity</a>
-                    <a href="#" class="category-tag">Climate</a>
-                    <a href="#" class="category-tag">Education</a>
-                    <a href="#" class="category-tag">Tourism</a>
-                    <a href="#" class="category-tag">Events</a>
+                    <a href="#" class="category-tag">Collaboration</a>
                 </div>
             </div>
             
@@ -925,23 +922,26 @@
                 <h3 class="sidebar-title"><i class="fas fa-history"></i> Recent News</h3>
                 <div class="recent-news-item">
                     <div class="recent-date">
-                        <i class="far fa-newspaper"></i> Jan 10, 2024
+                        <i class="far fa-newspaper"></i> May 8, 2026
                     </div>
-                    <div class="recent-title">New wetland monitoring app launched by Central Environmental Authority</div>
+                    <div class="recent-title">Colombo's wetlands find new defenders in stories, histories and heritage</div>
+                    <span class="ref-link"><a href="https://www.iwmi.org/news/colombos-wetlands-find-new-defenders-in-stories-histories-and-heritage/" target="_blank">IWMI</a></span>
                 </div>
                 
                 <div class="recent-news-item">
                     <div class="recent-date">
-                        <i class="far fa-newspaper"></i> Dec 20, 2023
+                        <i class="far fa-newspaper"></i> April 21, 2026
                     </div>
-                    <div class="recent-title">Annual wetland health report shows improvement in Colombo wetlands</div>
+                    <div class="recent-title">University of Hull to lead Sri Lanka wetlands project</div>
+                    <span class="ref-link"><a href="https://www.bbc.co.uk/news/articles/cge04rq8n4lo" target="_blank">BBC News</a></span>
                 </div>
                 
                 <div class="recent-news-item">
                     <div class="recent-date">
-                        <i class="far fa-newspaper"></i> Nov 30, 2023
+                        <i class="far fa-newspaper"></i> April 17, 2026
                     </div>
-                    <div class="recent-title">International funding secured for Anawilundawa conservation project</div>
+                    <div class="recent-title">New jetty to protect Negombo Lagoon and attract tourists</div>
+                    <span class="ref-link"><a href="https://www.fisheries.gov.lk/web/index.php/en/information/news/1213-318" target="_blank">Ministry of Fisheries</a></span>
                 </div>
             </div>
         </div>

@@ -446,6 +446,11 @@
             margin-bottom: 8px;
         }
         
+        .coordinate-group.stacked {
+            flex-direction: column;
+            gap: 6px;
+        }
+        
         .coordinate-input, .buffer-input, .province-select, .search-input {
             flex: 1;
             padding: 0.5rem 0.6rem;
@@ -1069,10 +1074,6 @@
                 justify-content: center;
                 gap: 0.8rem;
             }
-            
-            .coordinate-group {
-                flex-direction: column;
-            }
         }
         
         @media (max-width: 480px) {
@@ -1134,21 +1135,16 @@
             <!-- 6.1: Left Sidebar - Controls -->
             <div class="map-sidebar" id="mapSidebar">
                 
-                <!-- 6.1.1: Coordinate Picker Panel -->
-                <div class="coord-picker-panel">
-                    <div class="coord-header">
-                        <i class="fas fa-map-pin"></i> Pick Coordinates
+                <!-- 6.1.1: Show All Sri Lanka Button (MOVED TO TOP) -->
+                <div class="province-panel">
+                    <div class="province-header">
+                        <i class="fas fa-globe"></i> Sri Lanka Wetlands
                     </div>
-                    <button class="pick-coord-btn" id="pickCoordBtn" onclick="toggleCoordinatePicker()">
-                        <i class="fas fa-mouse-pointer"></i> Pick from Map
+                    <button class="map-btn secondary" onclick="loadAllSriLankaData()" style="width:100%; justify-content:center; padding:0.7rem; font-size:0.85rem;">
+                        <i class="fas fa-globe"></i> Show All Sri Lanka Wetlands
                     </button>
-                    <div class="selected-coord" id="selectedCoordDisplay" style="display: none;">
-                        <div class="coord-label">Selected Coordinates:</div>
-                        <div class="coord-value" id="selectedLat">--</div>
-                        <div class="coord-value" id="selectedLng">--</div>
-                        <button class="use-coord-btn" onclick="useSelectedCoordinates()">
-                            <i class="fas fa-arrow-right"></i> Use for Buffer Analysis
-                        </button>
+                    <div class="province-info" id="provinceInfo">
+                        <p><strong>Click "Show All Sri Lanka Wetlands"</strong> to load all wetland data across the country.</p>
                     </div>
                 </div>
                 
@@ -1183,12 +1179,6 @@
                         <option value="uva">Uva Province</option>
                         <option value="sabaragamuwa">Sabaragamuwa Province</option>
                     </select>
-                    <button class="map-btn secondary" onclick="loadAllSriLankaData()" style="width:100%; margin-top:8px; justify-content:center;">
-                        <i class="fas fa-globe"></i> Show All Sri Lanka Wetlands
-                    </button>
-                    <div class="province-info" id="provinceInfo">
-                        <p><strong>Please select a province</strong> or click "Show All Sri Lanka Wetlands" to view data.</p>
-                    </div>
                 </div>
                 
                 <!-- 6.1.4: Layer Control Panel -->
@@ -1430,7 +1420,7 @@
                 </div>
             </div>
             
-            <!-- 6.3: Right Sidebar - Legend & Buffer Analysis -->
+            <!-- 6.3: Right Sidebar - Legend, Pick Coordinates & Buffer Analysis -->
             <div class="map-sidebar-right" id="mapSidebarRight">
                 <!-- 6.3.1: Legend Panel -->
                 <div class="legend">
@@ -1450,12 +1440,30 @@
                     </div>
                 </div>
                 
-                <!-- 6.3.2: Buffer Zone Analysis Panel -->
+                <!-- 6.3.2: Pick Coordinates Panel (MOVED TO RIGHT SIDE) -->
+                <div class="coord-picker-panel">
+                    <div class="coord-header">
+                        <i class="fas fa-map-pin"></i> Pick Coordinates
+                    </div>
+                    <button class="pick-coord-btn" id="pickCoordBtn" onclick="toggleCoordinatePicker()">
+                        <i class="fas fa-mouse-pointer"></i> Pick from Map
+                    </button>
+                    <div class="selected-coord" id="selectedCoordDisplay" style="display: none;">
+                        <div class="coord-label">Selected Coordinates:</div>
+                        <div class="coord-value" id="selectedLat">--</div>
+                        <div class="coord-value" id="selectedLng">--</div>
+                        <button class="use-coord-btn" onclick="useSelectedCoordinates()">
+                            <i class="fas fa-arrow-right"></i> Use for Buffer Analysis
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 6.3.3: Buffer Zone Analysis Panel -->
                 <div class="buffer-panel">
                     <div class="buffer-header">
                         <i class="fas fa-draw-polygon"></i> Buffer Zone Analysis
                     </div>
-                    <div class="coordinate-group">
+                    <div class="coordinate-group stacked">
                         <input type="number" class="coordinate-input" id="latitude" placeholder="Latitude (e.g., 6.9271)" step="any">
                         <input type="number" class="coordinate-input" id="longitude" placeholder="Longitude (e.g., 79.8612)" step="any">
                     </div>
@@ -1965,7 +1973,7 @@
         }
         
         // ============================================
-        // 9.12: LOAD ALL SRI LANKA WETLANDS (NEW FUNCTION)
+        // 9.12: LOAD ALL SRI LANKA WETLANDS
         // ============================================
         
         async function loadAllSriLankaData() {

@@ -13,8 +13,6 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
     <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-    <!-- Apache Arrow for JS table handling -->
-    <script src="https://cdn.jsdelivr.net/npm/apache-arrow@14.0.0/dist/Arrow.es2015.min.js"></script>
     
     <!-- ============================================ -->
     <!-- SECTION 2: CSS VARIABLES AND CUSTOM STYLES -->
@@ -1137,7 +1135,7 @@
             <!-- 6.1: Left Sidebar - Controls -->
             <div class="map-sidebar" id="mapSidebar">
                 
-                <!-- 6.1.1: Show All Sri Lanka Button -->
+                <!-- 6.1.1: Show All Sri Lanka Button (MOVED TO TOP) -->
                 <div class="province-panel">
                     <div class="province-header">
                         <i class="fas fa-globe"></i> Sri Lanka Wetlands
@@ -1442,7 +1440,7 @@
                     </div>
                 </div>
                 
-                <!-- 6.3.2: Pick Coordinates Panel -->
+                <!-- 6.3.2: Pick Coordinates Panel (MOVED TO RIGHT SIDE) -->
                 <div class="coord-picker-panel">
                     <div class="coord-header">
                         <i class="fas fa-map-pin"></i> Pick Coordinates
@@ -1676,222 +1674,6 @@
             notification.innerHTML = `<div style="display:flex; align-items:center; gap:8px;"><i class="fas fa-${icons[type]}"></i><div>${message}</div></div>`;
             document.body.appendChild(notification);
             setTimeout(() => { notification.style.animation = 'slideOut 0.3s ease-out'; setTimeout(() => notification.remove(), 300); }, 3000);
-        }
-        
-        // ============================================
-        // 9.6b: PARQUET LOADING (CORRECTED IMPLEMENTATION)
-        // ============================================
-        
-        // Dynamically load parquet-wasm ESM module and initialize WASM
-        let parquetModule = null;
-        let parquetInitPromise = null;
-        
-        async function ensureParquetReady() {
-            if (parquetModule) return parquetModule;
-            if (parquetInitPromise) return parquetInitPromise;
-            
-            parquetInitPromise = (async () => {
-                try {
-                    // Import the ESM build from jsDelivr
-                    const module = await import('https://cdn.jsdelivr.net/npm/parquet-wasm@0.7.1/esm/+esm');
-                    // The default export is the WASM initializer
-                    await module.default();
-                    parquetModule = module;
-                    console.log('✓ parquet-wasm initialized');
-                    return module;
-                } catch (err) {
-                    console.error('Failed to initialize parquet-wasm:', err);
-                    parquetInitPromise = null; // allow retry
-                    throw err;
-                }
-            })();
-            
-            return parquetInitPromise;
-        }
-        
-        // Convert Arrow table (in WASM memory) to GeoJSON FeatureCollection
-        function arrowTableToGeoJSON(wasmTable, arrowLib) {
-            // Move the WASM table into JS memory via IPC stream
-            const ipcStream = wasmTable.intoIPCStream();
-            const table = arrowLib.tableFromIPC(ipcStream);
-            
-            const features = [];
-            if (!table || table.numRows === 0) {
-                return { type: 'FeatureCollection', features: [] };
-            }
-            
-            const fieldNames = table.schema.fields.map(f => f.name);
-            // Find the geometry field
-            const geometryField = fieldNames.find(n => {
-                const lower = n.toLowerCase();
-                return lower === 'geometry' || lower === 'geom' || lower === 'wkb_geometry' || lower === 'geojson';
-            });
-            
-            if (!geometryField) {
-                console.warn('No geometry field found. Available fields:', fieldNames);
-                return { type: 'FeatureCollection', features: [] };
-            }
-            
-            for (let i = 0; i < table.numRows; i++) {
-                const row = {};
-                for (const field of table.schema.fields) {
-                    try {
-                        row[field.name] = table.getChild(field.name).get(i);
-                    } catch (e) {
-                        row[field.name] = null;
-                    }
-                }
-                
-                let geomValue = row[geometryField];
-                let geometry = null;
-                
-                if (geomValue == null) continue;
-                
-                // Handle different geometry representations
-                if (typeof geomValue === 'string') {
-                    try {
-                        geometry = JSON.parse(geomValue);
-                    } catch (e) {
-                        // Could be WKB hex string – try to decode
-                        try {
-                            if (/^[0-9a-fA-F]+$/.test(geomValue) && geomValue.length > 10) {
-                                const wkbBytes = new Uint8Array(geomValue.match(/.{1,2}/g).map(b => parseInt(b, 16)));
-                                geometry = wkbToGeoJSON(wkbBytes);
-                            }
-                        } catch (e2) { /* ignore */ }
-                    }
-                } else if (geomValue instanceof Uint8Array) {
-                    // WKB bytes
-                    geometry = wkbToGeoJSON(geomValue);
-                } else if (typeof geomValue === 'object' && geomValue.type && geomValue.coordinates) {
-                    // Already a GeoJSON geometry object
-                    geometry = geomValue;
-                }
-                
-                if (!geometry) continue;
-                
-                const properties = {};
-                for (const key of Object.keys(row)) {
-                    if (key !== geometryField) {
-                        properties[key] = row[key];
-                    }
-                }
-                
-                features.push({
-                    type: 'Feature',
-                    geometry: geometry,
-                    properties: properties
-                });
-            }
-            
-            return { type: 'FeatureCollection', features: features };
-        }
-        
-        // Minimal WKB parser for Point, LineString, Polygon and Multi variants
-        function wkbToGeoJSON(bytes) {
-            let offset = 0;
-            function readByte() { return bytes[offset++]; }
-            function readUInt32(le) {
-                let v;
-                if (le) v = bytes[offset] | (bytes[offset+1]<<8) | (bytes[offset+2]<<16) | (bytes[offset+3]<<24);
-                else v = (bytes[offset]<<24) | (bytes[offset+1]<<16) | (bytes[offset+2]<<8) | bytes[offset+3];
-                offset += 4;
-                return v >>> 0;
-            }
-            function readDouble(le) {
-                const buf = bytes.slice(offset, offset+8).buffer;
-                const view = new DataView(buf);
-                const v = view.getFloat64(0, le);
-                offset += 8;
-                return v;
-            }
-            
-            const littleEndian = readByte() === 1;
-            const typeCode = readUInt32(littleEndian);
-            const type = typeCode & 0xFF;
-            const hasZ = (typeCode & 0x80000000) !== 0;
-            const hasM = (typeCode & 0x40000000) !== 0;
-            const dims = 2 + (hasZ ? 1 : 0) + (hasM ? 1 : 0);
-            
-            function readCoord() {
-                const c = [];
-                for (let d = 0; d < dims; d++) {
-                    if (d < 2) c.push(readDouble(littleEndian));
-                    else readDouble(littleEndian);
-                }
-                return c;
-            }
-            function readCoords(n) {
-                const a = [];
-                for (let i = 0; i < n; i++) a.push(readCoord());
-                return a;
-            }
-            
-            switch (type) {
-                case 1: return { type: 'Point', coordinates: readCoord() };
-                case 2: { const n = readUInt32(littleEndian); return { type: 'LineString', coordinates: readCoords(n) }; }
-                case 3: {
-                    const nr = readUInt32(littleEndian);
-                    const rings = [];
-                    for (let r = 0; r < nr; r++) { const n = readUInt32(littleEndian); rings.push(readCoords(n)); }
-                    return { type: 'Polygon', coordinates: rings };
-                }
-                case 4: {
-                    const n = readUInt32(littleEndian);
-                    const pts = [];
-                    for (let i = 0; i < n; i++) { readByte(); readUInt32(littleEndian); pts.push(readCoord()); }
-                    return { type: 'MultiPoint', coordinates: pts };
-                }
-                case 5: {
-                    const n = readUInt32(littleEndian);
-                    const lines = [];
-                    for (let i = 0; i < n; i++) {
-                        readByte(); readUInt32(littleEndian);
-                        const m = readUInt32(littleEndian);
-                        lines.push(readCoords(m));
-                    }
-                    return { type: 'MultiLineString', coordinates: lines };
-                }
-                case 6: {
-                    const n = readUInt32(littleEndian);
-                    const polys = [];
-                    for (let i = 0; i < n; i++) {
-                        readByte(); readUInt32(littleEndian);
-                        const nr = readUInt32(littleEndian);
-                        const rings = [];
-                        for (let r = 0; r < nr; r++) { const m = readUInt32(littleEndian); rings.push(readCoords(m)); }
-                        polys.push(rings);
-                    }
-                    return { type: 'MultiPolygon', coordinates: polys };
-                }
-                default: return null;
-            }
-        }
-        
-        // Load a Parquet file from URL and return GeoJSON FeatureCollection
-        async function loadParquetAsGeoJSON(url) {
-            const module = await ensureParquetReady();
-            
-            const resp = await fetch(url);
-            if (!resp.ok) throw new Error(`HTTP ${resp.status} for ${url}`);
-            const arrayBuffer = await resp.arrayBuffer();
-            const uint8 = new Uint8Array(arrayBuffer);
-            
-            // Read parquet → Arrow table in WASM memory
-            const wasmTable = module.readParquet(uint8);
-            
-            // Convert to JS Arrow table and then to GeoJSON
-            const geojson = arrowTableToGeoJSON(wasmTable, window.arrow);
-            
-            // Release WASM memory (important!)
-            try { wasmTable.drop(); } catch (e) { /* ignore */ }
-            
-            return geojson;
-        }
-        
-        // Primary loader: parquet only
-        async function loadLayerData(parquetUrl) {
-            return await loadParquetAsGeoJSON(parquetUrl);
         }
         
         // ============================================
@@ -2136,7 +1918,7 @@
         }
         
         // ============================================
-        // 9.11: PROVINCE DATA LOADING FUNCTIONS (PARQUET ONLY)
+        // 9.11: PROVINCE DATA LOADING FUNCTIONS
         // ============================================
         
         async function loadProvinceData(provinceCode) {
@@ -2172,8 +1954,9 @@
             let loadedCount = 0, totalFeatures = 0, totalAreaSqm = 0;
             for (const layer of layers) {
                 try {
-                    const parquetUrl = `data/${encodeURIComponent(folderName)}/${layer}_areas.parquet`;
-                    const geojsonData = await loadLayerData(parquetUrl);
+                    const response = await fetch(`data/${encodeURIComponent(folderName)}/${layer}_areas.geojson`);
+                    if (!response.ok) throw new Error(`No data for ${layer}`);
+                    const geojsonData = await response.json();
                     createLayer(layer, geojsonData, provinceCode);
                     loadedCount++;
                     totalFeatures += geojsonData.features.length;
@@ -2190,7 +1973,7 @@
         }
         
         // ============================================
-        // 9.12: LOAD ALL SRI LANKA WETLANDS (PARQUET ONLY)
+        // 9.12: LOAD ALL SRI LANKA WETLANDS
         // ============================================
         
         async function loadAllSriLankaData() {
@@ -2219,8 +2002,9 @@
                     const folderName = provinceInfo[provinceCode]?.folder;
                     if (!folderName) continue;
                     try {
-                        const parquetUrl = `data/${encodeURIComponent(folderName)}/${layer}_areas.parquet`;
-                        const geojsonData = await loadLayerData(parquetUrl);
+                        const response = await fetch(`data/${encodeURIComponent(folderName)}/${layer}_areas.geojson`);
+                        if (!response.ok) continue;
+                        const geojsonData = await response.json();
                         if (geojsonData.features) {
                             geojsonData.features.forEach(f => {
                                 if (f.properties) {
@@ -2297,14 +2081,14 @@
         }
         
         // ============================================
-        // 9.13: PROTECTED AREAS FUNCTIONS (PARQUET ONLY)
+        // 9.13: PROTECTED AREAS FUNCTIONS
         // ============================================
         
         async function loadProtectedAreas() {
             try {
-                const parquetUrl = `data/protected_areas.parquet`;
-                const geojsonData = await loadLayerData(parquetUrl);
-                
+                const response = await fetch(`data/protected_areas.geojson`);
+                if (!response.ok) throw new Error("No protected areas data");
+                const geojsonData = await response.json();
                 shapefileLayers.protected = L.geoJSON(geojsonData, {
                     style: layerStyles.protected,
                     renderer: L.canvas(),
@@ -2366,7 +2150,7 @@
         }
         
         // ============================================
-        // 9.15: LAYER CONTROL FUNCTIONS
+        // 9.15: LAYER CONTROL FUNCTIONS (FIXED)
         // ============================================
         
         function toggleLayer(layerName) {
@@ -2719,7 +2503,7 @@
         function scrollToMap() { document.getElementById('map-section').scrollIntoView({ behavior: 'smooth' }); }
         
         // ============================================
-        // 9.19: MAP DOWNLOAD FUNCTION
+        // 9.19: MAP DOWNLOAD FUNCTION (FIXED - PREVENTS CRASH)
         // ============================================
         
         async function waitForTiles() {
@@ -2945,8 +2729,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             initializeMap();
             initializeDrawingTools();
-            // Pre-initialize parquet-wasm so first load is fast
-            ensureParquetReady().catch(err => console.warn('Parquet pre-init failed (will retry on first load):', err));
             loadProtectedAreas();
             const layers = ['water', 'paddy', 'marsh', 'mangroves', 'sand', 'coral', 'river', 'lagoon', 'protected'];
             layers.forEach(layer => updateOpacityDisplay(layer, 70));

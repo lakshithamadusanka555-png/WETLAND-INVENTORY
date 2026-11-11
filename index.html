@@ -13,9 +13,8 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
     <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-    <!-- Apache Arrow + Parquet reader for browser -->
+    <!-- Apache Arrow for JS table handling -->
     <script src="https://cdn.jsdelivr.net/npm/apache-arrow@14.0.0/dist/Arrow.es2015.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/parquet-wasm@0.5.0/lib/parquet_wasm.js"></script>
     
     <!-- ============================================ -->
     <!-- SECTION 2: CSS VARIABLES AND CUSTOM STYLES -->
@@ -1510,9 +1509,6 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
     <script src="https://unpkg.com/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.js"></script>
-    <!-- Apache Arrow + Parquet WASM -->
-    <script src="https://cdn.jsdelivr.net/npm/apache-arrow@14.0.0/dist/Arrow.es2015.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/parquet-wasm@0.5.0/lib/parquet_wasm.js"></script>
     
     <!-- ============================================ -->
     <!-- SECTION 9: MAIN APPLICATION JAVASCRIPT -->
@@ -1683,88 +1679,97 @@
         }
         
         // ============================================
-        // 9.6b: PARQUET LOADING HELPERS (Apache Arrow + parquet-wasm)
+        // 9.6b: PARQUET LOADING (CORRECTED IMPLEMENTATION)
         // ============================================
         
-        // Cache for parquet module
-        let parquetModuleReady = null;
+        // Dynamically load parquet-wasm ESM module and initialize WASM
+        let parquetModule = null;
+        let parquetInitPromise = null;
         
-        async function ensureParquetModule() {
-            if (!parquetModuleReady) {
-                // parquet-wasm exposes itself on window.parquet_wasm
-                parquetModuleReady = Promise.resolve(window.parquet_wasm);
-            }
-            return parquetModuleReady;
+        async function ensureParquetReady() {
+            if (parquetModule) return parquetModule;
+            if (parquetInitPromise) return parquetInitPromise;
+            
+            parquetInitPromise = (async () => {
+                try {
+                    // Import the ESM build from jsDelivr
+                    const module = await import('https://cdn.jsdelivr.net/npm/parquet-wasm@0.7.1/esm/+esm');
+                    // The default export is the WASM initializer
+                    await module.default();
+                    parquetModule = module;
+                    console.log('✓ parquet-wasm initialized');
+                    return module;
+                } catch (err) {
+                    console.error('Failed to initialize parquet-wasm:', err);
+                    parquetInitPromise = null; // allow retry
+                    throw err;
+                }
+            })();
+            
+            return parquetInitPromise;
         }
         
-        // Convert an Arrow table (from parquet) to a GeoJSON FeatureCollection
-        // Expects columns: "geometry" (WKB or GeoJSON string), plus property columns.
-        function arrowTableToGeoJSON(table) {
+        // Convert Arrow table (in WASM memory) to GeoJSON FeatureCollection
+        function arrowTableToGeoJSON(wasmTable, arrowLib) {
+            // Move the WASM table into JS memory via IPC stream
+            const ipcStream = wasmTable.intoIPCStream();
+            const table = arrowLib.tableFromIPC(ipcStream);
+            
             const features = [];
             if (!table || table.numRows === 0) {
                 return { type: 'FeatureCollection', features: [] };
             }
-            const schema = table.schema;
-            const fieldNames = schema.fields.map(f => f.name);
-            const geometryField = fieldNames.find(n => 
-                n.toLowerCase() === 'geometry' || 
-                n.toLowerCase() === 'geom' || 
-                n.toLowerCase() === 'wkb_geometry' ||
-                n.toLowerCase() === 'geojson'
-            );
+            
+            const fieldNames = table.schema.fields.map(f => f.name);
+            // Find the geometry field
+            const geometryField = fieldNames.find(n => {
+                const lower = n.toLowerCase();
+                return lower === 'geometry' || lower === 'geom' || lower === 'wkb_geometry' || lower === 'geojson';
+            });
             
             if (!geometryField) {
-                console.warn("No geometry field found in parquet table. Fields:", fieldNames);
+                console.warn('No geometry field found. Available fields:', fieldNames);
                 return { type: 'FeatureCollection', features: [] };
             }
             
-            const numRows = table.numRows;
-            // Convert to row objects
-            const rows = [];
-            for (let i = 0; i < numRows; i++) {
+            for (let i = 0; i < table.numRows; i++) {
                 const row = {};
-                for (const field of schema.fields) {
-                    const column = table.getChild(field.name);
-                    let value;
+                for (const field of table.schema.fields) {
                     try {
-                        value = column.get(i);
-                    } catch(e) {
-                        value = null;
+                        row[field.name] = table.getChild(field.name).get(i);
+                    } catch (e) {
+                        row[field.name] = null;
                     }
-                    row[field.name] = value;
                 }
-                rows.push(row);
-            }
-            
-            for (const row of rows) {
+                
                 let geomValue = row[geometryField];
                 let geometry = null;
                 
                 if (geomValue == null) continue;
                 
-                // Try to parse as GeoJSON string
+                // Handle different geometry representations
                 if (typeof geomValue === 'string') {
                     try {
                         geometry = JSON.parse(geomValue);
-                    } catch(e) {
-                        // Could be WKT (not supported here) or hex WKB
-                        // Try hex WKB decode
+                    } catch (e) {
+                        // Could be WKB hex string – try to decode
                         try {
                             if (/^[0-9a-fA-F]+$/.test(geomValue) && geomValue.length > 10) {
                                 const wkbBytes = new Uint8Array(geomValue.match(/.{1,2}/g).map(b => parseInt(b, 16)));
                                 geometry = wkbToGeoJSON(wkbBytes);
                             }
-                        } catch(e2) {}
+                        } catch (e2) { /* ignore */ }
                     }
                 } else if (geomValue instanceof Uint8Array) {
+                    // WKB bytes
                     geometry = wkbToGeoJSON(geomValue);
                 } else if (typeof geomValue === 'object' && geomValue.type && geomValue.coordinates) {
+                    // Already a GeoJSON geometry object
                     geometry = geomValue;
                 }
                 
                 if (!geometry) continue;
                 
-                // Build properties (everything except geometry)
                 const properties = {};
                 for (const key of Object.keys(row)) {
                     if (key !== geometryField) {
@@ -1782,136 +1787,105 @@
             return { type: 'FeatureCollection', features: features };
         }
         
-        // Minimal WKB parser for common geometry types (Point, LineString, Polygon, Multi*)
+        // Minimal WKB parser for Point, LineString, Polygon and Multi variants
         function wkbToGeoJSON(bytes) {
             let offset = 0;
             function readByte() { return bytes[offset++]; }
-            function readUInt32(littleEndian) {
-                let val;
-                if (littleEndian) {
-                    val = bytes[offset] | (bytes[offset+1]<<8) | (bytes[offset+2]<<16) | (bytes[offset+3]<<24);
-                } else {
-                    val = (bytes[offset]<<24) | (bytes[offset+1]<<16) | (bytes[offset+2]<<8) | bytes[offset+3];
-                }
+            function readUInt32(le) {
+                let v;
+                if (le) v = bytes[offset] | (bytes[offset+1]<<8) | (bytes[offset+2]<<16) | (bytes[offset+3]<<24);
+                else v = (bytes[offset]<<24) | (bytes[offset+1]<<16) | (bytes[offset+2]<<8) | bytes[offset+3];
                 offset += 4;
-                return val >>> 0;
+                return v >>> 0;
             }
-            function readDouble(littleEndian) {
+            function readDouble(le) {
                 const buf = bytes.slice(offset, offset+8).buffer;
                 const view = new DataView(buf);
-                const val = view.getFloat64(0, littleEndian);
+                const v = view.getFloat64(0, le);
                 offset += 8;
-                return val;
+                return v;
             }
             
             const littleEndian = readByte() === 1;
             const typeCode = readUInt32(littleEndian);
-            const type = typeCode & 0xFF; // ignore SRID/other high bits
+            const type = typeCode & 0xFF;
             const hasZ = (typeCode & 0x80000000) !== 0;
             const hasM = (typeCode & 0x40000000) !== 0;
             const dims = 2 + (hasZ ? 1 : 0) + (hasM ? 1 : 0);
             
             function readCoord() {
-                const coord = [];
+                const c = [];
                 for (let d = 0; d < dims; d++) {
-                    if (d < 2) {
-                        coord.push(readDouble(littleEndian));
-                    } else {
-                        // skip Z/M
-                        readDouble(littleEndian);
-                    }
+                    if (d < 2) c.push(readDouble(littleEndian));
+                    else readDouble(littleEndian);
                 }
-                return coord;
+                return c;
             }
-            function readCoords(count) {
-                const arr = [];
-                for (let i = 0; i < count; i++) arr.push(readCoord());
-                return arr;
+            function readCoords(n) {
+                const a = [];
+                for (let i = 0; i < n; i++) a.push(readCoord());
+                return a;
             }
             
             switch (type) {
-                case 1: // Point
-                    return { type: 'Point', coordinates: readCoord() };
-                case 2: { // LineString
-                    const n = readUInt32(littleEndian);
-                    return { type: 'LineString', coordinates: readCoords(n) };
-                }
-                case 3: { // Polygon
-                    const numRings = readUInt32(littleEndian);
+                case 1: return { type: 'Point', coordinates: readCoord() };
+                case 2: { const n = readUInt32(littleEndian); return { type: 'LineString', coordinates: readCoords(n) }; }
+                case 3: {
+                    const nr = readUInt32(littleEndian);
                     const rings = [];
-                    for (let r = 0; r < numRings; r++) {
-                        const n = readUInt32(littleEndian);
-                        rings.push(readCoords(n));
-                    }
+                    for (let r = 0; r < nr; r++) { const n = readUInt32(littleEndian); rings.push(readCoords(n)); }
                     return { type: 'Polygon', coordinates: rings };
                 }
-                case 4: { // MultiPoint
+                case 4: {
                     const n = readUInt32(littleEndian);
-                    const points = [];
-                    for (let i = 0; i < n; i++) {
-                        // each point has its own header
-                        const le = readByte() === 1;
-                        const tc = readUInt32(le);
-                        points.push(readCoord());
-                    }
-                    return { type: 'MultiPoint', coordinates: points };
+                    const pts = [];
+                    for (let i = 0; i < n; i++) { readByte(); readUInt32(littleEndian); pts.push(readCoord()); }
+                    return { type: 'MultiPoint', coordinates: pts };
                 }
-                case 5: { // MultiLineString
+                case 5: {
                     const n = readUInt32(littleEndian);
                     const lines = [];
                     for (let i = 0; i < n; i++) {
-                        const le = readByte() === 1;
-                        const tc = readUInt32(le);
-                        const m = readUInt32(le);
+                        readByte(); readUInt32(littleEndian);
+                        const m = readUInt32(littleEndian);
                         lines.push(readCoords(m));
                     }
                     return { type: 'MultiLineString', coordinates: lines };
                 }
-                case 6: { // MultiPolygon
+                case 6: {
                     const n = readUInt32(littleEndian);
                     const polys = [];
                     for (let i = 0; i < n; i++) {
-                        const le = readByte() === 1;
-                        const tc = readUInt32(le);
-                        const nr = readUInt32(le);
+                        readByte(); readUInt32(littleEndian);
+                        const nr = readUInt32(littleEndian);
                         const rings = [];
-                        for (let r = 0; r < nr; r++) {
-                            const m = readUInt32(le);
-                            rings.push(readCoords(m));
-                        }
+                        for (let r = 0; r < nr; r++) { const m = readUInt32(littleEndian); rings.push(readCoords(m)); }
                         polys.push(rings);
                     }
                     return { type: 'MultiPolygon', coordinates: polys };
                 }
-                case 7: { // GeometryCollection
-                    // Not commonly used in parquet; skip
-                    return null;
-                }
-                default:
-                    return null;
+                default: return null;
             }
         }
         
-        // Load a parquet file from URL and return GeoJSON FeatureCollection
+        // Load a Parquet file from URL and return GeoJSON FeatureCollection
         async function loadParquetAsGeoJSON(url) {
-            const module = await ensureParquetModule();
+            const module = await ensureParquetReady();
             
-            const response = await fetch(url);
-            if (!response.ok) throw new Error(`HTTP ${response.status} for ${url}`);
-            const arrayBuffer = await response.arrayBuffer();
-            const bytes = new Uint8Array(arrayBuffer);
+            const resp = await fetch(url);
+            if (!resp.ok) throw new Error(`HTTP ${resp.status} for ${url}`);
+            const arrayBuffer = await resp.arrayBuffer();
+            const uint8 = new Uint8Array(arrayBuffer);
             
-            // parquet-wasm API: readParquet
-            let arrowTable;
-            try {
-                arrowTable = module.readParquet(bytes);
-            } catch (e) {
-                // Some versions expect { parquetFile: bytes }
-                arrowTable = module.readParquet({ parquetFile: bytes });
-            }
+            // Read parquet → Arrow table in WASM memory
+            const wasmTable = module.readParquet(uint8);
             
-            // Convert to GeoJSON
-            const geojson = arrowTableToGeoJSON(arrowTable);
+            // Convert to JS Arrow table and then to GeoJSON
+            const geojson = arrowTableToGeoJSON(wasmTable, window.arrow);
+            
+            // Release WASM memory (important!)
+            try { wasmTable.drop(); } catch (e) { /* ignore */ }
+            
             return geojson;
         }
         
@@ -2927,7 +2901,7 @@
                 mapContainer.style.overflow = originalOverflow || '';
                 
                 if (sidebar) sidebar.style.display = originalSidebarDisplay || '';
-                if (sidebarRight) sidebar.style.display = originalSidebarRightDisplay || '';
+                if (sidebarRight) sidebarRight.style.display = originalSidebarRightDisplay || '';
                 if (controls) controls.style.display = originalControlsDisplay || '';
                 
                 // Restore map size after a short delay
@@ -2971,6 +2945,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             initializeMap();
             initializeDrawingTools();
+            // Pre-initialize parquet-wasm so first load is fast
+            ensureParquetReady().catch(err => console.warn('Parquet pre-init failed (will retry on first load):', err));
             loadProtectedAreas();
             const layers = ['water', 'paddy', 'marsh', 'mangroves', 'sand', 'coral', 'river', 'lagoon', 'protected'];
             layers.forEach(layer => updateOpacityDisplay(layer, 70));
